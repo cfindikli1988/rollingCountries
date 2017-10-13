@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "172195336099",
+    "firebase_url": "https://roll-a-dice-1074c.firebaseio.com",
+    "project_id": "roll-a-dice-1074c",
+    "storage_bucket": "roll-a-dice-1074c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:172195336099:android:e0464f003a595516",
+        "android_client_info": {
+          "package_name": "com.example.caglarfindikli.springforandroidexample"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "172195336099-edfelts4pvbprlcuseno33m90po2f7li.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEYazBX5-g1fydDO9kn9HjaT6pczi5IaE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
