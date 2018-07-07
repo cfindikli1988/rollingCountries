@@ -1,5 +1,6 @@
 package com.example.caglarfindikli.springforandroidexample;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.ColorMatrixColorFilter;
@@ -9,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -39,27 +41,33 @@ import static com.example.caglarfindikli.springforandroidexample.R.id.imageView5
 
 
 public class MainActivity extends AppCompatActivity {
-    public static final Random RANDOM = new Random();
-    int sum1 = 0;
-    int sum2 = 0;
-    int counter1 = 0;
-    int counter2 = 0;
-    int numberOfRoll = 1;
-    int bonusPoints1 = 0;
-    int bonusPoints2 = 0;
-    int currentDiceRollFirstCountry = 0;
-    int currentDiceRollSecondCountry = 0;
+    private static final Random RANDOM = new Random();
+
+    private int sum1 = 0;
+    private int sum2 = 0;
+    private int[] tieBreakRoll;
+    private int counter1 = 0;
+    private int counter2 = 0;
+    private final int numberOfRoll = 1;
+    private int bonusPoints1 = 0;
+    private int bonusPoints2 = 0;
+    private int currentDiceRollFirstCountry = 0;
+    private int currentDiceRollSecondCountry = 0;
+    private Toast toast;
+    private Button button;
+    private TextView remainingRoll;
+    private KonfettiView konfettiView1;
 
 
-    public static int randomDiceValue() {
+    private static int randomDiceValue() {
         return RANDOM.nextInt(6) + 1;
     }
 
-    public static int randomCountry() {
+    private static int randomCountry() {
         return RANDOM.nextInt(250) + 1;
     }
 
-    public static String getKeyFromValue(Map hm, Object value) {
+    private static String getKeyFromValue(Map hm, Object value) {
         for (Object o : hm.keySet()) {
             if (hm.get(o).equals(value)) {
                 return o.toString().toLowerCase();
@@ -68,12 +76,13 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
-    public static android.net.Uri getFlag(String shortCode) {
+    private static android.net.Uri getFlag(String shortCode) {
 
         final String uri = "http://flagpedia.net/data/flags/normal/" + shortCode + ".png";
 
         return Uri.parse(uri);
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,21 +91,23 @@ public class MainActivity extends AppCompatActivity {
         final TextView firstCountry =
                 (TextView) findViewById(R.id.textView10);
         final TextView secondCountry = (TextView) findViewById(R.id.textView11);
-
         final TextView firstCountryResult = (TextView) findViewById(R.id.textView2);
         final TextView secondCountryResult = (TextView) findViewById(R.id.textView4);
-        final TextView remainingRoll = (TextView) findViewById(R.id.textView3);
+        remainingRoll = (TextView) findViewById(R.id.textView3);
         remainingRoll.setText("Kalan Atış: " + numberOfRoll);
         final ImageView singleRollDiceResultFirstCountry = (ImageView) findViewById(R.id.imageView1);
         final ImageView singleRollDiceResultSecondCountry = (ImageView) findViewById(R.id.imageView2);
         final ImageView firstCountryFlag = (ImageView) findViewById(imageView);
         final ImageView secondCountryFlag = (ImageView) findViewById(imageView5);
+        konfettiView1 = (KonfettiView) findViewById(R.id.konfettiView);
         final MediaPlayer mp = MediaPlayer.create(this, R.raw.queenwearethechampions);
         final MediaPlayer mp1 = MediaPlayer.create(this, R.raw.dicerolleffect);
         final MediaPlayer mp2 = MediaPlayer.create(this, R.raw.whawha);
-        final KonfettiView konfettiView1 = (KonfettiView) findViewById(R.id.konfettiView);
 
-        final Button button = (Button) findViewById(R.id.rollDices);
+
+        button = (Button) findViewById(R.id.rollDices);
+
+
         button.setOnClickListener(new View.OnClickListener() {
                                       public void onClick(View v) {
 
@@ -149,104 +160,82 @@ public class MainActivity extends AppCompatActivity {
                                                       if (numberOfRoll - counter1 == 0) {
 
                                                           if (sum1 > sum2) {
-                                                              button.setVisibility(View.INVISIBLE);
-                                                              Toast.makeText(MainActivity.this, "KAZANDIN", Toast.LENGTH_LONG).show();
-
-
-                                                              konfettiView1.build()
-                                                                      .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
-                                                                      .setDirection(0.0, 359.0)
-                                                                      .setSpeed(1f, 5f)
-                                                                      .setFadeOutEnabled(true)
-                                                                      .setTimeToLive(2000L)
-                                                                      .addShapes(Shape.RECT, Shape.CIRCLE)
-                                                                      .addSizes(new Size(12, 5f))
-                                                                      .setPosition(-50f, konfettiView1.getWidth() + 50f, -50f, -50f)
-                                                                      .streamFor(400, 5000L);
-
-                                                              setBW(secondCountryFlag);
+                                                              toast = Toast.makeText(getApplicationContext(), "KAZANDIN", Toast.LENGTH_LONG);
+                                                              afterMatch(secondCountryFlag);
+                                                              throwKonfetti(konfettiView1);
                                                               mp.start();
                                                               new Handler().postDelayed(new Runnable() {
                                                                   @Override
                                                                   public void run() {
-                                                                      MainActivity.this.finish();
-
+                                                                      endGame();
                                                                       mp.stop();
+
                                                                   }
                                                               }, 8000);
                                                           } else if (sum2 > sum1) {
-                                                              button.setVisibility(View.INVISIBLE);
+                                                              toast = Toast.makeText(getApplicationContext(), "İKİ ZARA 80LİK OLDUN", Toast.LENGTH_LONG);
+                                                              afterMatch(firstCountryFlag);
                                                               setBW(firstCountryFlag);
-
                                                               mp2.start();
-                                                              Toast.makeText(MainActivity.this, "İKİ ZARA 80LİK OLDUN", Toast.LENGTH_LONG).show();
+
                                                               new Handler().postDelayed(new Runnable() {
                                                                   @Override
                                                                   public void run() {
-                                                                      MainActivity.this.finish();
+                                                                      endGame();
+                                                                      mp2.stop();
                                                                   }
                                                               }, 4000);
                                                           } else {
                                                               if (bonusPoints1 > bonusPoints2) {
-                                                                  button.setVisibility(View.INVISIBLE);
-                                                                  Toast.makeText(MainActivity.this, "KAZANDIN" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", Toast.LENGTH_LONG).show();
 
-                                                                  konfettiView1.build()
-                                                                          .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
-                                                                          .setDirection(0.0, 359.0)
-                                                                          .setSpeed(1f, 5f)
-                                                                          .setFadeOutEnabled(true)
-                                                                          .setTimeToLive(2000L)
-                                                                          .addShapes(Shape.RECT, Shape.CIRCLE)
-                                                                          .addSizes(new Size(12, 5f))
-                                                                          .setPosition(-50f, konfettiView1.getWidth() + 50f, -50f, -50f)
-                                                                          .streamFor(400, 5000L);
-
-
-                                                                  setBW(secondCountryFlag);
+                                                                  toast = Toast.makeText(MainActivity.this, "KAZANDIN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", Toast.LENGTH_LONG);
+                                                                  afterMatch(secondCountryFlag);
+                                                                  throwKonfetti(konfettiView1);
                                                                   mp.start();
                                                                   new Handler().postDelayed(new Runnable() {
                                                                       @Override
                                                                       public void run() {
-                                                                          MainActivity.this.finish();
+                                                                          endGame();
                                                                           mp.stop();
                                                                       }
                                                                   }, 8000);
                                                               } else if (bonusPoints2 > bonusPoints1) {
-                                                                  button.setVisibility(View.INVISIBLE);
-                                                                  setBW(firstCountryFlag);
+
+
+                                                                  toast = Toast.makeText(MainActivity.this, "İKİ ZARA 80LİK OLDUN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", Toast.LENGTH_LONG);
+                                                                  afterMatch(firstCountryFlag);
                                                                   mp2.start();
-                                                                  Toast.makeText(MainActivity.this, "İKİ ZARA 80LİK OLDUN" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", Toast.LENGTH_LONG).show();
                                                                   new Handler().postDelayed(new Runnable() {
                                                                       @Override
                                                                       public void run() {
-                                                                          MainActivity.this.finish();
+                                                                          MainActivity.this.recreate();
                                                                       }
                                                                   }, 4000);
                                                               } else {
-                                                                  int tieBreakRoll = randomDiceValue();
+                                                                   tieBreakRoll[0] = randomDiceValue();
+                                                                   tieBreakRoll[1]= randomDiceValue();
+                                                                  if (tieBreakRoll[0] == tieBreakRoll[1]) {
 
-                                                                  if (tieBreakRoll % 2 == 0) {
-                                                                      button.setVisibility(View.INVISIBLE);
-                                                                      Toast.makeText(MainActivity.this, "KAZANDIN" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + "Rastgele Atış" + tieBreakRoll, Toast.LENGTH_LONG).show();
-                                                                      setBW(secondCountryFlag);
+                                                                      toast = Toast.makeText(MainActivity.this, "KAZANDIN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + "Rastgele Atış: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], Toast.LENGTH_LONG);
+                                                                      afterMatch(secondCountryFlag);
+                                                                      throwKonfetti(konfettiView1);
                                                                       mp.start();
                                                                       new Handler().postDelayed(new Runnable() {
                                                                           @Override
                                                                           public void run() {
-                                                                              MainActivity.this.finish();
+                                                                              endGame();
                                                                               mp.stop();
                                                                           }
                                                                       }, 8000);
                                                                   } else {
-                                                                      button.setVisibility(View.INVISIBLE);
-                                                                      setBW(firstCountryFlag);
+
+                                                                      toast = Toast.makeText(MainActivity.this, "İKİ ZARA 80LİK OLDUN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + "Rastgele Atış: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], Toast.LENGTH_LONG);
+                                                                      afterMatch(firstCountryFlag);
                                                                       mp2.start();
-                                                                      Toast.makeText(MainActivity.this, "İKİ ZARA 80LİK OLDUN" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + "Rastgele Atış" + tieBreakRoll, Toast.LENGTH_LONG).show();
                                                                       new Handler().postDelayed(new Runnable() {
                                                                           @Override
                                                                           public void run() {
-                                                                              MainActivity.this.finish();
+                                                                              endGame();
                                                                           }
                                                                       }, 4000);
 
@@ -278,6 +267,8 @@ public class MainActivity extends AppCompatActivity {
 
 
                                       }
+
+
                                   }
         );
 
@@ -333,12 +324,11 @@ public class MainActivity extends AppCompatActivity {
                 };
 
         String url = "http://country.io/names.json";
-        // triggers the task; it will update the resultTextView once
-        // it is done
         simpleGetTask.execute(url);
 
 
     }
+
 
     private void setBW(ImageView iv) {
 
@@ -354,6 +344,37 @@ public class MainActivity extends AppCompatActivity {
         ColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
         iv.setColorFilter(colorFilter);
     }
+
+    private void throwKonfetti(KonfettiView konfettiView) {
+        konfettiView.build()
+                .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA, Color.BLUE)
+                .setDirection(0.0, 359.0)
+                .setSpeed(1f, 5f)
+                .setFadeOutEnabled(true)
+                .setTimeToLive(2000L)
+                .addShapes(Shape.RECT, Shape.CIRCLE)
+                .addSizes(new Size(12, 5f))
+                .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
+                .streamFor(600, 5000L);
+    }
+
+    private void endGame() {
+
+        Intent intent = new Intent(this, StartActivity.class);
+        startActivity(intent);
+    }
+
+    private void afterMatch(ImageView imageView) {
+
+        button.setVisibility(View.INVISIBLE);
+        remainingRoll.setVisibility(View.INVISIBLE);
+        toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+        toast.show();
+        setBW(imageView);
+
+
+    }
+
 
 }
 

@@ -22,11 +22,11 @@ class StartActivity : AppCompatActivity() {
 
         val res = resources
         val drawable = res.getDrawable(R.drawable.circular)
-        val mProgress = findViewById(R.id.circularProgressbar) as ProgressBar
+        val mProgress = findViewById<ProgressBar>(R.id.circularProgressbar)
 
         mProgress.visibility = View.INVISIBLE
 
-        val start_Button = findViewById(R.id.button) as Button
+        val start_Button = findViewById<Button>(R.id.button)
         mProgress.progress = 0   // Main Progress
         mProgress.secondaryProgress = 100 // Secondary Progress
         mProgress.max = 100 // Maximum Progress
@@ -34,7 +34,7 @@ class StartActivity : AppCompatActivity() {
 
 
 
-        tv = findViewById(R.id.tv) as TextView
+        tv = findViewById<TextView>(R.id.tv)
 
         tv.visibility = View.INVISIBLE
 
@@ -56,8 +56,7 @@ class StartActivity : AppCompatActivity() {
                         tv.text = pStatus.toString() + "%"
                     }
                     try {
-                        // Sleep for 200 milliseconds.
-                        // Just to display the progress slowly
+
                         Thread.sleep(50) //thread will take approx 3 seconds to finish
                     } catch (e: InterruptedException) {
                         e.printStackTrace()
