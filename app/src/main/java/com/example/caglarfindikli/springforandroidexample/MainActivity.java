@@ -17,10 +17,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sdsmdg.tastytoast.TastyToast;
 import com.squareup.picasso.Picasso;
 
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -42,18 +42,16 @@ import static com.example.caglarfindikli.springforandroidexample.R.id.imageView5
 
 public class MainActivity extends AppCompatActivity {
     private static final Random RANDOM = new Random();
-
+    private final int numberOfRoll = 1;
     private int sum1 = 0;
     private int sum2 = 0;
-    private int[] tieBreakRoll;
+    private int[] tieBreakRoll = new int[2];
     private int counter1 = 0;
     private int counter2 = 0;
-    private final int numberOfRoll = 1;
     private int bonusPoints1 = 0;
     private int bonusPoints2 = 0;
     private int currentDiceRollFirstCountry = 0;
     private int currentDiceRollSecondCountry = 0;
-    private Toast toast;
     private Button button;
     private TextView remainingRoll;
     private KonfettiView konfettiView1;
@@ -89,23 +87,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.animation_activty);
         final TextView firstCountry =
-                (TextView) findViewById(R.id.textView10);
-        final TextView secondCountry = (TextView) findViewById(R.id.textView11);
-        final TextView firstCountryResult = (TextView) findViewById(R.id.textView2);
-        final TextView secondCountryResult = (TextView) findViewById(R.id.textView4);
-        remainingRoll = (TextView) findViewById(R.id.textView3);
+                findViewById(R.id.textView10);
+        final TextView secondCountry = findViewById(R.id.textView11);
+        final TextView firstCountryResult = findViewById(R.id.textView2);
+        final TextView secondCountryResult = findViewById(R.id.textView4);
+        remainingRoll = findViewById(R.id.textView3);
         remainingRoll.setText("Kalan Atış: " + numberOfRoll);
-        final ImageView singleRollDiceResultFirstCountry = (ImageView) findViewById(R.id.imageView1);
-        final ImageView singleRollDiceResultSecondCountry = (ImageView) findViewById(R.id.imageView2);
-        final ImageView firstCountryFlag = (ImageView) findViewById(imageView);
-        final ImageView secondCountryFlag = (ImageView) findViewById(imageView5);
-        konfettiView1 = (KonfettiView) findViewById(R.id.konfettiView);
+        final ImageView singleRollDiceResultFirstCountry = findViewById(R.id.imageView1);
+        final ImageView singleRollDiceResultSecondCountry = findViewById(R.id.imageView2);
+        final ImageView firstCountryFlag = findViewById(imageView);
+        final ImageView secondCountryFlag = findViewById(imageView5);
+        konfettiView1 = findViewById(R.id.konfettiView);
         final MediaPlayer mp = MediaPlayer.create(this, R.raw.queenwearethechampions);
         final MediaPlayer mp1 = MediaPlayer.create(this, R.raw.dicerolleffect);
         final MediaPlayer mp2 = MediaPlayer.create(this, R.raw.whawha);
 
 
-        button = (Button) findViewById(R.id.rollDices);
+        button = findViewById(R.id.rollDices);
 
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -160,7 +158,9 @@ public class MainActivity extends AppCompatActivity {
                                                       if (numberOfRoll - counter1 == 0) {
 
                                                           if (sum1 > sum2) {
-                                                              toast = Toast.makeText(getApplicationContext(), "KAZANDIN", Toast.LENGTH_LONG);
+
+                                                              TastyToast.makeText(getApplicationContext(), "KAZANDIN!", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+
                                                               afterMatch(secondCountryFlag);
                                                               throwKonfetti(konfettiView1);
                                                               mp.start();
@@ -173,7 +173,8 @@ public class MainActivity extends AppCompatActivity {
                                                                   }
                                                               }, 8000);
                                                           } else if (sum2 > sum1) {
-                                                              toast = Toast.makeText(getApplicationContext(), "İKİ ZARA 80LİK OLDUN", Toast.LENGTH_LONG);
+
+                                                              TastyToast.makeText(getApplicationContext(), "İKİ ZARA 80LİK OLDUN!", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                                                               afterMatch(firstCountryFlag);
                                                               setBW(firstCountryFlag);
                                                               mp2.start();
@@ -188,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
                                                           } else {
                                                               if (bonusPoints1 > bonusPoints2) {
 
-                                                                  toast = Toast.makeText(MainActivity.this, "KAZANDIN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", Toast.LENGTH_LONG);
+                                                                  TastyToast.makeText(getApplicationContext(), "KAZANDIN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                                                                   afterMatch(secondCountryFlag);
                                                                   throwKonfetti(konfettiView1);
                                                                   mp.start();
@@ -202,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
                                                               } else if (bonusPoints2 > bonusPoints1) {
 
 
-                                                                  toast = Toast.makeText(MainActivity.this, "İKİ ZARA 80LİK OLDUN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", Toast.LENGTH_LONG);
+                                                                  TastyToast.makeText(MainActivity.this, "İKİ ZARA 80LİK OLDUN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                                                                   afterMatch(firstCountryFlag);
                                                                   mp2.start();
                                                                   new Handler().postDelayed(new Runnable() {
@@ -212,11 +213,11 @@ public class MainActivity extends AppCompatActivity {
                                                                       }
                                                                   }, 4000);
                                                               } else {
-                                                                   tieBreakRoll[0] = randomDiceValue();
-                                                                   tieBreakRoll[1]= randomDiceValue();
+                                                                  tieBreakRoll[0] = randomDiceValue();
+                                                                  tieBreakRoll[1] = randomDiceValue();
                                                                   if (tieBreakRoll[0] == tieBreakRoll[1]) {
 
-                                                                      toast = Toast.makeText(MainActivity.this, "KAZANDIN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + "Rastgele Atış: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], Toast.LENGTH_LONG);
+                                                                      TastyToast.makeText(MainActivity.this, "KAZANDIN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Atış: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                                                                       afterMatch(secondCountryFlag);
                                                                       throwKonfetti(konfettiView1);
                                                                       mp.start();
@@ -229,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
                                                                       }, 8000);
                                                                   } else {
 
-                                                                      toast = Toast.makeText(MainActivity.this, "İKİ ZARA 80LİK OLDUN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + "Rastgele Atış: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], Toast.LENGTH_LONG);
+                                                                      TastyToast.makeText(MainActivity.this, "İKİ ZARA 80LİK OLDUN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Atış: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                                                                       afterMatch(firstCountryFlag);
                                                                       mp2.start();
                                                                       new Handler().postDelayed(new Runnable() {
@@ -368,8 +369,6 @@ public class MainActivity extends AppCompatActivity {
 
         button.setVisibility(View.INVISIBLE);
         remainingRoll.setVisibility(View.INVISIBLE);
-        toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
-        toast.show();
         setBW(imageView);
 
 
