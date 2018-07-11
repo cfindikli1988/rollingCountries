@@ -1,11 +1,8 @@
 <resources>
     <string name="app_name">SpringForAndroidExample</string>
-    <string name="button_text">START</string>
-    <string name="button_roll">ROLL DICE</string>
     <string name="text_goodluck">0</string>
     <string name="text_you">SİZ</string>
     <string name="text_opponent">RAKİP</string>
-    <string name="welcome"> </string>
 
 
 </resources>

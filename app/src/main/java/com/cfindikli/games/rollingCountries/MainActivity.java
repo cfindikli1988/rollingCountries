@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.cfindikli.games.rollingCountries.R;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sdsmdg.tastytoast.TastyToast;
@@ -56,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     private Button button;
     private TextView remainingRoll;
     private KonfettiView konfettiView1;
+    private ImageView singleRollDiceResultFirstCountry;
+    private ImageView singleRollDiceResultSecondCountry;
 
 
     private static int randomDiceValue() {
@@ -94,8 +95,8 @@ public class MainActivity extends AppCompatActivity {
         final TextView secondCountryResult = findViewById(R.id.textView4);
         remainingRoll = findViewById(R.id.textView3);
         remainingRoll.setText("Kalan Atış: " + numberOfRoll);
-        final ImageView singleRollDiceResultFirstCountry = findViewById(R.id.imageView1);
-        final ImageView singleRollDiceResultSecondCountry = findViewById(R.id.imageView2);
+        singleRollDiceResultFirstCountry = findViewById(R.id.imageView1);
+        singleRollDiceResultSecondCountry = findViewById(R.id.imageView2);
         final ImageView firstCountryFlag = findViewById(imageView);
         final ImageView secondCountryFlag = findViewById(imageView5);
         konfettiView1 = findViewById(R.id.konfettiView);
@@ -310,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
                         int randomSelectionFirstCountry = randomCountry();
                         int randomSelectionSecondCountry = randomCountry();
                         try {
-                            Thread.currentThread().sleep(2000);
+                            Thread.currentThread().sleep(1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -370,6 +371,8 @@ public class MainActivity extends AppCompatActivity {
 
         button.setVisibility(View.INVISIBLE);
         remainingRoll.setVisibility(View.INVISIBLE);
+        singleRollDiceResultFirstCountry.setVisibility(View.INVISIBLE);
+        singleRollDiceResultSecondCountry.setVisibility(View.INVISIBLE);
         setBW(imageView);
 
 
