@@ -1,4 +1,4 @@
-package com.cfindikli.games.rollingCountries;
+package com.cfindikli.apps.rollingCountries;
 
 import org.junit.Test;
 

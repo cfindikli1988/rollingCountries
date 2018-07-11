@@ -1,4 +1,4 @@
-package com.cfindikli.games.rollingCountries;
+package com.cfindikli.apps.rollingCountries;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

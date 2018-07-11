@@ -1,4 +1,4 @@
-package com.cfindikli.games.rollingCountries
+package com.cfindikli.apps.rollingCountries
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -7,6 +7,7 @@ import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.ProgressBar
+import com.cfindikli.apps.rollingCountries.R
 
 import ru.katso.livebutton.LiveButton
 

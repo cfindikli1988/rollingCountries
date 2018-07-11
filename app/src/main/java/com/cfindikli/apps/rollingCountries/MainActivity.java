@@ -1,4 +1,4 @@
-package com.cfindikli.games.rollingCountries;
+package com.cfindikli.apps.rollingCountries;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.cfindikli.apps.rollingCountries.R;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sdsmdg.tastytoast.TastyToast;
@@ -36,8 +37,8 @@ import nl.dionsegijn.konfetti.KonfettiView;
 import nl.dionsegijn.konfetti.models.Shape;
 import nl.dionsegijn.konfetti.models.Size;
 
-import static com.cfindikli.games.rollingCountries.R.id.imageView;
-import static com.cfindikli.games.rollingCountries.R.id.imageView5;
+import static com.cfindikli.apps.rollingCountries.R.id.imageView;
+import static com.cfindikli.apps.rollingCountries.R.id.imageView5;
 
 
 public class MainActivity extends AppCompatActivity {
