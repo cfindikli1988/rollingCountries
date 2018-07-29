@@ -21,6 +21,7 @@ import com.sdsmdg.tastytoast.TastyToast;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.Random;
 
 import nl.dionsegijn.konfetti.KonfettiView;
@@ -29,6 +30,7 @@ import nl.dionsegijn.konfetti.models.Size;
 
 import static com.cfindikli.apps.rollingCountries.R.id.imageView;
 import static com.cfindikli.apps.rollingCountries.R.id.imageView5;
+import static com.cfindikli.apps.rollingCountries.R.id.imageView6;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private int[] tieBreakRoll = new int[2];
     private int counter1 = 0;
     private int counter2 = 0;
+    private boolean isMute = false;
     private int bonusPoints1 = 0;
     private int bonusPoints2 = 0;
     private int currentDiceRollFirstCountry = 0;
@@ -52,7 +55,8 @@ public class MainActivity extends AppCompatActivity {
     private KonfettiView konfettiView1;
     private ImageView singleRollDiceResultFirstCountry;
     private ImageView singleRollDiceResultSecondCountry;
-
+    private MediaPlayer mp;
+    final int[] song = {R.raw.dicerolleffect,R.raw.queenwearethechampions,R.raw.whawha};
 
     private static int randomDiceValue() {
         return RANDOM.nextInt(6) + 1;
@@ -83,11 +87,12 @@ public class MainActivity extends AppCompatActivity {
         singleRollDiceResultSecondCountry = findViewById(R.id.imageView2);
         final ImageView firstCountryFlag = findViewById(imageView);
         final ImageView secondCountryFlag = findViewById(imageView5);
+        final ImageView volumeIcon = findViewById(imageView6);
         konfettiView1 = findViewById(R.id.konfettiView);
-        final MediaPlayer mp = MediaPlayer.create(this, R.raw.queenwearethechampions);
-        final MediaPlayer mp1 = MediaPlayer.create(this, R.raw.dicerolleffect);
-        final MediaPlayer mp2 = MediaPlayer.create(this, R.raw.whawha);
 
+
+
+        mp = MediaPlayer.create(this, R.raw.dicerolleffect);
 
         button = findViewById(R.id.rollDices);
 
@@ -115,6 +120,28 @@ public class MainActivity extends AppCompatActivity {
                 .resize(400, 267)
                 .error(R.drawable.rollingdices).into(secondCountryFlag);
 
+        volumeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isMute = !isMute;
+
+                if(isMute) {
+
+                    volumeIcon.setImageResource(R.drawable.mute);
+                    mp.setVolume(0,0);
+
+                }
+                else{
+                    isMute=false;
+                    volumeIcon.setImageResource(R.drawable.volume);
+                    mp.setVolume(1,1);
+
+
+                }
+
+            }
+        });
+
         button.setOnClickListener(new View.OnClickListener() {
                                       public void onClick(View v) {
 
@@ -123,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                                           final Animation.AnimationListener animationListener = new Animation.AnimationListener() {
                                               @Override
                                               public void onAnimationStart(Animation animation) {
-                                                  mp1.start();
+                                                  mp.start();
                                                   button.setVisibility(View.INVISIBLE);
 
 
@@ -174,12 +201,15 @@ public class MainActivity extends AppCompatActivity {
 
                                                               afterMatch(secondCountryFlag);
                                                               throwKonfetti(konfettiView1);
-                                                              mp.start();
+
+                                                              changeTrack(1);
+
                                                               new Handler().postDelayed(new Runnable() {
                                                                   @Override
                                                                   public void run() {
                                                                       endGame();
-                                                                      mp.stop();
+
+
 
                                                                   }
                                                               }, 8000);
@@ -188,13 +218,15 @@ public class MainActivity extends AppCompatActivity {
                                                               TastyToast.makeText(getApplicationContext(), "İKİ ZARA 80LİK OLDUN!", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                                                               afterMatch(firstCountryFlag);
                                                               setBW(firstCountryFlag);
-                                                              mp2.start();
+
+                                                                  changeTrack(2);
+
 
                                                               new Handler().postDelayed(new Runnable() {
                                                                   @Override
                                                                   public void run() {
                                                                       endGame();
-                                                                      mp2.stop();
+
                                                                   }
                                                               }, 4000);
                                                           } else {
@@ -203,12 +235,14 @@ public class MainActivity extends AppCompatActivity {
                                                                   TastyToast.makeText(getApplicationContext(), "KAZANDIN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                                                                   afterMatch(secondCountryFlag);
                                                                   throwKonfetti(konfettiView1);
-                                                                  mp.start();
+
+                                                                      changeTrack(1);
+
                                                                   new Handler().postDelayed(new Runnable() {
                                                                       @Override
                                                                       public void run() {
                                                                           endGame();
-                                                                          mp.stop();
+
                                                                       }
                                                                   }, 8000);
                                                               } else if (bonusPoints2 > bonusPoints1) {
@@ -216,11 +250,13 @@ public class MainActivity extends AppCompatActivity {
 
                                                                   TastyToast.makeText(MainActivity.this, "İKİ ZARA 80LİK OLDUN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                                                                   afterMatch(firstCountryFlag);
-                                                                  mp2.start();
+
+                                                                  changeTrack(2);
+
                                                                   new Handler().postDelayed(new Runnable() {
                                                                       @Override
                                                                       public void run() {
-                                                                          MainActivity.this.recreate();
+                                                                         endGame();
                                                                       }
                                                                   }, 4000);
                                                               } else {
@@ -231,19 +267,22 @@ public class MainActivity extends AppCompatActivity {
                                                                       TastyToast.makeText(MainActivity.this, "KAZANDIN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Atış: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                                                                       afterMatch(secondCountryFlag);
                                                                       throwKonfetti(konfettiView1);
-                                                                      mp.start();
+
+                                                                          changeTrack(1);
+
                                                                       new Handler().postDelayed(new Runnable() {
                                                                           @Override
                                                                           public void run() {
                                                                               endGame();
-                                                                              mp.stop();
+
                                                                           }
                                                                       }, 8000);
                                                                   } else {
 
                                                                       TastyToast.makeText(MainActivity.this, "İKİ ZARA 80LİK OLDUN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Atış: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                                                                       afterMatch(firstCountryFlag);
-                                                                      mp2.start();
+                                                                      changeTrack(2);
+
                                                                       new Handler().postDelayed(new Runnable() {
                                                                           @Override
                                                                           public void run() {
@@ -324,10 +363,29 @@ public class MainActivity extends AppCompatActivity {
                 .streamFor(600, 5000L);
     }
 
-    private void endGame() {
+    private void changeTrack(int position)  {
+        mp.stop();
+        mp.reset();
+        try {
+            mp.setDataSource(getApplicationContext(), Uri.parse("android.resource://" + getPackageName() + "/" + song[position]));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            mp.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+        mp.start();
 
-        Intent intent = new Intent(this, StartActivity.class);
-        startActivity(intent);
+
+    }
+
+    private void endGame() {
+        mp.stop();
+        recreate();
     }
 
     private void afterMatch(ImageView imageView) {
