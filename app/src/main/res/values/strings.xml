@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">SpringForAndroidExample</string>
     <string name="text_goodluck">0</string>
+    <string name="text_start">START</string>
     <string name="text_you">SİZ</string>
     <string name="text_opponent">RAKİP</string>
+    <string name="text_remaining_roll">Kalan Atış:</string>
+    <string name="text_roll_dice">ROLL DICE</string>
 
 
 </resources>

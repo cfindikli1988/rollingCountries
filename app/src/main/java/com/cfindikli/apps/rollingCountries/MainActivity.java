@@ -6,7 +6,6 @@ import android.graphics.ColorFilter;
 import android.graphics.ColorMatrixColorFilter;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -18,18 +17,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sdsmdg.tastytoast.TastyToast;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 import nl.dionsegijn.konfetti.KonfettiView;
@@ -52,6 +43,10 @@ public class MainActivity extends AppCompatActivity {
     private int bonusPoints2 = 0;
     private int currentDiceRollFirstCountry = 0;
     private int currentDiceRollSecondCountry = 0;
+    private Uri uri1;
+    private Uri uri2;
+    private String firstCountryName;
+    private String secondCountryName;
     private Button button;
     private TextView remainingRoll;
     private KonfettiView konfettiView1;
@@ -63,18 +58,7 @@ public class MainActivity extends AppCompatActivity {
         return RANDOM.nextInt(6) + 1;
     }
 
-    private static int randomCountry() {
-        return RANDOM.nextInt(250) + 1;
-    }
 
-    private static String getKeyFromValue(Map hm, Object value) {
-        for (Object o : hm.keySet()) {
-            if (hm.get(o).equals(value)) {
-                return o.toString().toLowerCase();
-            }
-        }
-        return null;
-    }
 
     private static android.net.Uri getFlag(String shortCode) {
 
@@ -94,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         final TextView firstCountryResult = findViewById(R.id.textView2);
         final TextView secondCountryResult = findViewById(R.id.textView4);
         remainingRoll = findViewById(R.id.textView3);
-        remainingRoll.setText("Kalan Atış: " + numberOfRoll);
+        remainingRoll.setText(getResources().getString(R.string.text_remaining_roll) + numberOfRoll);
         singleRollDiceResultFirstCountry = findViewById(R.id.imageView1);
         singleRollDiceResultSecondCountry = findViewById(R.id.imageView2);
         final ImageView firstCountryFlag = findViewById(imageView);
@@ -107,6 +91,29 @@ public class MainActivity extends AppCompatActivity {
 
         button = findViewById(R.id.rollDices);
 
+        Intent extras = getIntent();
+        String imageUrl1 = extras.getStringExtra("uri1");
+        firstCountryName = extras.getStringExtra("firstCountryName");
+        uri1 = Uri.parse(imageUrl1);
+
+        String imageUrl2 = extras.getStringExtra("uri2");
+        secondCountryName = extras.getStringExtra("secondCountryName");
+        uri2 = Uri.parse(imageUrl2);
+
+        firstCountry.setText(firstCountryName);
+
+
+        Picasso.with(getApplicationContext()).setIndicatorsEnabled(true);
+        Picasso.with(getApplicationContext()).load(uri1).networkPolicy(NetworkPolicy.OFFLINE).resize(400, 267)
+                .error(R.drawable.rollingdices)
+                .into(firstCountryFlag);
+
+
+        secondCountry.setText(secondCountryName);
+
+        Picasso.with(getApplicationContext()).load(uri2).networkPolicy(NetworkPolicy.OFFLINE)
+                .resize(400, 267)
+                .error(R.drawable.rollingdices).into(secondCountryFlag);
 
         button.setOnClickListener(new View.OnClickListener() {
                                       public void onClick(View v) {
@@ -117,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
                                               @Override
                                               public void onAnimationStart(Animation animation) {
                                                   mp1.start();
+                                                  button.setVisibility(View.INVISIBLE);
+
 
                                               }
 
@@ -248,17 +257,24 @@ public class MainActivity extends AppCompatActivity {
                                                               }
 
                                                           }
+                                                          button.setVisibility(View.INVISIBLE);
+                                                      } else {
+                                                          button.setVisibility(View.VISIBLE);
                                                       }
 
-
                                                   }
-                                                  remainingRoll.setText("Kalan Atış: " + String.valueOf(numberOfRoll - counter1));
+
+                                                  remainingRoll.setText(getResources().getString(R.string.text_remaining_roll) + String.valueOf(numberOfRoll - counter1));
+
+
                                               }
 
                                               @Override
                                               public void onAnimationRepeat(Animation animation) {
 
                                               }
+
+
                                           };
 
 
@@ -275,59 +291,6 @@ public class MainActivity extends AppCompatActivity {
                                   }
         );
 
-
-        final AsyncTask<String, Void, String> simpleGetTask =
-                new AsyncTask<String, Void, String>() {
-                    @Override
-                    protected String doInBackground(String... params) {
-                        RestTemplate restTemplate = new RestTemplate();
-                        //add the String message converter, since the result of
-                        // the call will be a String
-                        restTemplate.getMessageConverters().add(
-                                new StringHttpMessageConverter());
-                        // Make the HTTP GET request on the url (params[0]),
-                        // marshaling the response to a String
-                        return
-                                restTemplate.getForObject(params[0], String.class);
-                    }
-
-                    @Override
-                    protected void onPostExecute(String result) {
-                        // executed by the UI thread once the background
-                        // thread is done getting the result
-                        ObjectMapper mapper = new ObjectMapper();
-
-                        Map<String, Object> map = new HashMap<String, Object>();
-
-                        // convert JSON string to Map
-                        try {
-                            map = mapper.readValue(result, new TypeReference<Map<String, String>>() {
-                            });
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        ArrayList<Object> countries = new ArrayList<>(map.values());
-                        int randomSelectionFirstCountry = randomCountry();
-                        int randomSelectionSecondCountry = randomCountry();
-                        try {
-                            Thread.currentThread().sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        firstCountry.setText(countries.get(randomSelectionFirstCountry - 1).toString());
-                        Picasso.with(MainActivity.this).load(getFlag(getKeyFromValue(map, countries.get(randomSelectionFirstCountry - 1)))).resize(400, 267).error(R.drawable.rollingdices).into(firstCountryFlag);
-                        firstCountryFlag.setImageURI(getFlag(getKeyFromValue(map, countries.get(randomSelectionFirstCountry - 1))));
-                        secondCountry.setText(countries.get(randomSelectionSecondCountry - 1).toString());
-                        Picasso.with(MainActivity.this).load(getFlag(getKeyFromValue(map, countries.get(randomSelectionSecondCountry - 1)))).resize(400, 267).error(R.drawable.rollingdices).into(secondCountryFlag);
-                        secondCountryFlag.setImageURI(getFlag(getKeyFromValue(map, countries.get(randomSelectionSecondCountry - 1))));
-
-
-                    }
-                };
-
-        String url = "http://country.io/names.json";
-        simpleGetTask.execute(url);
 
 
     }
@@ -369,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void afterMatch(ImageView imageView) {
 
-        button.setVisibility(View.INVISIBLE);
+
         remainingRoll.setVisibility(View.INVISIBLE);
         singleRollDiceResultFirstCountry.setVisibility(View.INVISIBLE);
         singleRollDiceResultSecondCountry.setVisibility(View.INVISIBLE);
