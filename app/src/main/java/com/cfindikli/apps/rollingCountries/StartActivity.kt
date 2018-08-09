@@ -25,13 +25,12 @@ class StartActivity : AppCompatActivity() {
     var uri1: Uri? = null
     var uri2: Uri? = null
     val url = "http://country.io/names.json"
-    lateinit var firstCountry: TextView
-    lateinit var secondCountry: TextView
+    lateinit var firstCountryText: TextView
+    lateinit var secondCountryText: TextView
     lateinit var firstCountryFlag: ImageView
     lateinit var secondCountryFlag: ImageView
-    lateinit var mProgress: ProgressBar
+    private lateinit var mProgress: ProgressBar
     private val handler = Handler()
-    @SuppressLint("SetTextI18n")
 
 
     fun randomCountry(): Int {
@@ -56,14 +55,14 @@ class StartActivity : AppCompatActivity() {
 
 
         mProgress = findViewById(R.id.google_progress)
-        firstCountry = this.findViewById(R.id.textView5)
-        secondCountry = this.findViewById(R.id.textView)
+        firstCountryText = this.findViewById(R.id.textView5)
+        secondCountryText = this.findViewById(R.id.textView)
         firstCountryFlag = this.findViewById(R.id.imageView4)
         secondCountryFlag = this.findViewById(R.id.imageView3)
         firstCountryFlag.visibility = View.INVISIBLE
         secondCountryFlag.visibility = View.INVISIBLE
-        firstCountry.visibility = View.INVISIBLE
-        secondCountry.visibility = View.INVISIBLE
+        firstCountryText.visibility = View.INVISIBLE
+        secondCountryText.visibility = View.INVISIBLE
 
         fetchJson().execute(url)
 
@@ -102,6 +101,7 @@ class StartActivity : AppCompatActivity() {
 
     }
 
+    @SuppressLint("StaticFieldLeak")
     inner class fetchJson : AsyncTask<String, Void, Array<out Any>?>() {
         override fun doInBackground(vararg params: String): Array<out Any>? {
             val restTemplate = RestTemplate()
@@ -116,19 +116,19 @@ class StartActivity : AppCompatActivity() {
         override fun onPostExecute(result: Array<out Any>?) {
 
 
-            val firstCountries = result!![randomCountry()].toString().split("=")
-            val secondCountries = result[randomCountry()].toString().split("=")
+            val firstCountry = result!![randomCountry()].toString().split("=")
+            val secondCountry = result[randomCountry()].toString().split("=")
 
 
 
-            uri1 = getFlag(firstCountries[0].toLowerCase())
-            firstCountryName = firstCountries[1]
-            uri2 = getFlag(secondCountries[0].toLowerCase())
-            secondCountryName = secondCountries[1]
+            uri1 = getFlag(firstCountry[0].toLowerCase())
+            firstCountryName = firstCountry[1]
+            uri2 = getFlag(secondCountry[0].toLowerCase())
+            secondCountryName = secondCountry[1]
 
 
 
-            firstCountry.text = firstCountryName
+            firstCountryText.text = firstCountryName
 
             Picasso.with(this@StartActivity).load(uri1)
                     .resize(400, 267).error(R.drawable.rollingdices)
@@ -136,7 +136,7 @@ class StartActivity : AppCompatActivity() {
 
 
 
-            secondCountry.text = secondCountryName
+            secondCountryText.text = secondCountryName
 
             Picasso.with(this@StartActivity).load(uri2)
                     .resize(400, 267)

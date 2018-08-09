@@ -46,10 +46,6 @@ public class MainActivity extends AppCompatActivity {
     private int bonusPoints2 = 0;
     private int currentDiceRollFirstCountry = 0;
     private int currentDiceRollSecondCountry = 0;
-    private Uri uri1;
-    private Uri uri2;
-    private String firstCountryName;
-    private String secondCountryName;
     private Button button;
     private TextView remainingRoll;
     private KonfettiView konfettiView1;
@@ -98,12 +94,12 @@ public class MainActivity extends AppCompatActivity {
 
         Intent extras = getIntent();
         String imageUrl1 = extras.getStringExtra("uri1");
-        firstCountryName = extras.getStringExtra("firstCountryName");
-        uri1 = Uri.parse(imageUrl1);
+        String firstCountryName = extras.getStringExtra("firstCountryName");
+        Uri uri1 = Uri.parse(imageUrl1);
 
         String imageUrl2 = extras.getStringExtra("uri2");
-        secondCountryName = extras.getStringExtra("secondCountryName");
-        uri2 = Uri.parse(imageUrl2);
+        String secondCountryName = extras.getStringExtra("secondCountryName");
+        Uri uri2 = Uri.parse(imageUrl2);
 
         firstCountry.setText(firstCountryName);
 
@@ -372,9 +368,7 @@ public class MainActivity extends AppCompatActivity {
         }
         try {
             mp.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (IllegalStateException e) {
+        } catch (IOException | IllegalStateException e) {
             e.printStackTrace();
         }
         mp.start();
