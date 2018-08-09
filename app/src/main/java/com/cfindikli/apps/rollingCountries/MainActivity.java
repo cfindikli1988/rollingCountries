@@ -148,7 +148,6 @@ public class MainActivity extends AppCompatActivity {
                                                   mp.start();
                                                   button.setVisibility(View.INVISIBLE);
 
-
                                               }
 
                                               @Override
@@ -330,6 +329,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     private void setBW(ImageView iv) {
 
         float brightness = 10; // change values to suite your need
@@ -390,6 +390,13 @@ public class MainActivity extends AppCompatActivity {
         setBW(imageView);
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, StartActivity.class);
+        startActivity(intent);
+        super.onBackPressed();  // optional depending on your needs
     }
 
 

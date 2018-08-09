@@ -66,14 +66,11 @@ class StartActivity : AppCompatActivity() {
 
         fetchJson().execute(url)
 
-
-
-
         Thread(Runnable {
 
             while (pStatus < 100) {
 
-                pStatus += 1
+                pStatus += 5
 
                 handler.post {
                     mProgress.progress = pStatus
@@ -81,20 +78,15 @@ class StartActivity : AppCompatActivity() {
                 }
                 try {
 
-                    Thread.sleep(100) //thread will take approx 3 seconds to finish
+                    Thread.sleep(100)
                 } catch (e: InterruptedException) {
                     e.printStackTrace()
                 }
 
             }
 
-            val i = Intent(this, MainActivity::class.java)
+            switchToMainActivity()
 
-            i.putExtra("uri1", uri1.toString())
-            i.putExtra("uri2", uri2.toString())
-            i.putExtra("firstCountryName", firstCountryName)
-            i.putExtra("secondCountryName", secondCountryName)
-            startActivity(i)
 
         }).start()
 
@@ -144,6 +136,20 @@ class StartActivity : AppCompatActivity() {
 
         }
     }
+
+
+    private fun switchToMainActivity() {
+
+        val i = Intent(this, MainActivity::class.java)
+
+        i.putExtra("uri1", uri1.toString())
+        i.putExtra("uri2", uri2.toString())
+        i.putExtra("firstCountryName", firstCountryName)
+        i.putExtra("secondCountryName", secondCountryName)
+        startActivity(i)
+    }
+
+
 
 
 }
