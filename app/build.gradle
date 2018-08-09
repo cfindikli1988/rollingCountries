@@ -16,7 +16,7 @@ android {
         exclude 'META-INF/dependencies.txt'
         exclude 'META-INF/LGPL2.1'
     }
-    compileSdkVersion 26
+    compileSdkVersion 28
     buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "com.example.caglarfindikli.springforandroidexample"
@@ -38,25 +38,21 @@ android {
 
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
+    //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     implementation 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.41'
-    implementation 'nl.dionsegijn:konfetti:1.1.2'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
+    implementation  'nl.dionsegijn:konfetti:1.1.2'
+   implementation 'com.fasterxml.jackson.core:jackson-databind:2.3.2'
     implementation 'com.squareup.picasso:picasso:2.5.2'
-    implementation 'com.mikhaellopez:circularprogressbar:2.0.0'
     implementation 'com.sdsmdg.tastytoast:tastytoast:0.1.1'
     implementation 'com.github.dakatso:livebutton:1.0.0'
     implementation 'com.jpardogo.googleprogressbar:library:1.2.0'
-    implementation group: 'com.github.bumptech.glide', name: 'glide', version: '3.7.0'
-
-
     testImplementation 'junit:junit:4.12'
 }
 

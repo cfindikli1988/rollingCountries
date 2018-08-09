@@ -108,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
         firstCountry.setText(firstCountryName);
 
 
-        Picasso.with(getApplicationContext()).setIndicatorsEnabled(true);
         Picasso.with(getApplicationContext()).load(uri1).networkPolicy(NetworkPolicy.OFFLINE).resize(400, 267)
                 .error(R.drawable.rollingdices)
                 .into(firstCountryFlag);

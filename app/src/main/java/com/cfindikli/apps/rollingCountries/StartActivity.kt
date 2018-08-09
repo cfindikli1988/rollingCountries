@@ -11,38 +11,33 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.squareup.picasso.Picasso
 import org.springframework.http.converter.StringHttpMessageConverter
 import org.springframework.web.client.RestTemplate
-import java.io.IOException
 import java.util.*
 
 
 @Suppress("DEPRECATION")
 class StartActivity : AppCompatActivity() {
-    private val RANDOM = Random()
+    private val random = Random()
 
     private var pStatus = 0
     var uri1: Uri? = null
     var uri2: Uri? = null
+    val url = "http://country.io/names.json"
+    lateinit var firstCountry: TextView
+    lateinit var secondCountry: TextView
+    lateinit var firstCountryFlag: ImageView
+    lateinit var secondCountryFlag: ImageView
+    lateinit var mProgress: ProgressBar
     private val handler = Handler()
     @SuppressLint("SetTextI18n")
 
 
-    private fun randomCountry(): Int {
-        return RANDOM.nextInt(250) + 1
+    fun randomCountry(): Int {
+        return random.nextInt(250) + 1
     }
 
-    private fun getKeyFromValue(hm: Map<*, *>, value: Any): String? {
-        for (o in hm.keys) {
-            if (hm[o] == value) {
-                return o.toString().toLowerCase()
-            }
-        }
-        return null
-    }
 
     private fun getFlag(shortCode: String?): android.net.Uri {
 
@@ -53,7 +48,6 @@ class StartActivity : AppCompatActivity() {
 
 
     private var firstCountryName: String = ""
-
     private var secondCountryName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,81 +55,19 @@ class StartActivity : AppCompatActivity() {
         setContentView(R.layout.activity_start)
 
 
-        val mProgress = findViewById<ProgressBar>(R.id.google_progress)
-        val firstCountry = this.findViewById<TextView>(R.id.textView5)
-        val secondCountry = this.findViewById<TextView>(R.id.textView)
-        val firstCountryFlag = this.findViewById<ImageView>(R.id.imageView4)
-        val secondCountryFlag = this.findViewById<ImageView>(R.id.imageView3)
+        mProgress = findViewById(R.id.google_progress)
+        firstCountry = this.findViewById(R.id.textView5)
+        secondCountry = this.findViewById(R.id.textView)
+        firstCountryFlag = this.findViewById(R.id.imageView4)
+        secondCountryFlag = this.findViewById(R.id.imageView3)
         firstCountryFlag.visibility = View.INVISIBLE
         secondCountryFlag.visibility = View.INVISIBLE
         firstCountry.visibility = View.INVISIBLE
         secondCountry.visibility = View.INVISIBLE
 
-
-        val simpleGetTask = @SuppressLint("StaticFieldLeak")
-        object : AsyncTask<String, Void, String>() {
-            override fun doInBackground(vararg params: String): String {
-                val restTemplate = RestTemplate()
-                //add the String message converter, since the result of
-                // the call will be a String
-                restTemplate.messageConverters.add(
-                        StringHttpMessageConverter())
-                // Make the HTTP GET request on the url (params[0]),
-                // marshaling the response to a String
-                return restTemplate.getForObject(params[0], String::class.java)
-            }
-
-            override fun onPostExecute(result: String) {
-                // executed by the UI thread once the background
-                // thread is done getting the result
-                val mapper = ObjectMapper()
-
-                var map: Map<String, Any> = HashMap()
-
-                // convert JSON string to Map
-                try {
-                    map = mapper.readValue(result, object : TypeReference<Map<String, String>>() {
-
-                    })
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-
-                val countries = ArrayList(map.values)
-                val randomSelectionFirstCountry = randomCountry()
-                val randomSelectionSecondCountry = randomCountry()
-                try {
-                } catch (e: InterruptedException) {
-                    e.printStackTrace()
-                }
-
-                uri1 = getFlag(getKeyFromValue(map, countries[randomSelectionFirstCountry - 1]))
-                firstCountryName = countries[randomSelectionFirstCountry - 1].toString()
-                uri2 = getFlag(getKeyFromValue(map, countries[randomSelectionSecondCountry - 1]))
-                secondCountryName = countries[randomSelectionSecondCountry - 1].toString()
+        fetchJson().execute(url)
 
 
-
-                firstCountry.text = firstCountryName
-
-                Picasso.with(this@StartActivity).load(uri1)
-                        .resize(400, 267).error(R.drawable.rollingdices)
-                        .into(firstCountryFlag)
-
-
-
-                secondCountry.text = secondCountryName
-
-                Picasso.with(this@StartActivity).load(uri2)
-                        .resize(400, 267)
-                        .error(R.drawable.rollingdices).into(secondCountryFlag)
-
-
-            }
-        }
-
-        val url = "http://country.io/names.json"
-        simpleGetTask.execute(url)
 
 
         Thread(Runnable {
@@ -168,6 +100,49 @@ class StartActivity : AppCompatActivity() {
         }).start()
 
 
+    }
+
+    inner class fetchJson : AsyncTask<String, Void, Array<out Any>?>() {
+        override fun doInBackground(vararg params: String): Array<out Any>? {
+            val restTemplate = RestTemplate()
+
+            restTemplate.messageConverters.add(
+                    StringHttpMessageConverter())
+
+            return restTemplate.getForObject(params[0], Map::class.java).entries.stream().toArray()
+        }
+
+
+        override fun onPostExecute(result: Array<out Any>?) {
+
+
+            val firstCountries = result!![randomCountry()].toString().split("=")
+            val secondCountries = result[randomCountry()].toString().split("=")
+
+
+
+            uri1 = getFlag(firstCountries[0].toLowerCase())
+            firstCountryName = firstCountries[1]
+            uri2 = getFlag(secondCountries[0].toLowerCase())
+            secondCountryName = secondCountries[1]
+
+
+
+            firstCountry.text = firstCountryName
+
+            Picasso.with(this@StartActivity).load(uri1)
+                    .resize(400, 267).error(R.drawable.rollingdices)
+                    .into(firstCountryFlag)
+
+
+
+            secondCountry.text = secondCountryName
+
+            Picasso.with(this@StartActivity).load(uri2)
+                    .resize(400, 267)
+                    .error(R.drawable.rollingdices).into(secondCountryFlag)
+
+        }
     }
 
 
