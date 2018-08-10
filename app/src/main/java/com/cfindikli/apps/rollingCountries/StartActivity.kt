@@ -113,10 +113,11 @@ class StartActivity : AppCompatActivity() {
 
 
 
-            uri1 = getFlag(firstCountry[0].toLowerCase())
-            firstCountryName = firstCountry[1]
-            uri2 = getFlag(secondCountry[0].toLowerCase())
-            secondCountryName = secondCountry[1]
+            uri1 = getFlag(firstCountry.first().toLowerCase())
+            firstCountryName = firstCountry.last()
+            uri2 = getFlag(secondCountry.first().toLowerCase())
+            secondCountryName = secondCountry.last()
+
 
 
 
