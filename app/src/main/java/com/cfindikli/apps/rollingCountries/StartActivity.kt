@@ -8,14 +8,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_start.*
 import org.springframework.http.converter.StringHttpMessageConverter
 import org.springframework.web.client.RestTemplate
 import java.util.*
-
 
 @Suppress("DEPRECATION")
 class StartActivity : AppCompatActivity() {
@@ -25,11 +22,6 @@ class StartActivity : AppCompatActivity() {
     var uri1: Uri? = null
     var uri2: Uri? = null
     val url = "http://country.io/names.json"
-    lateinit var firstCountryText: TextView
-    lateinit var secondCountryText: TextView
-    lateinit var firstCountryFlag: ImageView
-    lateinit var secondCountryFlag: ImageView
-    private lateinit var mProgress: ProgressBar
     private val handler = Handler()
 
 
@@ -54,11 +46,8 @@ class StartActivity : AppCompatActivity() {
         setContentView(R.layout.activity_start)
 
 
-        mProgress = findViewById(R.id.google_progress)
-        firstCountryText = this.findViewById(R.id.textView5)
-        secondCountryText = this.findViewById(R.id.textView)
-        firstCountryFlag = this.findViewById(R.id.imageView4)
-        secondCountryFlag = this.findViewById(R.id.imageView3)
+
+
         firstCountryFlag.visibility = View.INVISIBLE
         secondCountryFlag.visibility = View.INVISIBLE
         firstCountryText.visibility = View.INVISIBLE
@@ -70,10 +59,10 @@ class StartActivity : AppCompatActivity() {
 
             while (pStatus < 100) {
 
-                pStatus += 5
+                pStatus += 3
 
                 handler.post {
-                    mProgress.progress = pStatus
+                    google_progress.progress = pStatus
 
                 }
                 try {
@@ -119,8 +108,6 @@ class StartActivity : AppCompatActivity() {
             secondCountryName = secondCountry.last()
 
 
-
-
             firstCountryText.text = firstCountryName
 
             Picasso.with(this@StartActivity).load(uri1)
@@ -142,7 +129,6 @@ class StartActivity : AppCompatActivity() {
     private fun switchToMainActivity() {
 
         val i = Intent(this, MainActivity::class.java)
-
         i.putExtra("uri1", uri1.toString())
         i.putExtra("uri2", uri2.toString())
         i.putExtra("firstCountryName", firstCountryName)

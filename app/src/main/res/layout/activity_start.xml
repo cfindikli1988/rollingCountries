@@ -16,40 +16,44 @@
         gpb:type="google_music_dices" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/secondCountryFlag"
         android:layout_width="128dp"
         android:layout_height="104dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/imageView4"
-        android:src="@drawable/rollingdices" />
+        android:layout_alignTop="@+id/firstCountryFlag"
+        android:src="@drawable/rollingdices"
+        android:contentDescription="TODO" />
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/firstCountryFlag"
         android:layout_width="128dp"
         android:layout_height="104dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="78dp"
-        android:src="@drawable/rollingdices" />
+        android:src="@drawable/rollingdices"
+        android:contentDescription="TODO" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/secondCountryText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="35dp"
         android:layout_marginEnd="37dp"
-        android:text="@string/text_opponent" />
+        android:text="@string/text_opponent"
+        tools:ignore="RelativeOverlap" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/firstCountryText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignTop="@+id/textView"
+        android:layout_alignTop="@+id/secondCountryText"
         android:layout_marginStart="35dp"
-        android:text="@string/text_you" />
+        android:text="@string/text_you"
+        tools:ignore="RelativeOverlap" />
 
 
 </RelativeLayout>
