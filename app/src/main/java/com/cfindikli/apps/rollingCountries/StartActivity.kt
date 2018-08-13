@@ -87,25 +87,22 @@ class StartActivity : AppCompatActivity() {
         override fun doInBackground(vararg params: String): Array<out Any>? {
             val restTemplate = RestTemplate()
 
-            restTemplate.messageConverters.add(
-                    StringHttpMessageConverter())
 
-            return restTemplate.getForObject(params[0], Map::class.java).entries.stream().toArray()
+            val response =  restTemplate.getForObject(params[0], Map::class.java).entries.stream().toArray()
+            val firstCountry = response!![randomCountry()].toString().split("=")
+            val secondCountry = response[randomCountry()].toString().split("=")
+            return arrayOf(firstCountry.first(),firstCountry.last(),secondCountry.first(),secondCountry.last())
         }
 
 
         override fun onPostExecute(result: Array<out Any>?) {
 
+            println(result!!.first().toString())
 
-            val firstCountry = result!![randomCountry()].toString().split("=")
-            val secondCountry = result[randomCountry()].toString().split("=")
-
-
-
-            uri1 = getFlag(firstCountry.first().toLowerCase())
-            firstCountryName = firstCountry.last()
-            uri2 = getFlag(secondCountry.first().toLowerCase())
-            secondCountryName = secondCountry.last()
+            uri1 = getFlag(result!!.first().toString().toLowerCase())
+            firstCountryName = result!![1].toString()
+            uri2 = getFlag(result!![2].toString().toLowerCase())
+            secondCountryName = result!!.last().toString()
 
 
             firstCountryText.text = firstCountryName
