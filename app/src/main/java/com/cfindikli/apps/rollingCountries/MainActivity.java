@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView remainingRoll;
     private KonfettiView konfettiView1;
     private ImageView singleRollDiceResultFirstCountry,singleRollDiceResultSecondCountry;
+    private ImageView firstCountryFlag,secondCountryFlag = null;
     private MediaPlayer mp;
     final int[] song = {R.raw.dicerolleffect,R.raw.queenwearethechampions,R.raw.whawha};
 
@@ -75,15 +76,14 @@ public class MainActivity extends AppCompatActivity {
         remainingRoll.setText(getResources().getString(R.string.text_remaining_roll) + numberOfRoll);
         singleRollDiceResultFirstCountry = findViewById(R.id.imageView1);
         singleRollDiceResultSecondCountry = findViewById(R.id.imageView2);
-        final ImageView firstCountryFlag = findViewById(imageView);
-        final ImageView secondCountryFlag = findViewById(imageView5);
+        firstCountryFlag = findViewById(imageView);
+        secondCountryFlag = findViewById(imageView5);
         final ImageView volumeIcon = findViewById(imageView6);
         konfettiView1 = findViewById(R.id.konfettiView);
 
 
 
         mp = MediaPlayer.create(this, R.raw.dicerolleffect);
-
         button = findViewById(R.id.rollDices);
 
         Intent extras = getIntent();
@@ -115,17 +115,13 @@ public class MainActivity extends AppCompatActivity {
                 isMute = !isMute;
 
                 if(isMute) {
-
                     volumeIcon.setImageResource(R.drawable.mute);
                     mp.setVolume(0,0);
-
                 }
                 else{
                     isMute=false;
                     volumeIcon.setImageResource(R.drawable.volume);
                     mp.setVolume(1,1);
-
-
                 }
 
             }
@@ -141,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
                                               public void onAnimationStart(Animation animation) {
                                                   mp.start();
                                                   button.setVisibility(View.INVISIBLE);
-
                                               }
 
                                               @Override
@@ -182,108 +177,13 @@ public class MainActivity extends AppCompatActivity {
                                                           }
                                                       }
                                                       if (numberOfRoll - counter1 == 0) {
-
-                                                          if (sum1 > sum2) {
-
-                                                              TastyToast.makeText(getApplicationContext(), "KAZANDIN!", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
-                                                              afterMatch(secondCountryFlag);
-                                                              throwKonfetti(konfettiView1);
-
-                                                              changeTrack(1);
-
-                                                              new Handler().postDelayed(new Runnable() {
-                                                                  @Override
-                                                                  public void run() {
-                                                                      endGame();
-
-
-
-                                                                  }
-                                                              }, 8000);
-                                                          } else if (sum2 > sum1) {
-
-                                                              TastyToast.makeText(getApplicationContext(), "İKİ ZARA 80LİK OLDUN!", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
-                                                              afterMatch(firstCountryFlag);
-                                                              setBW(firstCountryFlag);
-
-                                                                  changeTrack(2);
-
-
-                                                              new Handler().postDelayed(new Runnable() {
-                                                                  @Override
-                                                                  public void run() {
-                                                                      endGame();
-
-                                                                  }
-                                                              }, 4000);
-                                                          } else {
-                                                              if (bonusPoints1 > bonusPoints2) {
-
-                                                                  TastyToast.makeText(getApplicationContext(), "KAZANDIN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
-                                                                  afterMatch(secondCountryFlag);
-                                                                  throwKonfetti(konfettiView1);
-
-                                                                      changeTrack(1);
-
-                                                                  new Handler().postDelayed(new Runnable() {
-                                                                      @Override
-                                                                      public void run() {
-                                                                          endGame();
-
-                                                                      }
-                                                                  }, 8000);
-                                                              } else if (bonusPoints2 > bonusPoints1) {
-
-
-                                                                  TastyToast.makeText(MainActivity.this, "İKİ ZARA 80LİK OLDUN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
-                                                                  afterMatch(firstCountryFlag);
-                                                                  changeTrack(2);
-
-                                                                  new Handler().postDelayed(new Runnable() {
-                                                                      @Override
-                                                                      public void run() {
-                                                                         endGame();
-                                                                      }
-                                                                  }, 4000);
-                                                              } else {
-                                                                  tieBreakRoll[0] = randomDiceValue();
-                                                                  tieBreakRoll[1] = randomDiceValue();
-                                                                  if (tieBreakRoll[0] == tieBreakRoll[1]) {
-
-                                                                      TastyToast.makeText(MainActivity.this, "KAZANDIN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Atış: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
-                                                                      afterMatch(secondCountryFlag);
-                                                                      throwKonfetti(konfettiView1);
-
-                                                                          changeTrack(1);
-
-                                                                      new Handler().postDelayed(new Runnable() {
-                                                                          @Override
-                                                                          public void run() {
-                                                                              endGame();
-
-                                                                          }
-                                                                      }, 8000);
-                                                                  } else {
-
-                                                                      TastyToast.makeText(MainActivity.this, "İKİ ZARA 80LİK OLDUN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Atış: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
-                                                                      afterMatch(firstCountryFlag);
-                                                                      changeTrack(2);
-
-                                                                      new Handler().postDelayed(new Runnable() {
-                                                                          @Override
-                                                                          public void run() {
-                                                                              endGame();
-                                                                          }
-                                                                      }, 4000);
-
-
-                                                                  }
-
-                                                              }
-
-                                                          }
+                                                          assessResult();
                                                           button.setVisibility(View.INVISIBLE);
-                                                      } else {
+                                                      }
+                                                      else if(numberOfRoll - counter1 == 1 && (sum1 - sum2 >= 6 || sum2 - sum1 >= 6)){
+                                                          assessResult();
+                                                      }
+                                                      else {
                                                           button.setVisibility(View.VISIBLE);
                                                       }
 
@@ -302,7 +202,6 @@ public class MainActivity extends AppCompatActivity {
 
                                           };
 
-
                                           anim1.setAnimationListener(animationListener);
                                           anim2.setAnimationListener(animationListener);
 
@@ -315,17 +214,11 @@ public class MainActivity extends AppCompatActivity {
 
                                   }
         );
-
-
-
     }
-
-
 
     private void setBW(ImageView iv) {
 
-        float brightness = 10; // change values to suite your need
-
+        float brightness = 10;
         float[] colorMatrix = {
                 0.33f, 0.33f, 0.33f, 0, brightness,
                 0.33f, 0.33f, 0.33f, 0, brightness,
@@ -364,8 +257,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         mp.start();
-
-
     }
 
     private void endGame() {
@@ -374,21 +265,119 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void afterMatch(ImageView imageView) {
-
-
         remainingRoll.setVisibility(View.INVISIBLE);
         singleRollDiceResultFirstCountry.setVisibility(View.INVISIBLE);
         singleRollDiceResultSecondCountry.setVisibility(View.INVISIBLE);
         setBW(imageView);
+    }
+
+    private void assessResult(){
+        if (sum1 > sum2) {
+
+            TastyToast.makeText(getApplicationContext(), "KAZANDIN!", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+            afterMatch(secondCountryFlag);
+            throwKonfetti(konfettiView1);
+
+            changeTrack(1);
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    endGame();
 
 
+
+                }
+            }, 8000);
+        } else if (sum2 > sum1) {
+
+            TastyToast.makeText(getApplicationContext(), "İKİ ZARA 80LİK OLDUN!", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+            afterMatch(firstCountryFlag);
+            setBW(firstCountryFlag);
+
+            changeTrack(2);
+
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    endGame();
+
+                }
+            }, 4000);
+        } else {
+            if (bonusPoints1 > bonusPoints2) {
+
+                TastyToast.makeText(getApplicationContext(), "KAZANDIN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+                afterMatch(secondCountryFlag);
+                throwKonfetti(konfettiView1);
+
+                changeTrack(1);
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        endGame();
+
+                    }
+                }, 8000);
+            } else if (bonusPoints2 > bonusPoints1) {
+
+
+                TastyToast.makeText(MainActivity.this, "İKİ ZARA 80LİK OLDUN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+                afterMatch(firstCountryFlag);
+                changeTrack(2);
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        endGame();
+                    }
+                }, 4000);
+            } else {
+                tieBreakRoll[0] = randomDiceValue();
+                tieBreakRoll[1] = randomDiceValue();
+                if (tieBreakRoll[0] == tieBreakRoll[1]) {
+
+                    TastyToast.makeText(MainActivity.this, "KAZANDIN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Atış: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+                    afterMatch(secondCountryFlag);
+                    throwKonfetti(konfettiView1);
+
+                    changeTrack(1);
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            endGame();
+
+                        }
+                    }, 8000);
+                } else {
+
+                    TastyToast.makeText(MainActivity.this, "İKİ ZARA 80LİK OLDUN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Atış: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+                    afterMatch(firstCountryFlag);
+                    changeTrack(2);
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            endGame();
+                        }
+                    }, 4000);
+
+
+                }
+
+            }
+
+        }
     }
 
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(this, StartActivity.class);
         startActivity(intent);
-        super.onBackPressed();  // optional depending on your needs
+        super.onBackPressed();
     }
 
 
