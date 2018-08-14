@@ -79,8 +79,6 @@ public class MainActivity extends AppCompatActivity {
         final ImageView volumeIcon = findViewById(imageView6);
         konfettiView1 = findViewById(R.id.konfettiView);
 
-
-
         mp = MediaPlayer.create(this, R.raw.dicerolleffect);
         button = findViewById(R.id.rollDices);
 
@@ -94,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
         Uri uri2 = Uri.parse(imageUrl2);
 
         firstCountry.setText(firstCountryName);
-
 
         Picasso.with(getApplicationContext()).load(uri1).networkPolicy(NetworkPolicy.OFFLINE).resize(400, 267)
                 .error(R.drawable.rollingdices)
@@ -269,16 +266,12 @@ public class MainActivity extends AppCompatActivity {
             TastyToast.makeText(getApplicationContext(), "YOU WIN!", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
             afterMatch(secondCountryFlag);
             throwKonfetti(konfettiView1);
-
             changeTrack(1);
 
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     endGame();
-
-
-
                 }
             }, 8000);
         } else if (sum2 > sum1) {
@@ -286,7 +279,6 @@ public class MainActivity extends AppCompatActivity {
             TastyToast.makeText(getApplicationContext(), "YOU LOSE!", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
             afterMatch(firstCountryFlag);
             setBW(firstCountryFlag);
-
             changeTrack(2);
 
 
@@ -294,7 +286,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     endGame();
-
                 }
             }, 4000);
         } else {
@@ -303,7 +294,6 @@ public class MainActivity extends AppCompatActivity {
                 TastyToast.makeText(getApplicationContext(), "YOU WIN!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                 afterMatch(secondCountryFlag);
                 throwKonfetti(konfettiView1);
-
                 changeTrack(1);
 
                 new Handler().postDelayed(new Runnable() {
@@ -334,14 +324,12 @@ public class MainActivity extends AppCompatActivity {
                     TastyToast.makeText(MainActivity.this, "YOU WIN!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Roll: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                     afterMatch(secondCountryFlag);
                     throwKonfetti(konfettiView1);
-
                     changeTrack(1);
 
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             endGame();
-
                         }
                     }, 8000);
                 } else {
