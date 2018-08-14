@@ -36,17 +36,13 @@ import static com.cfindikli.apps.rollingCountries.R.id.imageView6;
 public class MainActivity extends AppCompatActivity {
     private static final Random RANDOM = new Random();
     private final int numberOfRoll = 5;
-    private int sum1, sum2 = 0;
     private int[] tieBreakRoll = new int[2];
-    private int counter1,counter2 = 0;
     private boolean isMute = false;
-    private int bonusPoints1,bonusPoints2 = 0;
-    private int currentDiceRollFirstCountry,currentDiceRollSecondCountry = 0;
+    private int currentDiceRollFirstCountry,currentDiceRollSecondCountry,bonusPoints1,bonusPoints2,sum1,sum2,counter1,counter2= 0;
     private Button button;
     private TextView remainingRoll;
     private KonfettiView konfettiView1;
-    private ImageView singleRollDiceResultFirstCountry,singleRollDiceResultSecondCountry;
-    private ImageView firstCountryFlag,secondCountryFlag = null;
+    private ImageView singleRollDiceResultFirstCountry,singleRollDiceResultSecondCountry,firstCountryFlag,secondCountryFlag;
     private MediaPlayer mp;
     final int[] song = {R.raw.dicerolleffect,R.raw.queenwearethechampions,R.raw.whawha};
 
@@ -157,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
                                                           }
                                                       }
 
-
                                                   } else if (animation == anim2) {
                                                       if (counter2 < numberOfRoll) {
                                                           singleRollDiceResultSecondCountry.setImageResource(res1);
@@ -262,7 +257,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void assessResult(){
         if (sum1 > sum2) {
-
             TastyToast.makeText(getApplicationContext(), "YOU WIN!", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
             afterMatch(secondCountryFlag);
             throwKonfetti(konfettiView1);
@@ -275,7 +269,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }, 8000);
         } else if (sum2 > sum1) {
-
             TastyToast.makeText(getApplicationContext(), "YOU LOSE!", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
             afterMatch(firstCountryFlag);
             setBW(firstCountryFlag);
@@ -290,7 +283,6 @@ public class MainActivity extends AppCompatActivity {
             }, 4000);
         } else {
             if (bonusPoints1 > bonusPoints2) {
-
                 TastyToast.makeText(getApplicationContext(), "YOU WIN!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                 afterMatch(secondCountryFlag);
                 throwKonfetti(konfettiView1);
@@ -304,8 +296,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }, 8000);
             } else if (bonusPoints2 > bonusPoints1) {
-
-
                 TastyToast.makeText(MainActivity.this, "YOU LOSE!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                 afterMatch(firstCountryFlag);
                 changeTrack(2);
@@ -359,7 +349,5 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         super.onBackPressed();
     }
-
-
 }
 
