@@ -19,7 +19,7 @@ android {
     compileSdkVersion 28
     buildToolsVersion '28.0.2'
     defaultConfig {
-        applicationId "com.example.caglarfindikli.springforandroidexample"
+        applicationId "com.cfindikli.app.rollingCountries"
         minSdkVersion 24
         targetSdkVersion 28
         versionCode 1
