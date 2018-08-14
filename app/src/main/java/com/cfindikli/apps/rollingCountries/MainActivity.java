@@ -155,8 +155,8 @@ public class MainActivity extends AppCompatActivity {
                                                   currentDiceRollFirstCountry = randomDiceValue();
                                                   currentDiceRollSecondCountry = randomDiceValue();
 
-                                                  int res = getResources().getIdentifier("dice_" + currentDiceRollFirstCountry, "drawable", "com.example.caglarfindikli.springforandroidexample");
-                                                  int res1 = getResources().getIdentifier("dice_" + currentDiceRollSecondCountry, "drawable", "com.example.caglarfindikli.springforandroidexample");
+                                                  int res = getResources().getIdentifier("dice_" + currentDiceRollFirstCountry, "drawable", getPackageName());
+                                                  int res1 = getResources().getIdentifier("dice_" + currentDiceRollSecondCountry, "drawable", getPackageName());
 
                                                   if (animation == anim1) {
                                                       if (counter1 < numberOfRoll) {
@@ -192,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
                                                           if (sum1 > sum2) {
 
                                                               TastyToast.makeText(getApplicationContext(), "KAZANDIN!", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
-
                                                               afterMatch(secondCountryFlag);
                                                               throwKonfetti(konfettiView1);
 
@@ -244,7 +243,6 @@ public class MainActivity extends AppCompatActivity {
 
                                                                   TastyToast.makeText(MainActivity.this, "İKİ ZARA 80LİK OLDUN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                                                                   afterMatch(firstCountryFlag);
-
                                                                   changeTrack(2);
 
                                                                   new Handler().postDelayed(new Runnable() {

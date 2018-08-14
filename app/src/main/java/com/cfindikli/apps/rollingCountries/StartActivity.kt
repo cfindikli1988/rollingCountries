@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_start.*
-import org.springframework.http.converter.StringHttpMessageConverter
 import org.springframework.web.client.RestTemplate
 import java.util.*
 
@@ -21,7 +20,7 @@ class StartActivity : AppCompatActivity() {
     private var pStatus = 0
     var uri1: Uri? = null
     var uri2: Uri? = null
-    val url = "http://country.io/names.json"
+    private val url = "http://country.io/names.json"
     private val handler = Handler()
 
 
@@ -46,14 +45,12 @@ class StartActivity : AppCompatActivity() {
         setContentView(R.layout.activity_start)
 
 
-
-
         firstCountryFlag.visibility = View.INVISIBLE
         secondCountryFlag.visibility = View.INVISIBLE
         firstCountryText.visibility = View.INVISIBLE
         secondCountryText.visibility = View.INVISIBLE
 
-        fetchJson().execute(url)
+        FetchJson().execute(url)
 
         Thread(Runnable {
 
@@ -83,41 +80,24 @@ class StartActivity : AppCompatActivity() {
     }
 
     @SuppressLint("StaticFieldLeak")
-    inner class fetchJson : AsyncTask<String, Void, Array<out Any>?>() {
+    inner class FetchJson : AsyncTask<String, Void, Array<out Any>?>() {
         override fun doInBackground(vararg params: String): Array<out Any>? {
             val restTemplate = RestTemplate()
-
-
-            val response =  restTemplate.getForObject(params[0], Map::class.java).entries.stream().toArray()
+            val response = restTemplate.getForObject(params[0], Map::class.java).entries.stream().toArray()
             val firstCountry = response!![randomCountry()].toString().split("=")
             val secondCountry = response[randomCountry()].toString().split("=")
-            return arrayOf(firstCountry.first(),firstCountry.last(),secondCountry.first(),secondCountry.last())
+            return arrayOf(firstCountry.first(), firstCountry.last(), secondCountry.first(), secondCountry.last())
         }
 
 
         override fun onPostExecute(result: Array<out Any>?) {
 
-            println(result!!.first().toString())
 
             uri1 = getFlag(result!!.first().toString().toLowerCase())
-            firstCountryName = result!![1].toString()
-            uri2 = getFlag(result!![2].toString().toLowerCase())
-            secondCountryName = result!!.last().toString()
-
-
-            firstCountryText.text = firstCountryName
-
-            Picasso.with(this@StartActivity).load(uri1)
-                    .resize(400, 267).error(R.drawable.rollingdices)
-                    .into(firstCountryFlag)
-
-
-
-            secondCountryText.text = secondCountryName
-
-            Picasso.with(this@StartActivity).load(uri2)
-                    .resize(400, 267)
-                    .error(R.drawable.rollingdices).into(secondCountryFlag)
+            firstCountryName = result[1].toString()
+            uri2 = getFlag(result[2].toString().toLowerCase())
+            secondCountryName = result.last().toString()
+            setUIComponents(uri1!!, uri2!!, firstCountryName, secondCountryName)
 
         }
     }
@@ -134,6 +114,23 @@ class StartActivity : AppCompatActivity() {
     }
 
 
+    private fun setUIComponents(uri1: Uri, uri2: Uri, firstCountryName: String, secondCountryName: String) {
+
+
+        firstCountryText.text = firstCountryName
+
+        Picasso.with(this@StartActivity).load(uri1)
+                .resize(400, 267).error(R.drawable.rollingdices)
+                .into(firstCountryFlag)
+
+
+
+        secondCountryText.text = secondCountryName
+
+        Picasso.with(this@StartActivity).load(uri2)
+                .resize(400, 267)
+                .error(R.drawable.rollingdices).into(secondCountryFlag)
+    }
 
 
 }
