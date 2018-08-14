@@ -55,9 +55,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private static android.net.Uri getFlag(String shortCode) {
-
         final String uri = "http://flagpedia.net/data/flags/normal/" + shortCode + ".png";
         return Uri.parse(uri);
     }
@@ -183,23 +181,21 @@ public class MainActivity extends AppCompatActivity {
                                                       else if(numberOfRoll - counter1 == 1 && (sum1 - sum2 >= 6 || sum2 - sum1 >= 6)){
                                                           assessResult();
                                                       }
+                                                      else if(numberOfRoll - counter1 == 2 && (sum1 - sum2 >= 11 || sum2 - sum1 >= 11)){
+                                                          assessResult();
+                                                      }
                                                       else {
                                                           button.setVisibility(View.VISIBLE);
                                                       }
-
                                                   }
 
                                                   remainingRoll.setText(getResources().getString(R.string.text_remaining_roll) + String.valueOf(numberOfRoll - counter1));
-
-
                                               }
 
                                               @Override
                                               public void onAnimationRepeat(Animation animation) {
 
                                               }
-
-
                                           };
 
                                           anim1.setAnimationListener(animationListener);
@@ -207,11 +203,7 @@ public class MainActivity extends AppCompatActivity {
 
                                           singleRollDiceResultFirstCountry.startAnimation(anim1);
                                           singleRollDiceResultSecondCountry.startAnimation(anim2);
-
-
                                       }
-
-
                                   }
         );
     }
@@ -274,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
     private void assessResult(){
         if (sum1 > sum2) {
 
-            TastyToast.makeText(getApplicationContext(), "KAZANDIN!", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+            TastyToast.makeText(getApplicationContext(), "YOU WIN!", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
             afterMatch(secondCountryFlag);
             throwKonfetti(konfettiView1);
 
@@ -291,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
             }, 8000);
         } else if (sum2 > sum1) {
 
-            TastyToast.makeText(getApplicationContext(), "İKİ ZARA 80LİK OLDUN!", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+            TastyToast.makeText(getApplicationContext(), "YOU LOSE!", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
             afterMatch(firstCountryFlag);
             setBW(firstCountryFlag);
 
@@ -308,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             if (bonusPoints1 > bonusPoints2) {
 
-                TastyToast.makeText(getApplicationContext(), "KAZANDIN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+                TastyToast.makeText(getApplicationContext(), "YOU WIN!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                 afterMatch(secondCountryFlag);
                 throwKonfetti(konfettiView1);
 
@@ -324,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (bonusPoints2 > bonusPoints1) {
 
 
-                TastyToast.makeText(MainActivity.this, "İKİ ZARA 80LİK OLDUN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+                TastyToast.makeText(MainActivity.this, "YOU LOSE!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                 afterMatch(firstCountryFlag);
                 changeTrack(2);
 
@@ -339,7 +331,7 @@ public class MainActivity extends AppCompatActivity {
                 tieBreakRoll[1] = randomDiceValue();
                 if (tieBreakRoll[0] == tieBreakRoll[1]) {
 
-                    TastyToast.makeText(MainActivity.this, "KAZANDIN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Atış: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+                    TastyToast.makeText(MainActivity.this, "YOU WIN!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Roll: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                     afterMatch(secondCountryFlag);
                     throwKonfetti(konfettiView1);
 
@@ -354,7 +346,7 @@ public class MainActivity extends AppCompatActivity {
                     }, 8000);
                 } else {
 
-                    TastyToast.makeText(MainActivity.this, "İKİ ZARA 80LİK OLDUN\n" + "Avg: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Atış: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+                    TastyToast.makeText(MainActivity.this, "YOU LOSE!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Roll: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                     afterMatch(firstCountryFlag);
                     changeTrack(2);
 
