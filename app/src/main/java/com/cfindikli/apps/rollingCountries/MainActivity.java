@@ -36,21 +36,16 @@ import static com.cfindikli.apps.rollingCountries.R.id.imageView6;
 public class MainActivity extends AppCompatActivity {
     private static final Random RANDOM = new Random();
     private final int numberOfRoll = 5;
-    private int sum1 = 0;
-    private int sum2 = 0;
+    private int sum1, sum2 = 0;
     private int[] tieBreakRoll = new int[2];
-    private int counter1 = 0;
-    private int counter2 = 0;
+    private int counter1,counter2 = 0;
     private boolean isMute = false;
-    private int bonusPoints1 = 0;
-    private int bonusPoints2 = 0;
-    private int currentDiceRollFirstCountry = 0;
-    private int currentDiceRollSecondCountry = 0;
+    private int bonusPoints1,bonusPoints2 = 0;
+    private int currentDiceRollFirstCountry,currentDiceRollSecondCountry = 0;
     private Button button;
     private TextView remainingRoll;
     private KonfettiView konfettiView1;
-    private ImageView singleRollDiceResultFirstCountry;
-    private ImageView singleRollDiceResultSecondCountry;
+    private ImageView singleRollDiceResultFirstCountry,singleRollDiceResultSecondCountry;
     private MediaPlayer mp;
     final int[] song = {R.raw.dicerolleffect,R.raw.queenwearethechampions,R.raw.whawha};
 
@@ -63,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
     private static android.net.Uri getFlag(String shortCode) {
 
         final String uri = "http://flagpedia.net/data/flags/normal/" + shortCode + ".png";
-
         return Uri.parse(uri);
     }
 

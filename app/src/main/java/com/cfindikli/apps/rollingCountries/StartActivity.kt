@@ -56,7 +56,7 @@ class StartActivity : AppCompatActivity() {
 
             while (pStatus < 100) {
 
-                pStatus += 3
+                pStatus += 2
 
                 handler.post {
                     google_progress.progress = pStatus
