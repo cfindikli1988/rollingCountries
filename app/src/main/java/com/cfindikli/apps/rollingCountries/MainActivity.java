@@ -1,11 +1,14 @@
 package com.cfindikli.apps.rollingCountries;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.ColorMatrixColorFilter;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -245,7 +248,30 @@ public class MainActivity extends AppCompatActivity {
 
     private void endGame() {
         mp.stop();
-        recreate();
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+        builder1.setMessage("What would you like to do next?");
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "Change Both Teams",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        onBackPressed();
+                        dialog.cancel();
+                    }
+                });
+
+        builder1.setNegativeButton(
+                "Keep Both Teams",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        recreate();
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
     }
 
     private void afterMatch(ImageView imageView) {
@@ -266,8 +292,10 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     endGame();
+
                 }
             }, 8000);
+
         } else if (sum2 > sum1) {
             TastyToast.makeText(getApplicationContext(), "YOU LOSE!", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
             afterMatch(firstCountryFlag);
@@ -281,6 +309,7 @@ public class MainActivity extends AppCompatActivity {
                     endGame();
                 }
             }, 4000);
+
         } else {
             if (bonusPoints1 > bonusPoints2) {
                 TastyToast.makeText(getApplicationContext(), "YOU WIN!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
