@@ -50,7 +50,8 @@
         android:layout_height="80dp"
         android:layout_alignTop="@+id/linearLayout"
         android:layout_toStartOf="@+id/rollDices"
-        android:src="@drawable/dice_2" />
+        android:src="@drawable/dice_2"
+        android:contentDescription="TODO" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -94,7 +95,7 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/firstCountry"
+        android:id="@+id/textView10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -135,7 +136,8 @@
         android:layout_below="@+id/textView2"
         android:layout_toStartOf="@+id/linearLayout"
         android:layout_marginTop="80dp"
-        android:layout_marginStart="50dp"/>
+        android:layout_marginStart="50dp"
+        android:contentDescription="TODO" />
 
 
     <ImageView
@@ -149,7 +151,8 @@
         android:layout_alignTop="@+id/imageView"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="50dp"
-        android:layout_above="@+id/textView10" />
+        android:layout_above="@+id/textView10"
+        android:contentDescription="TODO" />
 
     <TextView
         android:id="@+id/textView3"
@@ -170,7 +173,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginEnd="17dp"
         android:layout_marginTop="17dp"
-        android:src="@drawable/volume" />
+        android:src="@drawable/volume"
+        android:contentDescription="TODO" />
 
 
 </RelativeLayout>
