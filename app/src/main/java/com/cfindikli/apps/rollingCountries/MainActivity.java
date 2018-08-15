@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.media.MediaPlayer;
@@ -41,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private static final Random RANDOM = new Random();
     final int[] song = {R.raw.dicerolleffect, R.raw.queenwearethechampions, R.raw.whawha};
     final private int numberOfRoll = 5;
+    TextView firstCountryResult;
+    TextView secondCountryResult;
     private int[] tieBreakRoll = new int[2];
     private boolean isMute = false;
     private int currentDiceRollFirstCountry, currentDiceRollSecondCountry, bonusPoints1, bonusPoints2, sum1, sum2, counter1, counter2 = 0;
@@ -50,11 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private KonfettiView konfettiView1;
     private ImageView singleRollDiceResultFirstCountry, singleRollDiceResultSecondCountry, firstCountryFlag, secondCountryFlag;
     private MediaPlayer mp;
-    private Uri uri1;
-    private Uri uri2;
-    TextView firstCountryResult;
-    TextView secondCountryResult;
-    private boolean hasComputerWon;
+    private Uri uri1,uri2;
+
 
     private static int randomDiceValue() {
         return RANDOM.nextInt(6) + 1;
@@ -301,7 +299,6 @@ public class MainActivity extends AppCompatActivity {
     private void assessResult() {
         if (sum1 > sum2) {
             aggregateFirstCountry++;
-            hasComputerWon = false;
             TastyToast.makeText(getApplicationContext(), "YOU WIN!", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
             afterMatch(secondCountryFlag);
             throwKonfetti(konfettiView1);
@@ -316,7 +313,6 @@ public class MainActivity extends AppCompatActivity {
             }, 8000);
 
         } else if (sum2 > sum1) {
-            hasComputerWon = true;
             aggregateSecondCountry++;
             TastyToast.makeText(getApplicationContext(), "YOU LOSE!", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
             afterMatch(firstCountryFlag);
@@ -333,7 +329,6 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
             if (bonusPoints1 > bonusPoints2) {
-                hasComputerWon = false;
                 aggregateFirstCountry++;
                 TastyToast.makeText(getApplicationContext(), "YOU WIN!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                 afterMatch(secondCountryFlag);
@@ -348,7 +343,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }, 8000);
             } else if (bonusPoints2 > bonusPoints1) {
-                hasComputerWon = true;
                 aggregateSecondCountry++;
                 TastyToast.makeText(MainActivity.this, "YOU LOSE!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                 afterMatch(firstCountryFlag);
@@ -364,7 +358,6 @@ public class MainActivity extends AppCompatActivity {
                 tieBreakRoll[0] = randomDiceValue();
                 tieBreakRoll[1] = randomDiceValue();
                 if (tieBreakRoll[0] == tieBreakRoll[1]) {
-                    hasComputerWon = false;
                     aggregateFirstCountry++;
                     TastyToast.makeText(MainActivity.this, "YOU WIN!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Roll: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                     afterMatch(secondCountryFlag);
@@ -378,7 +371,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }, 8000);
                 } else {
-                    hasComputerWon = true;
                     aggregateSecondCountry++;
                     TastyToast.makeText(MainActivity.this, "YOU LOSE!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Roll: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                     afterMatch(firstCountryFlag);
