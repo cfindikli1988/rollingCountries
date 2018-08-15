@@ -1,14 +1,15 @@
 package com.cfindikli.apps.rollingCountries;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -38,28 +39,29 @@ import static com.cfindikli.apps.rollingCountries.R.id.imageView6;
 
 public class MainActivity extends AppCompatActivity {
     private static final Random RANDOM = new Random();
-    private final int numberOfRoll = 5;
+    final int[] song = {R.raw.dicerolleffect, R.raw.queenwearethechampions, R.raw.whawha};
+    final private int numberOfRoll = 5;
     private int[] tieBreakRoll = new int[2];
     private boolean isMute = false;
-    private int currentDiceRollFirstCountry,currentDiceRollSecondCountry,bonusPoints1,bonusPoints2,sum1,sum2,counter1,counter2= 0;
+    private int currentDiceRollFirstCountry, currentDiceRollSecondCountry, bonusPoints1, bonusPoints2, sum1, sum2, counter1, counter2 = 0;
+    private int aggregateFirstCountry, aggregateSecondCountry = 0;
     private Button button;
-    private TextView remainingRoll;
+    private TextView remainingRoll, aggregate;
     private KonfettiView konfettiView1;
-    private ImageView singleRollDiceResultFirstCountry,singleRollDiceResultSecondCountry,firstCountryFlag,secondCountryFlag;
+    private ImageView singleRollDiceResultFirstCountry, singleRollDiceResultSecondCountry, firstCountryFlag, secondCountryFlag;
     private MediaPlayer mp;
-    final int[] song = {R.raw.dicerolleffect,R.raw.queenwearethechampions,R.raw.whawha};
+    private Uri uri1;
+    private Uri uri2;
+    TextView firstCountryResult;
+    TextView secondCountryResult;
+    private boolean hasComputerWon;
 
     private static int randomDiceValue() {
         return RANDOM.nextInt(6) + 1;
     }
 
 
-    private static android.net.Uri getFlag(String shortCode) {
-        final String uri = "http://flagpedia.net/data/flags/normal/" + shortCode + ".png";
-        return Uri.parse(uri);
-    }
-
-
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,9 +69,11 @@ public class MainActivity extends AppCompatActivity {
         final TextView firstCountry =
                 findViewById(R.id.textView10);
         final TextView secondCountry = findViewById(R.id.textView11);
-        final TextView firstCountryResult = findViewById(R.id.textView2);
-        final TextView secondCountryResult = findViewById(R.id.textView4);
+        firstCountryResult = findViewById(R.id.textView2);
+        secondCountryResult = findViewById(R.id.textView4);
         remainingRoll = findViewById(R.id.textView3);
+        aggregate = findViewById(R.id.textView5);
+        aggregate.setVisibility(View.INVISIBLE);
         remainingRoll.setText(getResources().getString(R.string.text_remaining_roll) + numberOfRoll);
         singleRollDiceResultFirstCountry = findViewById(R.id.imageView1);
         singleRollDiceResultSecondCountry = findViewById(R.id.imageView2);
@@ -84,11 +88,11 @@ public class MainActivity extends AppCompatActivity {
         Intent extras = getIntent();
         String imageUrl1 = extras.getStringExtra("uri1");
         String firstCountryName = extras.getStringExtra("firstCountryName");
-        Uri uri1 = Uri.parse(imageUrl1);
+        uri1 = Uri.parse(imageUrl1);
 
         String imageUrl2 = extras.getStringExtra("uri2");
         String secondCountryName = extras.getStringExtra("secondCountryName");
-        Uri uri2 = Uri.parse(imageUrl2);
+        uri2 = Uri.parse(imageUrl2);
 
         firstCountry.setText(firstCountryName);
 
@@ -108,14 +112,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 isMute = !isMute;
 
-                if(isMute) {
+                if (isMute) {
                     volumeIcon.setImageResource(R.drawable.mute);
-                    mp.setVolume(0,0);
-                }
-                else{
-                    isMute=false;
+                    mp.setVolume(0, 0);
+                } else {
+                    isMute = false;
                     volumeIcon.setImageResource(R.drawable.volume);
-                    mp.setVolume(1,1);
+                    mp.setVolume(1, 1);
                 }
 
             }
@@ -138,12 +141,12 @@ public class MainActivity extends AppCompatActivity {
                                                   currentDiceRollFirstCountry = randomDiceValue();
                                                   currentDiceRollSecondCountry = randomDiceValue();
 
-                                                  int res = getResources().getIdentifier("dice_" + currentDiceRollFirstCountry, "drawable", getPackageName());
-                                                  int res1 = getResources().getIdentifier("dice_" + currentDiceRollSecondCountry, "drawable", getPackageName());
+                                                  int firstDice = getResources().getIdentifier("dice_" + currentDiceRollFirstCountry, "drawable", getPackageName());
+                                                  int secondDice = getResources().getIdentifier("dice_" + currentDiceRollSecondCountry, "drawable", getPackageName());
 
                                                   if (animation == anim1) {
                                                       if (counter1 < numberOfRoll) {
-                                                          singleRollDiceResultFirstCountry.setImageResource(res);
+                                                          singleRollDiceResultFirstCountry.setImageResource(firstDice);
 
                                                           sum1 += currentDiceRollFirstCountry;
                                                           firstCountryResult.setText(String.valueOf(sum1));
@@ -158,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
                                                   } else if (animation == anim2) {
                                                       if (counter2 < numberOfRoll) {
-                                                          singleRollDiceResultSecondCountry.setImageResource(res1);
+                                                          singleRollDiceResultSecondCountry.setImageResource(secondDice);
                                                           sum2 += currentDiceRollSecondCountry;
                                                           secondCountryResult.setText(String.valueOf(sum2));
                                                           counter2++;
@@ -172,16 +175,11 @@ public class MainActivity extends AppCompatActivity {
                                                       if (numberOfRoll - counter1 == 0) {
                                                           assessResult();
                                                           button.setVisibility(View.INVISIBLE);
-                                                      }
-                                                      else if(numberOfRoll - counter1 == 1 && (sum1 - sum2 >= 6 || sum2 - sum1 >= 6)){
+                                                      } else if (numberOfRoll - counter1 == 1 && (sum1 - sum2 >= 6 || sum2 - sum1 >= 6)) {
                                                           assessResult();
-                                                      }
-                                                      else if(numberOfRoll - counter1 == 2 && (sum1 - sum2 >= 11 || sum2 - sum1 >= 11)){
+                                                      } else if (numberOfRoll - counter1 == 2 && (sum1 - sum2 >= 11 || sum2 - sum1 >= 11)) {
                                                           assessResult();
-                                                      }
-                                                      else {
-                                                          button.setVisibility(View.VISIBLE);
-                                                      }
+                                                      } else button.setVisibility(View.VISIBLE);
                                                   }
 
                                                   remainingRoll.setText(getResources().getString(R.string.text_remaining_roll) + String.valueOf(numberOfRoll - counter1));
@@ -203,19 +201,15 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    private void setBW(ImageView iv) {
+    private void setBW(ImageView iv, Float isUnfiltered) {
 
-        float brightness = 10;
-        float[] colorMatrix = {
-                0.33f, 0.33f, 0.33f, 0, brightness,
-                0.33f, 0.33f, 0.33f, 0, brightness,
-                0.33f, 0.33f, 0.33f, 0, brightness,
-                0, 0, 0, 1, 0
-        };
+        ColorMatrix matrix = new ColorMatrix();
+        matrix.setSaturation(isUnfiltered);
 
-        ColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
-        iv.setColorFilter(colorFilter);
+        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+        iv.setColorFilter(filter);
     }
+
 
     private void throwKonfetti(KonfettiView konfettiView) {
         konfettiView.build()
@@ -230,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
                 .streamFor(600, 5000L);
     }
 
-    private void changeTrack(int position)  {
+    private void changeTrack(int position) {
         mp.stop();
         mp.reset();
         try {
@@ -246,8 +240,9 @@ public class MainActivity extends AppCompatActivity {
         mp.start();
     }
 
-    private void endGame() {
+    private void endGame(ImageView imageview) {
         mp.stop();
+        setBW(imageview, 1F);
         AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
         builder1.setMessage("What would you like to do next?");
         builder1.setCancelable(true);
@@ -265,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
                 "Keep Both Teams",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        recreate();
+                        rematch();
                         dialog.cancel();
                     }
                 });
@@ -276,13 +271,37 @@ public class MainActivity extends AppCompatActivity {
 
     private void afterMatch(ImageView imageView) {
         remainingRoll.setVisibility(View.INVISIBLE);
+
         singleRollDiceResultFirstCountry.setVisibility(View.INVISIBLE);
         singleRollDiceResultSecondCountry.setVisibility(View.INVISIBLE);
-        setBW(imageView);
+
+        setBW(imageView, 0F);
+
     }
 
-    private void assessResult(){
+
+    private void rematch() {
+
+
+        aggregate.setVisibility(View.VISIBLE);
+        button.setVisibility(View.VISIBLE);
+        remainingRoll.setVisibility(View.VISIBLE);
+        remainingRoll.setText(getResources().getString(R.string.text_remaining_roll) + numberOfRoll);
+        singleRollDiceResultFirstCountry.setVisibility(View.VISIBLE);
+        singleRollDiceResultSecondCountry.setVisibility(View.VISIBLE);
+        sum1 = 0;
+        sum2 = 0;
+        counter1 = 0;
+        counter2 = 0;
+        firstCountryResult.setText(String.valueOf(sum1));
+        secondCountryResult.setText(String.valueOf(sum2));
+        aggregate.setText(getResources().getString(R.string.text_aggregate) + aggregateFirstCountry + "-" + aggregateSecondCountry);
+    }
+
+    private void assessResult() {
         if (sum1 > sum2) {
+            aggregateFirstCountry++;
+            hasComputerWon = false;
             TastyToast.makeText(getApplicationContext(), "YOU WIN!", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
             afterMatch(secondCountryFlag);
             throwKonfetti(konfettiView1);
@@ -291,27 +310,31 @@ public class MainActivity extends AppCompatActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    endGame();
+                    endGame(secondCountryFlag);
 
                 }
             }, 8000);
 
         } else if (sum2 > sum1) {
+            hasComputerWon = true;
+            aggregateSecondCountry++;
             TastyToast.makeText(getApplicationContext(), "YOU LOSE!", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
             afterMatch(firstCountryFlag);
-            setBW(firstCountryFlag);
+            setBW(firstCountryFlag, 0F);
             changeTrack(2);
 
 
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    endGame();
+                    endGame(firstCountryFlag);
                 }
             }, 4000);
 
         } else {
             if (bonusPoints1 > bonusPoints2) {
+                hasComputerWon = false;
+                aggregateFirstCountry++;
                 TastyToast.makeText(getApplicationContext(), "YOU WIN!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                 afterMatch(secondCountryFlag);
                 throwKonfetti(konfettiView1);
@@ -320,11 +343,13 @@ public class MainActivity extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        endGame();
+                        endGame(secondCountryFlag);
 
                     }
                 }, 8000);
             } else if (bonusPoints2 > bonusPoints1) {
+                hasComputerWon = true;
+                aggregateSecondCountry++;
                 TastyToast.makeText(MainActivity.this, "YOU LOSE!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                 afterMatch(firstCountryFlag);
                 changeTrack(2);
@@ -332,14 +357,15 @@ public class MainActivity extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        endGame();
+                        endGame(firstCountryFlag);
                     }
                 }, 4000);
             } else {
                 tieBreakRoll[0] = randomDiceValue();
                 tieBreakRoll[1] = randomDiceValue();
                 if (tieBreakRoll[0] == tieBreakRoll[1]) {
-
+                    hasComputerWon = false;
+                    aggregateFirstCountry++;
                     TastyToast.makeText(MainActivity.this, "YOU WIN!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Roll: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                     afterMatch(secondCountryFlag);
                     throwKonfetti(konfettiView1);
@@ -348,11 +374,12 @@ public class MainActivity extends AppCompatActivity {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            endGame();
+                            endGame(secondCountryFlag);
                         }
                     }, 8000);
                 } else {
-
+                    hasComputerWon = true;
+                    aggregateSecondCountry++;
                     TastyToast.makeText(MainActivity.this, "YOU LOSE!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Roll: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                     afterMatch(firstCountryFlag);
                     changeTrack(2);
@@ -360,7 +387,7 @@ public class MainActivity extends AppCompatActivity {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            endGame();
+                            endGame(firstCountryFlag);
                         }
                     }, 4000);
 
