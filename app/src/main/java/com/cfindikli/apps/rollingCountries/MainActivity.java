@@ -374,10 +374,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void afterMatch(ImageView imageView) {
         remainingRoll.setVisibility(View.INVISIBLE);
-
+        aggregate.setVisibility(View.VISIBLE);
+        aggregate.setText(getResources().getString(R.string.text_aggregate) + aggregateFirstCountry + "-" + aggregateSecondCountry);
         singleRollDiceResultFirstCountry.setVisibility(View.INVISIBLE);
         singleRollDiceResultSecondCountry.setVisibility(View.INVISIBLE);
-
         setBW(imageView, 0F);
 
     }
@@ -387,7 +387,7 @@ public class MainActivity extends AppCompatActivity {
     private void rematch() {
 
 
-        aggregate.setVisibility(View.VISIBLE);
+
         button.setVisibility(View.VISIBLE);
         remainingRoll.setVisibility(View.VISIBLE);
         remainingRoll.setText(getResources().getString(R.string.text_remaining_roll) + numberOfRoll);
@@ -396,12 +396,17 @@ public class MainActivity extends AppCompatActivity {
         sum1 = 0;
         sum2 = 0;
         counter1 = 0;
+        bonusPoints1=0;
+        bonusPoints2=0;
         counter2 = 0;
         firstCountryResult.setText(String.valueOf(sum1));
         secondCountryResult.setText(String.valueOf(sum2));
-        aggregate.setText(getResources().getString(R.string.text_aggregate) + aggregateFirstCountry + "-" + aggregateSecondCountry);
+
+
         singleRollDiceResultFirstCountry.setImageResource(2131165275);
         singleRollDiceResultSecondCountry.setImageResource(2131165275);
+        singleRollDiceResultFirstCountry.setVisibility(View.INVISIBLE);
+        singleRollDiceResultSecondCountry.setVisibility(View.INVISIBLE);
 
 
     }

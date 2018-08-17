@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SpringForAndroidExample</string>
+    <string name="app_name">Rolling Countries</string>
     <string name="text_goodluck">0</string>
     <string name="text_you">1P</string>
     <string name="text_opponent">COM</string>
