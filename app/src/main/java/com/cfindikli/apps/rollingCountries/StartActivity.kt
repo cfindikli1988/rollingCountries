@@ -20,6 +20,8 @@ class StartActivity : AppCompatActivity() {
     private var pStatus = 0
     var uri1: Uri? = null
     var uri2: Uri? = null
+    var shortCode1: String = "";
+    var shortCode2: String = "";
     private val url = "http://country.io/names.json"
     private val handler = Handler()
 
@@ -92,10 +94,11 @@ class StartActivity : AppCompatActivity() {
 
         override fun onPostExecute(result: Array<out Any>?) {
 
-
-            uri1 = getFlag(result!!.first().toString().toLowerCase())
+            shortCode1=result!!.first().toString().toLowerCase()
+            shortCode2=result[2].toString().toLowerCase()
+            uri1 = getFlag(shortCode1)
             firstCountryName = result[1].toString()
-            uri2 = getFlag(result[2].toString().toLowerCase())
+            uri2 = getFlag(shortCode2)
             secondCountryName = result.last().toString()
             setUIComponents(uri1!!, uri2!!, firstCountryName, secondCountryName)
 
@@ -108,6 +111,8 @@ class StartActivity : AppCompatActivity() {
         val i = Intent(this, MainActivity::class.java)
         i.putExtra("uri1", uri1.toString())
         i.putExtra("uri2", uri2.toString())
+        i.putExtra("shortCode1", shortCode1)
+        i.putExtra("shortCode2", shortCode2)
         i.putExtra("firstCountryName", firstCountryName)
         i.putExtra("secondCountryName", secondCountryName)
         startActivity(i)

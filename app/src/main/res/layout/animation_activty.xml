@@ -50,7 +50,7 @@
         android:layout_height="80dp"
         android:layout_alignTop="@+id/linearLayout"
         android:layout_toStartOf="@+id/rollDices"
-        android:src="@drawable/dice_2"
+        android:src="@drawable/dice_6"
         android:contentDescription="TODO" />
 
     <ImageView
@@ -62,7 +62,7 @@
         android:adjustViewBounds="true"
         android:contentDescription=""
         android:cropToPadding="true"
-        android:src="@drawable/dice_4"
+        android:src="@drawable/dice_6"
         tools:ignore="ContentDescription" />
 
     <TextView
