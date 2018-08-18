@@ -1,46 +1,25 @@
 package com.cfindikli.apps.rollingCountries
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_start.*
-import org.springframework.web.client.RestTemplate
-import java.util.*
 
 @Suppress("DEPRECATION")
 class StartActivity : AppCompatActivity() {
-    private val random = Random()
+
 
     private var pStatus = 0
-    var uri1: Uri? = null
-    var uri2: Uri? = null
-    var shortCode1: String = "";
-    var shortCode2: String = "";
+    private var uri1: Uri? = null
+    private var uri2: Uri? = null
     private val url = "http://country.io/names.json"
+    private lateinit var fetchValues: Array<out Any>
     private val handler = Handler()
 
-
-    fun randomCountry(): Int {
-        return random.nextInt(250) + 1
-    }
-
-
-    private fun getFlag(shortCode: String?): android.net.Uri {
-
-        val uri = "http://flagpedia.net/data/flags/normal/$shortCode.png"
-
-        return Uri.parse(uri)
-    }
-
-
-    private var firstCountryName: String = ""
-    private var secondCountryName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +31,13 @@ class StartActivity : AppCompatActivity() {
         firstCountryText.visibility = View.INVISIBLE
         secondCountryText.visibility = View.INVISIBLE
 
-        FetchJson().execute(url)
+        fetchValues = Utils().FetchJson().execute(url).get()!!
+
+        uri1 = Utils.getFlag(fetchValues[0].toString())
+        uri2 = Utils.getFlag(fetchValues[2].toString())
+
+        setUIComponents(uri1!!, uri2!!, fetchValues[1].toString(), fetchValues[3].toString())
+
 
         Thread(Runnable {
 
@@ -78,47 +63,22 @@ class StartActivity : AppCompatActivity() {
 
     }
 
-    @SuppressLint("StaticFieldLeak")
-    inner class FetchJson : AsyncTask<String, Void, Array<out Any>?>() {
-        override fun doInBackground(vararg params: String): Array<out Any>? {
-            val restTemplate = RestTemplate()
-            val response = restTemplate.getForObject(params[0], Map::class.java).entries.stream().toArray()
-            val firstCountry = response!![randomCountry()].toString().split("=")
-            val secondCountry = response[randomCountry()].toString().split("=")
-            return arrayOf(firstCountry.first(), firstCountry.last(), secondCountry.first(), secondCountry.last())
-        }
-
-
-        override fun onPostExecute(result: Array<out Any>?) {
-            shortCode1=result!!.first().toString().toLowerCase()
-            shortCode2=result[2].toString().toLowerCase()
-            uri1 = getFlag(shortCode1)
-            firstCountryName = result[1].toString()
-            uri2 = getFlag(shortCode2)
-            secondCountryName = result.last().toString()
-            setUIComponents(uri1!!, uri2!!, firstCountryName, secondCountryName)
-
-        }
-    }
-
 
     private fun switchToMainActivity() {
         val i = Intent(this, MainActivity::class.java)
         i.putExtra("uri1", uri1.toString())
         i.putExtra("uri2", uri2.toString())
-        i.putExtra("shortCode1", shortCode1)
-        i.putExtra("shortCode2", shortCode2)
-        i.putExtra("firstCountryName", firstCountryName)
-        i.putExtra("secondCountryName", secondCountryName)
+        i.putExtra("shortCode1", fetchValues.first().toString())
+        i.putExtra("shortCode2", fetchValues[2].toString())
+        i.putExtra("firstCountryName", fetchValues[1].toString())
+        i.putExtra("secondCountryName", fetchValues.last().toString())
         startActivity(i)
     }
 
 
     private fun setUIComponents(uri1: Uri, uri2: Uri, firstCountryName: String, secondCountryName: String) {
 
-
         firstCountryText.text = firstCountryName
-
         Picasso.with(this@StartActivity).load(uri1)
                 .resize(400, 267).error(R.drawable.rollingdices)
                 .into(firstCountryFlag)

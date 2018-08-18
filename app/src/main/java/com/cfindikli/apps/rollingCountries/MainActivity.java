@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         firstCountry =
                 findViewById(R.id.textView10);
         secondCountry = findViewById(R.id.textView11);
+
         firstCountryResult = findViewById(R.id.textView2);
         secondCountryResult = findViewById(R.id.textView4);
         remainingRoll = findViewById(R.id.textView3);
@@ -113,8 +114,9 @@ public class MainActivity extends AppCompatActivity {
         shortCode1 = getResources().getIdentifier("flag_" + FirstCountryShortCode, "drawable", getPackageName());
         shortCode2 = getResources().getIdentifier("flag_" + SecondCountryShortCode, "drawable", getPackageName());
 
-        setUI();
 
+
+        setUI();
 
         volumeIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,10 +215,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void setUI() {
+     void setUI() {
 
 
-        if (checkURL(imageUrl1) && checkURL(imageUrl2)) {
+        if (Utils.Companion.checkURL(imageUrl1) && Utils.Companion.checkURL(imageUrl2)) {
 
             firstCountry.setText(firstCountryName);
 
@@ -231,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
                     .into(secondCountryFlag);
 
 
-        } else if (!checkURL(imageUrl1) && checkURL(imageUrl2)) {
+        } else if (!Utils.Companion.checkURL(imageUrl1) && Utils.Companion.checkURL(imageUrl2)) {
 
 
             firstCountry.setText(firstCountryName);
@@ -247,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
                     .into(secondCountryFlag);
 
 
-        } else if (checkURL(imageUrl1) && !checkURL(imageUrl2)) {
+        } else if (Utils.Companion.checkURL(imageUrl1) && !Utils.Companion.checkURL(imageUrl2)) {
 
             firstCountry.setText(firstCountryName);
 
@@ -281,22 +283,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkURL(String urlString) {
-        try {
-            URL url = new URL(urlString);
-            HttpURLConnection urlConnection = (HttpURLConnection) url
-                    .openConnection();
-            int responseCode = urlConnection.getResponseCode();
-            urlConnection.disconnect();
-            return (responseCode == 200) ? true : false;
-        } catch (MalformedURLException e){
-            e.printStackTrace();
-            return false;
-        } catch (IOException | NetworkOnMainThreadException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 
 
     private void setBW(ImageView iv, Float isUnfiltered) {
