@@ -72,10 +72,7 @@ class StartActivity : AppCompatActivity() {
                 }
 
             }
-
             switchToMainActivity()
-
-
         }).start()
 
 
@@ -93,7 +90,6 @@ class StartActivity : AppCompatActivity() {
 
 
         override fun onPostExecute(result: Array<out Any>?) {
-
             shortCode1=result!!.first().toString().toLowerCase()
             shortCode2=result[2].toString().toLowerCase()
             uri1 = getFlag(shortCode1)
@@ -107,7 +103,6 @@ class StartActivity : AppCompatActivity() {
 
 
     private fun switchToMainActivity() {
-
         val i = Intent(this, MainActivity::class.java)
         i.putExtra("uri1", uri1.toString())
         i.putExtra("uri2", uri2.toString())
@@ -127,8 +122,6 @@ class StartActivity : AppCompatActivity() {
         Picasso.with(this@StartActivity).load(uri1)
                 .resize(400, 267).error(R.drawable.rollingdices)
                 .into(firstCountryFlag)
-
-
 
         secondCountryText.text = secondCountryName
 

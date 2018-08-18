@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView singleRollDiceResultFirstCountry, singleRollDiceResultSecondCountry, firstCountryFlag, secondCountryFlag;
     private MediaPlayer mp;
     private Uri uri1, uri2;
-    private String prefix = "flag_";
     private String FirstCountryShortCode;
     private String SecondCountryShortCode;
     private String imageUrl1;
@@ -154,8 +153,6 @@ public class MainActivity extends AppCompatActivity {
                                                   currentDiceRollSecondCountry = randomDiceValue();
 
                                                   int firstDice = getResources().getIdentifier("dice_" + currentDiceRollFirstCountry, "drawable", getPackageName());
-                                                  int test = getResources().getIdentifier("dice_6", "drawable", getPackageName());
-                                                  System.out.println(test);
                                                   int secondDice = getResources().getIdentifier("dice_" + currentDiceRollSecondCountry, "drawable", getPackageName());
 
                                                   if (animation == anim1) {
@@ -219,10 +216,9 @@ public class MainActivity extends AppCompatActivity {
     private void setUI() {
 
 
-        if (checkURL(imageUrl1) == true && checkURL(imageUrl2) == true) {
+        if (checkURL(imageUrl1) && checkURL(imageUrl2)) {
 
             firstCountry.setText(firstCountryName);
-
 
             Picasso.with(getApplicationContext()).load(uri1).networkPolicy(NetworkPolicy.OFFLINE).resize(400, 267).error(R.drawable.rollingdices)
                     .into(firstCountryFlag);
@@ -235,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
                     .into(secondCountryFlag);
 
 
-        } else if (checkURL(imageUrl1) == false && checkURL(imageUrl2) == true) {
+        } else if (!checkURL(imageUrl1) && checkURL(imageUrl2)) {
 
 
             firstCountry.setText(firstCountryName);
@@ -251,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
                     .into(secondCountryFlag);
 
 
-        } else if (checkURL(imageUrl1) == true && checkURL(imageUrl2) == false) {
+        } else if (checkURL(imageUrl1) && !checkURL(imageUrl2)) {
 
             firstCountry.setText(firstCountryName);
 
@@ -292,9 +288,8 @@ public class MainActivity extends AppCompatActivity {
                     .openConnection();
             int responseCode = urlConnection.getResponseCode();
             urlConnection.disconnect();
-            boolean isValid = (responseCode == 200) ? true : false;
-            return isValid;
-        } catch (MalformedURLException e) {
+            return (responseCode == 200) ? true : false;
+        } catch (MalformedURLException e){
             e.printStackTrace();
             return false;
         } catch (IOException | NetworkOnMainThreadException e) {
@@ -305,10 +300,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setBW(ImageView iv, Float isUnfiltered) {
-
         ColorMatrix matrix = new ColorMatrix();
         matrix.setSaturation(isUnfiltered);
-
         ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
         iv.setColorFilter(filter);
     }
@@ -376,18 +369,14 @@ public class MainActivity extends AppCompatActivity {
         remainingRoll.setVisibility(View.INVISIBLE);
         aggregate.setVisibility(View.VISIBLE);
         aggregate.setText(getResources().getString(R.string.text_aggregate) + aggregateFirstCountry + "-" + aggregateSecondCountry);
-        singleRollDiceResultFirstCountry.setVisibility(View.INVISIBLE);
-        singleRollDiceResultSecondCountry.setVisibility(View.INVISIBLE);
         setBW(imageView, 0F);
 
     }
 
 
 
+    @SuppressLint("ResourceType")
     private void rematch() {
-
-
-
         button.setVisibility(View.VISIBLE);
         remainingRoll.setVisibility(View.VISIBLE);
         remainingRoll.setText(getResources().getString(R.string.text_remaining_roll) + numberOfRoll);
@@ -401,20 +390,17 @@ public class MainActivity extends AppCompatActivity {
         counter2 = 0;
         firstCountryResult.setText(String.valueOf(sum1));
         secondCountryResult.setText(String.valueOf(sum2));
-
-
-        singleRollDiceResultFirstCountry.setImageResource(2131165275);
-        singleRollDiceResultSecondCountry.setImageResource(2131165275);
+        singleRollDiceResultFirstCountry.setImageResource(R.drawable.dice_6);
+        singleRollDiceResultSecondCountry.setImageResource(R.drawable.dice_6);
         singleRollDiceResultFirstCountry.setVisibility(View.INVISIBLE);
         singleRollDiceResultSecondCountry.setVisibility(View.INVISIBLE);
-
-
     }
 
     private void assessResult() {
-        if (sum1 > sum2) {
-            assessHeavyDefeat();
+        if (sum1 > sum2)
+        {
 
+            aggregateFirstCountry = sum1 - sum2 >= 11 ? aggregateFirstCountry += 2 : ++aggregateFirstCountry;
             TastyToast.makeText(getApplicationContext(), "YOU WIN!", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
             afterMatch(secondCountryFlag);
             throwKonfetti(konfettiView1);
@@ -430,7 +416,7 @@ public class MainActivity extends AppCompatActivity {
 
         } else if (sum2 > sum1) {
 
-            assessHeavyDefeat();
+            aggregateSecondCountry = sum2 - sum1 >= 11 ? aggregateSecondCountry += 2 : ++aggregateSecondCountry;
             TastyToast.makeText(getApplicationContext(), "YOU LOSE!", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
             afterMatch(firstCountryFlag);
             setBW(firstCountryFlag, 0F);
@@ -508,25 +494,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void assessHeavyDefeat()
-    {
-        if(sum1-sum2>=11 ){
-            aggregateFirstCountry+=2;
 
-        }
-        else if(sum2-sum1 >= 11){
-
-            aggregateSecondCountry+=2;
-
-        }
-        else if(sum1>sum2)
-        {
-            aggregateFirstCountry++;
-        }
-        else{
-            aggregateSecondCountry++;
-        }
-    }
 
     @Override
     public void onBackPressed() {
