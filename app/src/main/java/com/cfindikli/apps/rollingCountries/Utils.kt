@@ -19,9 +19,9 @@ class Utils {
 
         override fun doInBackground(vararg params: String): Array<out Any>? {
             val restTemplate = RestTemplate()
-            val response = restTemplate.getForObject(params[0], Map::class.java).entries.stream().toArray()
+            response = restTemplate.getForObject(params[0], Map::class.java).entries.stream().toArray()
             val firstCountry = response!![randomCountry()].toString().split("=")
-            val secondCountry = response[randomCountry()].toString().split("=")
+            val secondCountry = response!![randomCountry()].toString().split("=")
             return arrayOf((firstCountry.first().toString().toLowerCase()), firstCountry.last(), secondCountry.first().toString().toLowerCase(), secondCountry.last())
         }
 
@@ -30,26 +30,9 @@ class Utils {
     companion object {
 
 
-        fun checkURL(urlString: String): Boolean {
-            try {
-                val url = URL(urlString)
-                val urlConnection = url
-                        .openConnection() as HttpURLConnection
-                val responseCode = urlConnection.responseCode
-                urlConnection.disconnect()
-                return responseCode == 200
-            } catch (e: MalformedURLException) {
-                e.printStackTrace()
-                return false
-            } catch (e: IOException) {
-                e.printStackTrace()
-                return false
-            } catch (e: NetworkOnMainThreadException) {
-                e.printStackTrace()
-                return false
-            }
+        var response: Array<out Any>? = null
 
-        }
+        const val url = "http://country.io/names.json"
 
         fun randomCountry(): Int {
             return Random().nextInt(250) + 1

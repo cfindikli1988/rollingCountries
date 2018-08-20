@@ -11,7 +11,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.NetworkOnMainThreadException;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
@@ -22,13 +21,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sdsmdg.tastytoast.TastyToast;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.Random;
 
 import nl.dionsegijn.konfetti.KonfettiView;
@@ -66,7 +64,9 @@ public class MainActivity extends AppCompatActivity {
     private String SecondCountryShortCode;
     private String imageUrl1;
     private String imageUrl2;
-
+    private boolean isChangeMyTeamSelected = false;
+    private Integer firstFlag;
+    String[] reselected;
     private static int randomDiceValue() {
         return RANDOM.nextInt(6) + 1;
     }
@@ -98,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
 
         mp = MediaPlayer.create(this, R.raw.dicerolleffect);
         button = findViewById(R.id.rollDices);
-
         Intent extras = getIntent();
         imageUrl1 = extras.getStringExtra("uri1");
         firstCountryName = extras.getStringExtra("firstCountryName");
@@ -113,7 +112,6 @@ public class MainActivity extends AppCompatActivity {
 
         shortCode1 = getResources().getIdentifier("flag_" + FirstCountryShortCode, "drawable", getPackageName());
         shortCode2 = getResources().getIdentifier("flag_" + SecondCountryShortCode, "drawable", getPackageName());
-
 
 
         setUI();
@@ -143,8 +141,9 @@ public class MainActivity extends AppCompatActivity {
                                           final Animation.AnimationListener animationListener = new Animation.AnimationListener() {
                                               @Override
                                               public void onAnimationStart(Animation animation) {
-                                                  mp.start();
+                                                  //mp.start();
                                                   button.setVisibility(View.INVISIBLE);
+                                                  changeTrack(0);
                                                   singleRollDiceResultFirstCountry.setVisibility(View.VISIBLE);
                                                   singleRollDiceResultSecondCountry.setVisibility(View.VISIBLE);
                                               }
@@ -215,74 +214,54 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-     void setUI() {
+    void setUI() {
+
+        Picasso.with(getApplicationContext()).load(uri1).resize(400, 267)
+                .into(firstCountryFlag, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        firstCountry.setText(firstCountryName);
+
+                    }
+
+                    @Override
+                    public void onError() {
+
+                        firstCountry.setText(firstCountryName);
+
+                        firstFlag = getResources().getIdentifier("flag_" + FirstCountryShortCode, "drawable", getPackageName());
+
+                        firstCountryFlag.setImageResource(firstFlag);
 
 
-        if (Utils.Companion.checkURL(imageUrl1) && Utils.Companion.checkURL(imageUrl2)) {
+                    }
+                });
 
-            firstCountry.setText(firstCountryName);
+        Picasso.with(getApplicationContext()).load(uri2).networkPolicy(NetworkPolicy.OFFLINE).resize(400, 267)
+                .into(secondCountryFlag, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        secondCountry.setText(secondCountryName);
 
-            Picasso.with(getApplicationContext()).load(uri1).networkPolicy(NetworkPolicy.OFFLINE).resize(400, 267).error(R.drawable.rollingdices)
-                    .into(firstCountryFlag);
+                    }
 
+                    @Override
+                    public void onError() {
 
-            secondCountry.setText(secondCountryName);
-
-
-            Picasso.with(getApplicationContext()).load(uri2).networkPolicy(NetworkPolicy.OFFLINE).resize(400, 267).error(R.drawable.rollingdices)
-                    .into(secondCountryFlag);
-
-
-        } else if (!Utils.Companion.checkURL(imageUrl1) && Utils.Companion.checkURL(imageUrl2)) {
-
-
-            firstCountry.setText(firstCountryName);
-
-            Integer firstFlag = getResources().getIdentifier("flag_" + FirstCountryShortCode, "drawable", getPackageName());
-
-            firstCountryFlag.setImageResource(firstFlag);
-
-            secondCountry.setText(secondCountryName);
+                        secondCountry.setText(secondCountryName);
 
 
-            Picasso.with(getApplicationContext()).load(uri2).networkPolicy(NetworkPolicy.OFFLINE).resize(400, 267).error(R.drawable.rollingdices)
-                    .into(secondCountryFlag);
+                        Integer secondFlag = getResources().getIdentifier("flag_" + SecondCountryShortCode, "drawable", getPackageName());
+
+                        secondCountryFlag.setImageResource(secondFlag);
 
 
-        } else if (Utils.Companion.checkURL(imageUrl1) && !Utils.Companion.checkURL(imageUrl2)) {
+                    }
+                });
 
-            firstCountry.setText(firstCountryName);
-
-
-            Picasso.with(getApplicationContext()).load(uri1).networkPolicy(NetworkPolicy.OFFLINE).resize(400, 267).error(R.drawable.rollingdices)
-                    .into(firstCountryFlag);
-
-            secondCountry.setText(secondCountryName);
-
-
-            Integer secondFlag = getResources().getIdentifier("flag_" + SecondCountryShortCode, "drawable", getPackageName());
-
-            secondCountryFlag.setImageResource(secondFlag);
-
-        } else {
-
-            firstCountry.setText(firstCountryName);
-
-            Integer firstFlag = getResources().getIdentifier("flag_" + FirstCountryShortCode, "drawable", getPackageName());
-
-            firstCountryFlag.setImageResource(firstFlag);
-
-            secondCountry.setText(secondCountryName);
-
-            Integer secondFlag = getResources().getIdentifier("flag_" + SecondCountryShortCode, "drawable", getPackageName());
-
-            secondCountryFlag.setImageResource(secondFlag);
-
-        }
 
 
     }
-
 
 
     private void setBW(ImageView iv, Float isUnfiltered) {
@@ -327,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
         setBW(imageview, 1F);
         AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
         builder1.setMessage("What would you like to do next?");
-        builder1.setCancelable(true);
+        builder1.setCancelable(false);
 
         builder1.setPositiveButton(
                 "Change Both Teams",
@@ -346,6 +325,14 @@ public class MainActivity extends AppCompatActivity {
                         dialog.cancel();
                     }
                 });
+        builder1.setNeutralButton("Change My Team Only", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                isChangeMyTeamSelected = true;
+                rematch();
+                dialog.cancel();
+
+            }
+        });
 
         AlertDialog alert11 = builder1.create();
         alert11.show();
@@ -356,13 +343,35 @@ public class MainActivity extends AppCompatActivity {
         aggregate.setVisibility(View.VISIBLE);
         aggregate.setText(getResources().getString(R.string.text_aggregate) + aggregateFirstCountry + "-" + aggregateSecondCountry);
         setBW(imageView, 0F);
-
     }
 
+
+    private String[] reselect(){
+        return reselected = Utils.Companion.getResponse()[Utils.Companion.randomCountry()].toString().split("=");
+    }
 
 
     @SuppressLint("ResourceType")
     private void rematch() {
+        if (isChangeMyTeamSelected == true) {
+
+
+            while(reselect()[1]==firstCountryName){
+                reselect();
+            }
+
+            firstCountryName = reselected[1];
+            FirstCountryShortCode = reselected[0].toLowerCase();
+            imageUrl1 = String.valueOf(Utils.Companion.getFlag(FirstCountryShortCode));
+            uri1 = Uri.parse(imageUrl1);
+            setUI();
+            aggregateFirstCountry = 0;
+            aggregateSecondCountry = 0;
+            aggregate.setVisibility(View.INVISIBLE);
+            isChangeMyTeamSelected = false;
+
+        }
+
         button.setVisibility(View.VISIBLE);
         remainingRoll.setVisibility(View.VISIBLE);
         remainingRoll.setText(getResources().getString(R.string.text_remaining_roll) + numberOfRoll);
@@ -371,8 +380,8 @@ public class MainActivity extends AppCompatActivity {
         sum1 = 0;
         sum2 = 0;
         counter1 = 0;
-        bonusPoints1=0;
-        bonusPoints2=0;
+        bonusPoints1 = 0;
+        bonusPoints2 = 0;
         counter2 = 0;
         firstCountryResult.setText(String.valueOf(sum1));
         secondCountryResult.setText(String.valueOf(sum2));
@@ -383,8 +392,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void assessResult() {
-        if (sum1 > sum2)
-        {
+        if (sum1 > sum2) {
 
             aggregateFirstCountry = sum1 - sum2 >= 11 ? aggregateFirstCountry += 2 : ++aggregateFirstCountry;
             TastyToast.makeText(getApplicationContext(), "YOU WIN!", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
@@ -479,7 +487,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
 
 
     @Override

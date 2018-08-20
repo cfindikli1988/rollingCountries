@@ -16,7 +16,7 @@ class StartActivity : AppCompatActivity() {
     private var pStatus = 0
     private var uri1: Uri? = null
     private var uri2: Uri? = null
-    private val url = "http://country.io/names.json"
+
     private lateinit var fetchValues: Array<out Any>
     private val handler = Handler()
 
@@ -31,7 +31,7 @@ class StartActivity : AppCompatActivity() {
         firstCountryText.visibility = View.INVISIBLE
         secondCountryText.visibility = View.INVISIBLE
 
-        fetchValues = Utils().FetchJson().execute(url).get()!!
+        fetchValues = Utils().FetchJson().execute(Utils.url).get()!!
 
         uri1 = Utils.getFlag(fetchValues[0].toString())
         uri2 = Utils.getFlag(fetchValues[2].toString())
