@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,8 +25,10 @@ import com.sdsmdg.tastytoast.TastyToast;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+import com.squareup.seismic.ShakeDetector;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Random;
 
 import nl.dionsegijn.konfetti.KonfettiView;
@@ -37,7 +40,7 @@ import static com.cfindikli.apps.rollingCountries.R.id.imageView5;
 import static com.cfindikli.apps.rollingCountries.R.id.imageView6;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ShakeDetector.Listener{
     private static final Random RANDOM = new Random();
     final int[] song = {R.raw.dicerolleffect, R.raw.queenwearethechampions, R.raw.whawha};
     final private int numberOfRoll = 5;
@@ -77,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.animation_activty);
+        SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        ShakeDetector shakeDetector = new ShakeDetector(this);
+        shakeDetector.start(sensorManager);
+
         firstCountry =
                 findViewById(R.id.textView10);
         secondCountry = findViewById(R.id.textView11);
@@ -136,84 +143,89 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
                                       public void onClick(View v) {
 
-                                          final Animation anim1 = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
-                                          final Animation anim2 = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
-                                          final Animation.AnimationListener animationListener = new Animation.AnimationListener() {
-                                              @Override
-                                              public void onAnimationStart(Animation animation) {
-                                                  //mp.start();
-                                                  button.setVisibility(View.INVISIBLE);
-                                                  changeTrack(0);
-                                                  singleRollDiceResultFirstCountry.setVisibility(View.VISIBLE);
-                                                  singleRollDiceResultSecondCountry.setVisibility(View.VISIBLE);
-                                              }
+                                          rollDice();
 
-                                              @Override
-                                              public void onAnimationEnd(Animation animation) {
-                                                  currentDiceRollFirstCountry = randomDiceValue();
-                                                  currentDiceRollSecondCountry = randomDiceValue();
-
-                                                  int firstDice = getResources().getIdentifier("dice_" + currentDiceRollFirstCountry, "drawable", getPackageName());
-                                                  int secondDice = getResources().getIdentifier("dice_" + currentDiceRollSecondCountry, "drawable", getPackageName());
-
-                                                  if (animation == anim1) {
-                                                      if (counter1 < numberOfRoll) {
-                                                          singleRollDiceResultFirstCountry.setImageResource(firstDice);
-
-                                                          sum1 += currentDiceRollFirstCountry;
-                                                          firstCountryResult.setText(String.valueOf(sum1));
-                                                          counter1++;
-                                                          if (currentDiceRollFirstCountry == 6) {
-                                                              bonusPoints1++;
-                                                          }
-                                                          if (currentDiceRollFirstCountry == 1) {
-                                                              bonusPoints1--;
-                                                          }
-                                                      }
-
-                                                  } else if (animation == anim2) {
-                                                      if (counter2 < numberOfRoll) {
-                                                          singleRollDiceResultSecondCountry.setImageResource(secondDice);
-                                                          sum2 += currentDiceRollSecondCountry;
-                                                          secondCountryResult.setText(String.valueOf(sum2));
-                                                          counter2++;
-                                                          if (currentDiceRollSecondCountry == 6) {
-                                                              bonusPoints2++;
-                                                          }
-                                                          if (currentDiceRollSecondCountry == 1) {
-                                                              bonusPoints2--;
-                                                          }
-                                                      }
-                                                      if (numberOfRoll - counter1 == 0) {
-                                                          assessResult();
-                                                          button.setVisibility(View.INVISIBLE);
-                                                      } else if (numberOfRoll - counter1 == 1 && (sum1 - sum2 >= 6 || sum2 - sum1 >= 6)) {
-                                                          assessResult();
-                                                      } else if (numberOfRoll - counter1 == 2 && (sum1 - sum2 >= 11 || sum2 - sum1 >= 11)) {
-                                                          assessResult();
-                                                      } else button.setVisibility(View.VISIBLE);
-                                                  }
-
-                                                  remainingRoll.setText(getResources().getString(R.string.text_remaining_roll) + String.valueOf(numberOfRoll - counter1));
-                                              }
-
-                                              @Override
-                                              public void onAnimationRepeat(Animation animation) {
-
-                                              }
-                                          };
-
-                                          anim1.setAnimationListener(animationListener);
-                                          anim2.setAnimationListener(animationListener);
-
-                                          singleRollDiceResultFirstCountry.startAnimation(anim1);
-                                          singleRollDiceResultSecondCountry.startAnimation(anim2);
                                       }
                                   }
         );
     }
 
 
+    void rollDice(){
+        final Animation anim1 = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+        final Animation anim2 = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+        final Animation.AnimationListener animationListener = new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                //mp.start();
+                button.setVisibility(View.INVISIBLE);
+                changeTrack(0);
+                singleRollDiceResultFirstCountry.setVisibility(View.VISIBLE);
+                singleRollDiceResultSecondCountry.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                currentDiceRollFirstCountry = randomDiceValue();
+                currentDiceRollSecondCountry = randomDiceValue();
+
+                int firstDice = getResources().getIdentifier("dice_" + currentDiceRollFirstCountry, "drawable", getPackageName());
+                int secondDice = getResources().getIdentifier("dice_" + currentDiceRollSecondCountry, "drawable", getPackageName());
+
+                if (animation == anim1) {
+                    if (counter1 < numberOfRoll) {
+                        singleRollDiceResultFirstCountry.setImageResource(firstDice);
+
+                        sum1 += currentDiceRollFirstCountry;
+                        firstCountryResult.setText(String.valueOf(sum1));
+                        counter1++;
+                        if (currentDiceRollFirstCountry == 6) {
+                            bonusPoints1++;
+                        }
+                        if (currentDiceRollFirstCountry == 1) {
+                            bonusPoints1--;
+                        }
+                    }
+
+                } else if (animation == anim2) {
+                    if (counter2 < numberOfRoll) {
+                        singleRollDiceResultSecondCountry.setImageResource(secondDice);
+                        sum2 += currentDiceRollSecondCountry;
+                        secondCountryResult.setText(String.valueOf(sum2));
+                        counter2++;
+                        if (currentDiceRollSecondCountry == 6) {
+                            bonusPoints2++;
+                        }
+                        if (currentDiceRollSecondCountry == 1) {
+                            bonusPoints2--;
+                        }
+                    }
+                    if (numberOfRoll - counter1 == 0) {
+                        assessResult();
+                        button.setVisibility(View.INVISIBLE);
+                    } else if (numberOfRoll - counter1 == 1 && (sum1 - sum2 >= 6 || sum2 - sum1 >= 6)) {
+                        assessResult();
+                    } else if (numberOfRoll - counter1 == 2 && (sum1 - sum2 >= 11 || sum2 - sum1 >= 11)) {
+                        assessResult();
+                    } else button.setVisibility(View.VISIBLE);
+                }
+
+                remainingRoll.setText(getResources().getString(R.string.text_remaining_roll) + String.valueOf(numberOfRoll - counter1));
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        };
+
+        anim1.setAnimationListener(animationListener);
+        anim2.setAnimationListener(animationListener);
+
+        singleRollDiceResultFirstCountry.startAnimation(anim1);
+        singleRollDiceResultSecondCountry.startAnimation(anim2);
+
+    }
     void setUI() {
 
         Picasso.with(getApplicationContext()).load(uri1).resize(400, 267)
@@ -353,11 +365,11 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("ResourceType")
     private void rematch() {
-        if (isChangeMyTeamSelected == true) {
+        if (isChangeMyTeamSelected) {
 
             reselect();
 
-            while ((reselected[1] == firstCountryName) || (reselected[1] == secondCountryName)) {
+            while ((Objects.equals(reselected[1], firstCountryName)) || (Objects.equals(reselected[1], secondCountryName))) {
                 reselect();
             }
 
@@ -496,5 +508,17 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         super.onBackPressed();
     }
+
+    @Override
+    public void hearShake() {
+
+     rollDice();
+    }
 }
+
+
+
+
+
+
 
