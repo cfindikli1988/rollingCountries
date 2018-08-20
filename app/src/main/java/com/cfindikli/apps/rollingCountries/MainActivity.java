@@ -26,7 +26,6 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Random;
 
 import nl.dionsegijn.konfetti.KonfettiView;
@@ -50,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     int shortCode2;
     String firstCountryName;
     String secondCountryName;
+    String[] reselected;
     private int[] tieBreakRoll = new int[2];
     private boolean isMute = false;
     private int currentDiceRollFirstCountry, currentDiceRollSecondCountry, bonusPoints1, bonusPoints2, sum1, sum2, counter1, counter2 = 0;
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private String imageUrl2;
     private boolean isChangeMyTeamSelected = false;
     private Integer firstFlag;
-    String[] reselected;
+
     private static int randomDiceValue() {
         return RANDOM.nextInt(6) + 1;
     }
@@ -260,7 +260,6 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
-
     }
 
 
@@ -339,6 +338,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void afterMatch(ImageView imageView) {
+
         remainingRoll.setVisibility(View.INVISIBLE);
         aggregate.setVisibility(View.VISIBLE);
         aggregate.setText(getResources().getString(R.string.text_aggregate) + aggregateFirstCountry + "-" + aggregateSecondCountry);
@@ -346,8 +346,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private String[] reselect(){
-        return reselected = Utils.Companion.getResponse()[Utils.Companion.randomCountry()].toString().split("=");
+    private void reselect() {
+        reselected = Utils.Companion.getResponse()[Utils.Companion.randomCountry()].toString().split("=");
     }
 
 
@@ -355,7 +355,9 @@ public class MainActivity extends AppCompatActivity {
     private void rematch() {
         if (isChangeMyTeamSelected == true) {
 
-            while(reselect()[1]==firstCountryName){
+            reselect();
+
+            while ((reselected[1] == firstCountryName) || (reselected[1] == secondCountryName)) {
                 reselect();
             }
 
