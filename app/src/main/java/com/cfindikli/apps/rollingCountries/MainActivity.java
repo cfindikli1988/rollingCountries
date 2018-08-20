@@ -355,7 +355,6 @@ public class MainActivity extends AppCompatActivity {
     private void rematch() {
         if (isChangeMyTeamSelected == true) {
 
-
             while(reselect()[1]==firstCountryName){
                 reselect();
             }

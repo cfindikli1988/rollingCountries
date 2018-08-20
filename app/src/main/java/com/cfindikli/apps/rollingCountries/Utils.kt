@@ -2,12 +2,7 @@ package com.cfindikli.apps.rollingCountries
 
 import android.net.Uri
 import android.os.AsyncTask
-import android.os.NetworkOnMainThreadException
 import org.springframework.web.client.RestTemplate
-import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.MalformedURLException
-import java.net.URL
 import java.util.*
 
 
