@@ -29,7 +29,7 @@ import com.squareup.seismic.ShakeDetector;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.Random;
+
 
 import nl.dionsegijn.konfetti.KonfettiView;
 import nl.dionsegijn.konfetti.models.Shape;
@@ -40,10 +40,9 @@ import static com.cfindikli.apps.rollingCountries.R.id.imageView5;
 import static com.cfindikli.apps.rollingCountries.R.id.imageView6;
 
 
-public class MainActivity extends AppCompatActivity implements ShakeDetector.Listener{
-    private static final Random RANDOM = new Random();
+public class MainActivity extends AppCompatActivity implements ShakeDetector.Listener {
+
     final int[] song = {R.raw.dicerolleffect, R.raw.queenwearethechampions, R.raw.whawha};
-    final private int numberOfRoll = 5;
     TextView firstCountryResult;
     TextView secondCountryResult;
     TextView firstCountry;
@@ -53,9 +52,10 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
     String firstCountryName;
     String secondCountryName;
     String[] reselected;
+    private int numberOfRoll = 5;
     private int[] tieBreakRoll = new int[2];
     private boolean isMute = false;
-    private int currentDiceRollFirstCountry, currentDiceRollSecondCountry, bonusPoints1, bonusPoints2, sum1, sum2, counter1, counter2 = 0;
+    private int currentDiceRollFirstCountry, currentDiceRollSecondCountry, bonusPoints1, bonusPoints2, sum1, sum2 = 0;
     private int aggregateFirstCountry, aggregateSecondCountry = 0;
     private Button button;
     private TextView remainingRoll, aggregate;
@@ -66,13 +66,10 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
     private String FirstCountryShortCode;
     private String SecondCountryShortCode;
     private String imageUrl1;
-    private String imageUrl2;
     private boolean isChangeMyTeamSelected = false;
     private Integer firstFlag;
-
-    private static int randomDiceValue() {
-        return RANDOM.nextInt(6) + 1;
-    }
+    private ShakeDetector shakeDetector;
+    private SensorManager sensorManager;
 
 
     @SuppressLint("SetTextI18n")
@@ -80,8 +77,8 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.animation_activty);
-        SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        ShakeDetector shakeDetector = new ShakeDetector(this);
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        shakeDetector = new ShakeDetector(this);
         shakeDetector.start(sensorManager);
 
         firstCountry =
@@ -111,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
         FirstCountryShortCode = extras.getStringExtra("shortCode1");
         uri1 = Uri.parse(imageUrl1);
 
-        imageUrl2 = extras.getStringExtra("uri2");
+        String imageUrl2 = extras.getStringExtra("uri2");
         secondCountryName = extras.getStringExtra("secondCountryName");
         SecondCountryShortCode = extras.getStringExtra("shortCode2");
         uri2 = Uri.parse(imageUrl2);
@@ -151,13 +148,15 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
     }
 
 
-    void rollDice(){
+    void rollDice() {
+
+
         final Animation anim1 = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
         final Animation anim2 = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
         final Animation.AnimationListener animationListener = new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                //mp.start();
+
                 button.setVisibility(View.INVISIBLE);
                 changeTrack(0);
                 singleRollDiceResultFirstCountry.setVisibility(View.VISIBLE);
@@ -166,19 +165,17 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                currentDiceRollFirstCountry = randomDiceValue();
-                currentDiceRollSecondCountry = randomDiceValue();
+                currentDiceRollFirstCountry = Utils.Companion.randomDiceValue();
+                currentDiceRollSecondCountry = Utils.Companion.randomDiceValue();
 
                 int firstDice = getResources().getIdentifier("dice_" + currentDiceRollFirstCountry, "drawable", getPackageName());
                 int secondDice = getResources().getIdentifier("dice_" + currentDiceRollSecondCountry, "drawable", getPackageName());
 
                 if (animation == anim1) {
-                    if (counter1 < numberOfRoll) {
+                    if (numberOfRoll != 0) {
                         singleRollDiceResultFirstCountry.setImageResource(firstDice);
-
                         sum1 += currentDiceRollFirstCountry;
                         firstCountryResult.setText(String.valueOf(sum1));
-                        counter1++;
                         if (currentDiceRollFirstCountry == 6) {
                             bonusPoints1++;
                         }
@@ -188,29 +185,31 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
                     }
 
                 } else if (animation == anim2) {
-                    if (counter2 < numberOfRoll) {
+                    if (numberOfRoll != 0) {
                         singleRollDiceResultSecondCountry.setImageResource(secondDice);
                         sum2 += currentDiceRollSecondCountry;
                         secondCountryResult.setText(String.valueOf(sum2));
-                        counter2++;
                         if (currentDiceRollSecondCountry == 6) {
                             bonusPoints2++;
                         }
                         if (currentDiceRollSecondCountry == 1) {
                             bonusPoints2--;
                         }
+                        numberOfRoll--;
                     }
-                    if (numberOfRoll - counter1 == 0) {
+
+                    if (numberOfRoll == 0) {
                         assessResult();
                         button.setVisibility(View.INVISIBLE);
-                    } else if (numberOfRoll - counter1 == 1 && (sum1 - sum2 >= 6 || sum2 - sum1 >= 6)) {
+                    } else if (numberOfRoll == 1 && (sum1 - sum2 >= 6 || sum2 - sum1 >= 6)) {
                         assessResult();
-                    } else if (numberOfRoll - counter1 == 2 && (sum1 - sum2 >= 11 || sum2 - sum1 >= 11)) {
+                    } else if (numberOfRoll == 2 && (sum1 - sum2 >= 11 || sum2 - sum1 >= 11)) {
                         assessResult();
                     } else button.setVisibility(View.VISIBLE);
+
                 }
 
-                remainingRoll.setText(getResources().getString(R.string.text_remaining_roll) + String.valueOf(numberOfRoll - counter1));
+                remainingRoll.setText(getResources().getString(R.string.text_remaining_roll).concat(String.valueOf(numberOfRoll)));
             }
 
             @Override
@@ -226,6 +225,7 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
         singleRollDiceResultSecondCountry.startAnimation(anim2);
 
     }
+
     void setUI() {
 
         Picasso.with(getApplicationContext()).load(uri1).resize(400, 267)
@@ -240,9 +240,7 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
                     public void onError() {
 
                         firstCountry.setText(firstCountryName);
-
                         firstFlag = getResources().getIdentifier("flag_" + FirstCountryShortCode, "drawable", getPackageName());
-
                         firstCountryFlag.setImageResource(firstFlag);
 
 
@@ -261,10 +259,7 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
                     public void onError() {
 
                         secondCountry.setText(secondCountryName);
-
-
                         Integer secondFlag = getResources().getIdentifier("flag_" + SecondCountryShortCode, "drawable", getPackageName());
-
                         secondCountryFlag.setImageResource(secondFlag);
 
 
@@ -353,13 +348,13 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
 
         remainingRoll.setVisibility(View.INVISIBLE);
         aggregate.setVisibility(View.VISIBLE);
-        aggregate.setText(getResources().getString(R.string.text_aggregate) + aggregateFirstCountry + "-" + aggregateSecondCountry);
+        aggregate.setText(getResources().getString(R.string.text_aggregate).concat(String.valueOf(aggregateFirstCountry)).concat("-").concat(String.valueOf(aggregateSecondCountry)));
         setBW(imageView, 0F);
     }
 
 
     private void reselect() {
-        reselected = Utils.Companion.getResponse()[Utils.Companion.randomCountry()].toString().split("=");
+        reselected = Objects.requireNonNull(Utils.Companion.getResponse())[Utils.Companion.randomCountry()].toString().split("=");
     }
 
 
@@ -387,24 +382,28 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
 
         button.setVisibility(View.VISIBLE);
         remainingRoll.setVisibility(View.VISIBLE);
-        remainingRoll.setText(getResources().getString(R.string.text_remaining_roll) + numberOfRoll);
+        numberOfRoll = 5;
+        remainingRoll.setText(getResources().getString(R.string.text_remaining_roll).concat(String.valueOf(numberOfRoll)));
         singleRollDiceResultFirstCountry.setVisibility(View.VISIBLE);
         singleRollDiceResultSecondCountry.setVisibility(View.VISIBLE);
         sum1 = 0;
         sum2 = 0;
-        counter1 = 0;
+
         bonusPoints1 = 0;
         bonusPoints2 = 0;
-        counter2 = 0;
         firstCountryResult.setText(String.valueOf(sum1));
         secondCountryResult.setText(String.valueOf(sum2));
         singleRollDiceResultFirstCountry.setImageResource(R.drawable.dice_6);
         singleRollDiceResultSecondCountry.setImageResource(R.drawable.dice_6);
         singleRollDiceResultFirstCountry.setVisibility(View.INVISIBLE);
         singleRollDiceResultSecondCountry.setVisibility(View.INVISIBLE);
+        shakeDetector.start(sensorManager);
     }
 
     private void assessResult() {
+
+        shakeDetector.stop();
+
         if (sum1 > sum2) {
 
             aggregateFirstCountry = sum1 - sum2 >= 11 ? aggregateFirstCountry += 2 : ++aggregateFirstCountry;
@@ -465,8 +464,8 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
                     }
                 }, 4000);
             } else {
-                tieBreakRoll[0] = randomDiceValue();
-                tieBreakRoll[1] = randomDiceValue();
+                tieBreakRoll[0] = Utils.Companion.randomDiceValue();
+                tieBreakRoll[1] = Utils.Companion.randomDiceValue();
                 if (tieBreakRoll[0] == tieBreakRoll[1]) {
                     aggregateFirstCountry++;
                     TastyToast.makeText(MainActivity.this, "YOU WIN!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Roll: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
@@ -512,7 +511,7 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
     @Override
     public void hearShake() {
 
-     rollDice();
+        rollDice();
     }
 }
 
