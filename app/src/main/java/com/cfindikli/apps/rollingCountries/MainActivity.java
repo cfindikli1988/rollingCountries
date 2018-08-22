@@ -30,7 +30,6 @@ import com.squareup.seismic.ShakeDetector;
 import java.io.IOException;
 import java.util.Objects;
 
-
 import nl.dionsegijn.konfetti.KonfettiView;
 import nl.dionsegijn.konfetti.models.Shape;
 import nl.dionsegijn.konfetti.models.Size;
@@ -47,8 +46,6 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
     TextView secondCountryResult;
     TextView firstCountry;
     TextView secondCountry;
-    int shortCode1;
-    int shortCode2;
     String firstCountryName;
     String secondCountryName;
     String[] reselected;
@@ -57,7 +54,8 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
     private boolean isMute = false;
     private int currentDiceRollFirstCountry, currentDiceRollSecondCountry, bonusPoints1, bonusPoints2, sum1, sum2 = 0;
     private int aggregateFirstCountry, aggregateSecondCountry = 0;
-    private Button button;
+    private Button rollDiceButton;
+    private ImageView volumeIcon;
     private TextView remainingRoll, aggregate;
     private KonfettiView konfettiView1;
     private ImageView singleRollDiceResultFirstCountry, singleRollDiceResultSecondCountry, firstCountryFlag, secondCountryFlag;
@@ -77,32 +75,30 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.animation_activty);
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        shakeDetector = new ShakeDetector(this);
-        shakeDetector.start(sensorManager);
 
-        firstCountry =
-                findViewById(R.id.textView10);
-        secondCountry = findViewById(R.id.textView11);
+        findViewById();
+        adjustUIComponent();
+        initializeMediaPlayer();
+        getIntentExtras(getIntent());
+        setListeners();
+        setUI();
+        initializeShakeDetector();
 
-        firstCountryResult = findViewById(R.id.textView2);
-        secondCountryResult = findViewById(R.id.textView4);
-        remainingRoll = findViewById(R.id.textView3);
-        aggregate = findViewById(R.id.textView5);
+    }
+
+
+    private void initializeMediaPlayer(){
+        mp = MediaPlayer.create(this, R.raw.dicerolleffect);
+    }
+
+
+    void adjustUIComponent(){
         aggregate.setVisibility(View.INVISIBLE);
         remainingRoll.setText(getResources().getString(R.string.text_remaining_roll) + numberOfRoll);
-        singleRollDiceResultFirstCountry = findViewById(R.id.imageView1);
-        singleRollDiceResultSecondCountry = findViewById(R.id.imageView2);
         singleRollDiceResultFirstCountry.setVisibility(View.INVISIBLE);
         singleRollDiceResultSecondCountry.setVisibility(View.INVISIBLE);
-        firstCountryFlag = findViewById(imageView);
-        secondCountryFlag = findViewById(imageView5);
-        final ImageView volumeIcon = findViewById(imageView6);
-        konfettiView1 = findViewById(R.id.konfettiView);
-
-        mp = MediaPlayer.create(this, R.raw.dicerolleffect);
-        button = findViewById(R.id.rollDices);
-        Intent extras = getIntent();
+    }
+    void getIntentExtras(Intent extras) {
         imageUrl1 = extras.getStringExtra("uri1");
         firstCountryName = extras.getStringExtra("firstCountryName");
         FirstCountryShortCode = extras.getStringExtra("shortCode1");
@@ -112,41 +108,51 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
         secondCountryName = extras.getStringExtra("secondCountryName");
         SecondCountryShortCode = extras.getStringExtra("shortCode2");
         uri2 = Uri.parse(imageUrl2);
-
-
-        shortCode1 = getResources().getIdentifier("flag_" + FirstCountryShortCode, "drawable", getPackageName());
-        shortCode2 = getResources().getIdentifier("flag_" + SecondCountryShortCode, "drawable", getPackageName());
-
-
-        setUI();
-
-        volumeIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                isMute = !isMute;
-
-                if (isMute) {
-                    volumeIcon.setImageResource(R.drawable.mute);
-                    mp.setVolume(0, 0);
-                } else {
-                    isMute = false;
-                    volumeIcon.setImageResource(R.drawable.volume);
-                    mp.setVolume(1, 1);
-                }
-
-            }
-        });
-
-        button.setOnClickListener(new View.OnClickListener() {
-                                      public void onClick(View v) {
-
-                                          rollDice();
-
-                                      }
-                                  }
-        );
     }
 
+
+    private void initializeShakeDetector() {
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        shakeDetector = new ShakeDetector(this);
+        shakeDetector.start(sensorManager);
+    }
+
+    private void findViewById() {
+        rollDiceButton = findViewById(R.id.rollDices);
+        firstCountry =
+                findViewById(R.id.textView10);
+        secondCountry = findViewById(R.id.textView11);
+        firstCountryResult = findViewById(R.id.textView2);
+        secondCountryResult = findViewById(R.id.textView4);
+        remainingRoll = findViewById(R.id.textView3);
+        aggregate = findViewById(R.id.textView5);
+        singleRollDiceResultFirstCountry = findViewById(R.id.imageView1);
+        singleRollDiceResultSecondCountry = findViewById(R.id.imageView2);
+        firstCountryFlag = findViewById(imageView);
+        secondCountryFlag = findViewById(imageView5);
+        volumeIcon = findViewById(imageView6);
+        konfettiView1 = findViewById(R.id.konfettiView);
+    }
+
+    private void setListeners() {
+        rollDiceButton.setOnClickListener(new RollDiceClick());
+        volumeIcon.setOnClickListener(new VolumeIconClick());
+    }
+
+
+    private void volumeOnOff() {
+        isMute = !isMute;
+
+        if (isMute) {
+            volumeIcon.setImageResource(R.drawable.mute);
+            mp.setVolume(0, 0);
+        } else {
+            isMute = false;
+            volumeIcon.setImageResource(R.drawable.volume);
+            mp.setVolume(1, 1);
+        }
+
+    }
 
     void rollDice() {
 
@@ -157,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
             @Override
             public void onAnimationStart(Animation animation) {
 
-                button.setVisibility(View.INVISIBLE);
+                rollDiceButton.setVisibility(View.INVISIBLE);
                 changeTrack(0);
                 singleRollDiceResultFirstCountry.setVisibility(View.VISIBLE);
                 singleRollDiceResultSecondCountry.setVisibility(View.VISIBLE);
@@ -200,12 +206,12 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
 
                     if (numberOfRoll == 0) {
                         assessResult();
-                        button.setVisibility(View.INVISIBLE);
+                        rollDiceButton.setVisibility(View.INVISIBLE);
                     } else if (numberOfRoll == 1 && (sum1 - sum2 >= 6 || sum2 - sum1 >= 6)) {
                         assessResult();
                     } else if (numberOfRoll == 2 && (sum1 - sum2 >= 11 || sum2 - sum1 >= 11)) {
                         assessResult();
-                    } else button.setVisibility(View.VISIBLE);
+                    } else rollDiceButton.setVisibility(View.VISIBLE);
 
                 }
 
@@ -233,7 +239,6 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
                     @Override
                     public void onSuccess() {
                         firstCountry.setText(firstCountryName);
-
                     }
 
                     @Override
@@ -380,7 +385,7 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
 
         }
 
-        button.setVisibility(View.VISIBLE);
+        rollDiceButton.setVisibility(View.VISIBLE);
         remainingRoll.setVisibility(View.VISIBLE);
         numberOfRoll = 5;
         remainingRoll.setText(getResources().getString(R.string.text_remaining_roll).concat(String.valueOf(numberOfRoll)));
@@ -388,7 +393,6 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
         singleRollDiceResultSecondCountry.setVisibility(View.VISIBLE);
         sum1 = 0;
         sum2 = 0;
-
         bonusPoints1 = 0;
         bonusPoints2 = 0;
         firstCountryResult.setText(String.valueOf(sum1));
@@ -513,7 +517,28 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
 
         rollDice();
     }
+
+    class RollDiceClick implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            rollDice();
+        }
+    }
+
+    class VolumeIconClick implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            volumeOnOff();
+
+        }
+    }
+
+
 }
+
+
 
 
 

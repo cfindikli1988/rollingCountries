@@ -1,5 +1,6 @@
 package com.cfindikli.apps.rollingCountries
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.AsyncTask
 import org.springframework.web.client.RestTemplate
@@ -9,6 +10,7 @@ import java.util.*
 class Utils {
 
 
+    @SuppressLint("StaticFieldLeak")
     inner class FetchJson : AsyncTask<String, Void, Array<out Any>?>() {
 
 
@@ -39,6 +41,10 @@ class Utils {
             val uri = "http://flagpedia.net/data/flags/normal/$shortCode.png"
 
             return Uri.parse(uri)
+        }
+
+        fun randomDiceValue(): Int {
+            return Random().nextInt(6) + 1
         }
 
 
