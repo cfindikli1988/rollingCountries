@@ -17,7 +17,7 @@ class StartActivity : AppCompatActivity() {
     private var uri1: Uri? = null
     private var uri2: Uri? = null
 
-    private lateinit var fetchValues: Array<out Any>
+    private lateinit var fetchValues: List<String>
     private val handler = Handler()
 
 
@@ -33,10 +33,10 @@ class StartActivity : AppCompatActivity() {
 
         fetchValues = Utils().FetchJson().execute(Utils.url).get()!!
 
-        uri1 = Utils.getFlag(fetchValues[0].toString())
-        uri2 = Utils.getFlag(fetchValues[2].toString())
+        uri1 = Utils.getFlag(fetchValues[0])
+        uri2 = Utils.getFlag(fetchValues[2])
 
-        setUIComponents(uri1!!, uri2!!, fetchValues[1].toString(), fetchValues[3].toString())
+        setUIComponents(uri1!!, uri2!!, fetchValues[1], fetchValues[3])
 
 
         Thread(Runnable {

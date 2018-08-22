@@ -11,15 +11,15 @@ class Utils {
 
 
     @SuppressLint("StaticFieldLeak")
-    inner class FetchJson : AsyncTask<String, Void, Array<out Any>?>() {
+    inner class FetchJson : AsyncTask<String, Void, List<String>>() {
 
 
-        override fun doInBackground(vararg params: String): Array<out Any>? {
+        override fun doInBackground(vararg params: String): List<String> {
             val restTemplate = RestTemplate()
-            response = restTemplate.getForObject(params[0], Map::class.java).entries.stream().toArray()
-            val firstCountry = response!![randomCountry()!!.first()].toString().split("=")
-            val secondCountry = response!![randomCountry()!!.last()].toString().split("=")
-            return arrayOf((firstCountry.first().toString().toLowerCase()), firstCountry.last(), secondCountry.first().toString().toLowerCase(), secondCountry.last())
+            response = restTemplate.getForObject(params[0], Map::class.java).entries.stream().toArray().toList()
+            val firstCountry = response!![randomCountry().first()].toString().split("=")
+            val secondCountry = response!![randomCountry().last()].toString().split("=")
+            return listOf((firstCountry.first().toString().toLowerCase()), firstCountry.last().toString(), secondCountry.first().toString().toLowerCase(), secondCountry.last().toString())
         }
 
     }
@@ -27,7 +27,7 @@ class Utils {
     companion object {
 
 
-        var response: Array<out Any>? = null
+        var response: List<out Any>? = null
 
         const val url = "http://country.io/names.json"
 

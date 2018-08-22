@@ -354,7 +354,7 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
 
 
     private void reselect() {
-        reselected = Objects.requireNonNull(Utils.Companion.getResponse())[Utils.Companion.randomCountry().get(new Random().ints(1,0,2).findAny().getAsInt())].toString().split("=");
+        reselected = Objects.requireNonNull(Utils.Companion.getResponse().get(Utils.Companion.randomCountry().get(new Random().nextInt(2)))).toString().split("=");
     }
 
 
