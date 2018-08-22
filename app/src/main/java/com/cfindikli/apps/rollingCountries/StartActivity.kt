@@ -33,11 +33,6 @@ class StartActivity : AppCompatActivity() {
 
         fetchValues = Utils().FetchJson().execute(Utils.url).get()!!
 
-        while(fetchValues.first().toString()==fetchValues[2].toString())
-        {
-            fetchValues = Utils().FetchJson().execute(Utils.url).get()!!
-        }
-
         uri1 = Utils.getFlag(fetchValues[0].toString())
         uri2 = Utils.getFlag(fetchValues[2].toString())
 

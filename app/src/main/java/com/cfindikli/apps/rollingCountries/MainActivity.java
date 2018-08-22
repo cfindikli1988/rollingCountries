@@ -29,6 +29,7 @@ import com.squareup.seismic.ShakeDetector;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Random;
 
 import nl.dionsegijn.konfetti.KonfettiView;
 import nl.dionsegijn.konfetti.models.Shape;
@@ -171,8 +172,8 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                currentDiceRollFirstCountry = Utils.Companion.randomDiceValue();
-                currentDiceRollSecondCountry = Utils.Companion.randomDiceValue();
+                currentDiceRollFirstCountry = Utils.Companion.randomDiceValue().get(0);
+                currentDiceRollSecondCountry = Utils.Companion.randomDiceValue().get(1);
 
                 int firstDice = getResources().getIdentifier("dice_" + currentDiceRollFirstCountry, "drawable", getPackageName());
                 int secondDice = getResources().getIdentifier("dice_" + currentDiceRollSecondCountry, "drawable", getPackageName());
@@ -321,28 +322,22 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
 
         builder1.setPositiveButton(
                 "Change Both Teams",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        onBackPressed();
-                        dialog.cancel();
-                    }
+                (dialog, id) -> {
+                    onBackPressed();
+                    dialog.cancel();
                 });
 
         builder1.setNegativeButton(
                 "Keep Both Teams",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        rematch();
-                        dialog.cancel();
-                    }
+                (dialog, id) -> {
+                    rematch();
+                    dialog.cancel();
                 });
-        builder1.setNeutralButton("Change My Team Only", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                isChangeMyTeamSelected = true;
-                rematch();
-                dialog.cancel();
+        builder1.setNeutralButton("Change My Team Only", (dialog, id) -> {
+            isChangeMyTeamSelected = true;
+            rematch();
+            dialog.cancel();
 
-            }
         });
 
         AlertDialog alert11 = builder1.create();
@@ -359,7 +354,7 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
 
 
     private void reselect() {
-        reselected = Objects.requireNonNull(Utils.Companion.getResponse())[Utils.Companion.randomCountry()].toString().split("=");
+        reselected = Objects.requireNonNull(Utils.Companion.getResponse())[Utils.Companion.randomCountry().get(new Random().ints(1,0,2).findAny().getAsInt())].toString().split("=");
     }
 
 
@@ -416,13 +411,7 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
             throwKonfetti(konfettiView1);
             changeTrack(1);
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    endGame(secondCountryFlag);
-
-                }
-            }, 8000);
+            new Handler().postDelayed(() -> endGame(secondCountryFlag), 8000);
 
         } else if (sum2 > sum1) {
 
@@ -433,12 +422,7 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
             changeTrack(2);
 
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    endGame(firstCountryFlag);
-                }
-            }, 4000);
+            new Handler().postDelayed(() -> endGame(firstCountryFlag), 4000);
 
         } else {
             if (bonusPoints1 > bonusPoints2) {
@@ -448,28 +432,17 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
                 throwKonfetti(konfettiView1);
                 changeTrack(1);
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        endGame(secondCountryFlag);
-
-                    }
-                }, 8000);
+                new Handler().postDelayed(() -> endGame(secondCountryFlag), 8000);
             } else if (bonusPoints2 > bonusPoints1) {
                 aggregateSecondCountry++;
                 TastyToast.makeText(MainActivity.this, "YOU LOSE!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                 afterMatch(firstCountryFlag);
                 changeTrack(2);
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        endGame(firstCountryFlag);
-                    }
-                }, 4000);
+                new Handler().postDelayed(() -> endGame(firstCountryFlag), 4000);
             } else {
-                tieBreakRoll[0] = Utils.Companion.randomDiceValue();
-                tieBreakRoll[1] = Utils.Companion.randomDiceValue();
+                tieBreakRoll[0] = Utils.Companion.randomDiceValue().get(0);
+                tieBreakRoll[1] = Utils.Companion.randomDiceValue().get(1);
                 if (tieBreakRoll[0] == tieBreakRoll[1]) {
                     aggregateFirstCountry++;
                     TastyToast.makeText(MainActivity.this, "YOU WIN!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Roll: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
@@ -477,24 +450,14 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
                     throwKonfetti(konfettiView1);
                     changeTrack(1);
 
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            endGame(secondCountryFlag);
-                        }
-                    }, 8000);
+                    new Handler().postDelayed(() -> endGame(secondCountryFlag), 8000);
                 } else {
                     aggregateSecondCountry++;
                     TastyToast.makeText(MainActivity.this, "YOU LOSE!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Roll: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
                     afterMatch(firstCountryFlag);
                     changeTrack(2);
 
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            endGame(firstCountryFlag);
-                        }
-                    }, 4000);
+                    new Handler().postDelayed(() -> endGame(firstCountryFlag), 4000);
 
 
                 }

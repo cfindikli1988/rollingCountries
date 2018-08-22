@@ -17,8 +17,8 @@ class Utils {
         override fun doInBackground(vararg params: String): Array<out Any>? {
             val restTemplate = RestTemplate()
             response = restTemplate.getForObject(params[0], Map::class.java).entries.stream().toArray()
-            val firstCountry = response!![randomCountry()].toString().split("=")
-            val secondCountry = response!![randomCountry()].toString().split("=")
+            val firstCountry = response!![randomCountry()!!.first()].toString().split("=")
+            val secondCountry = response!![randomCountry()!!.last()].toString().split("=")
             return arrayOf((firstCountry.first().toString().toLowerCase()), firstCountry.last(), secondCountry.first().toString().toLowerCase(), secondCountry.last())
         }
 
@@ -31,8 +31,8 @@ class Utils {
 
         const val url = "http://country.io/names.json"
 
-        fun randomCountry(): Int {
-            return Random().nextInt(250) + 1
+        fun randomCountry(): List<Int> {
+            return Random().ints(2,0,250).toArray().toList()
         }
 
 
@@ -43,8 +43,8 @@ class Utils {
             return Uri.parse(uri)
         }
 
-        fun randomDiceValue(): Int {
-            return Random().nextInt(6) + 1
+        fun randomDiceValue(): List<Int> {
+            return Random().ints(2,1,7).toArray().toList()
         }
 
 
