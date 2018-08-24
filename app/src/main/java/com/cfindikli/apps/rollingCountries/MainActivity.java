@@ -2,7 +2,6 @@ package com.cfindikli.apps.rollingCountries;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
@@ -56,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
     private int currentDiceRollFirstCountry, currentDiceRollSecondCountry, bonusPoints1, bonusPoints2, sum1, sum2 = 0;
     private int aggregateFirstCountry, aggregateSecondCountry = 0;
     private Button rollDiceButton;
-    private ImageView volumeIcon;
+    private static ImageView volumeIcon;
     private TextView remainingRoll, aggregate;
     private KonfettiView konfettiView1;
     private ImageView singleRollDiceResultFirstCountry, singleRollDiceResultSecondCountry, firstCountryFlag, secondCountryFlag;
@@ -69,6 +68,9 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
     private Integer firstFlag;
     private ShakeDetector shakeDetector;
     private SensorManager sensorManager;
+    private Animation anim1;
+    private Animation anim2;
+
 
 
     @SuppressLint("SetTextI18n")
@@ -88,17 +90,18 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
     }
 
 
-    private void initializeMediaPlayer(){
+    private void initializeMediaPlayer() {
         mp = MediaPlayer.create(this, R.raw.dicerolleffect);
     }
 
 
-    void adjustUIComponent(){
+    void adjustUIComponent() {
         aggregate.setVisibility(View.INVISIBLE);
         remainingRoll.setText(getResources().getString(R.string.text_remaining_roll) + numberOfRoll);
         singleRollDiceResultFirstCountry.setVisibility(View.INVISIBLE);
         singleRollDiceResultSecondCountry.setVisibility(View.INVISIBLE);
     }
+
     void getIntentExtras(Intent extras) {
         imageUrl1 = extras.getStringExtra("uri1");
         firstCountryName = extras.getStringExtra("firstCountryName");
@@ -141,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
     }
 
 
-    private void volumeOnOff() {
+     void volumeOnOff() {
         isMute = !isMute;
 
         if (isMute) {
@@ -158,8 +161,8 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
     void rollDice() {
 
 
-        final Animation anim1 = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
-        final Animation anim2 = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+        anim1 = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+        anim2 = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
         final Animation.AnimationListener animationListener = new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -345,7 +348,6 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
     }
 
     private void afterMatch(ImageView imageView) {
-
         remainingRoll.setVisibility(View.INVISIBLE);
         aggregate.setVisibility(View.VISIBLE);
         aggregate.setText(getResources().getString(R.string.text_aggregate).concat(String.valueOf(aggregateFirstCountry)).concat("-").concat(String.valueOf(aggregateSecondCountry)));
@@ -354,7 +356,7 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
 
 
     private void reselect() {
-        reselected = Objects.requireNonNull(Utils.Companion.getResponse().get(Utils.Companion.randomCountry().get(new Random().nextInt(2)))).toString().split("=");
+        reselected = Objects.requireNonNull(Objects.requireNonNull(Utils.Companion.getResponse()).get(Utils.Companion.randomCountry().get(new Random().nextInt(2)))).toString().split("=");
     }
 
 
@@ -364,9 +366,12 @@ public class MainActivity extends AppCompatActivity implements ShakeDetector.Lis
 
             reselect();
 
-            while ((Objects.equals(reselected[1], firstCountryName)) || (Objects.equals(reselected[1], secondCountryName))) {
+
+            do{
                 reselect();
-            }
+            } while ((Objects.equals(reselected[1], firstCountryName)) || (Objects.equals(reselected[1], secondCountryName)));
+
+
 
             firstCountryName = reselected[1];
             FirstCountryShortCode = reselected[0].toLowerCase();

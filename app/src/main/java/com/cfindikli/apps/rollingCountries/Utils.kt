@@ -27,7 +27,7 @@ class Utils {
     companion object {
 
 
-        var response: List<out Any>? = null
+        var response: List<Any>? = null
 
         const val url = "http://country.io/names.json"
 
