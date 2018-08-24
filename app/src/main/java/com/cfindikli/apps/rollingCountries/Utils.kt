@@ -1,8 +1,15 @@
 package com.cfindikli.apps.rollingCountries
 
 import android.annotation.SuppressLint
+import android.graphics.Color
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.net.Uri
 import android.os.AsyncTask
+import android.widget.ImageView
+import nl.dionsegijn.konfetti.KonfettiView
+import nl.dionsegijn.konfetti.models.Shape
+import nl.dionsegijn.konfetti.models.Size
 import org.springframework.web.client.RestTemplate
 import java.util.*
 
@@ -32,7 +39,7 @@ class Utils {
         const val url = "http://country.io/names.json"
 
         fun randomCountry(): List<Int> {
-            return Random().ints(2,0,250).toArray().toList()
+            return Random().ints(2, 0, 250).distinct().toArray().toList()
         }
 
 
@@ -44,7 +51,30 @@ class Utils {
         }
 
         fun randomDiceValue(): List<Int> {
-            return Random().ints(2,1,7).toArray().toList()
+            return Random().ints(2, 1, 7).toArray().toList()
+        }
+
+        fun throwKonfetti(konfettiView: KonfettiView) {
+
+            konfettiView.build()
+                    .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA, Color.BLUE)
+                    .setDirection(0.0, 359.0)
+                    .setSpeed(1f, 5f)
+                    .setFadeOutEnabled(true)
+                    .setTimeToLive(2000L)
+                    .addShapes(Shape.RECT, Shape.CIRCLE)
+                    .addSizes(Size(12))
+                    .setPosition(-50f, konfettiView.width + 50f, -50f, -50f)
+                    .streamFor(500, 5000L)
+
+
+        }
+
+        fun setBW(iv: ImageView, isUnfiltered: Float?) {
+            val matrix = ColorMatrix()
+            matrix.setSaturation(isUnfiltered!!)
+            val filter = ColorMatrixColorFilter(matrix)
+            iv.colorFilter = filter
         }
 
 

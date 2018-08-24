@@ -176,7 +176,7 @@
         android:textSize="14sp" />
 
     <ImageView
-        android:id="@+id/imageView6"
+        android:id="@+id/volumeIconView"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_alignParentEnd="true"

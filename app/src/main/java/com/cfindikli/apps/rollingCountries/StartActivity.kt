@@ -25,7 +25,6 @@ class StartActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
 
-
         firstCountryFlag.visibility = View.INVISIBLE
         secondCountryFlag.visibility = View.INVISIBLE
         firstCountryText.visibility = View.INVISIBLE
@@ -68,10 +67,10 @@ class StartActivity : AppCompatActivity() {
         val i = Intent(this, MainActivity::class.java)
         i.putExtra("uri1", uri1.toString())
         i.putExtra("uri2", uri2.toString())
-        i.putExtra("shortCode1", fetchValues.first().toString())
-        i.putExtra("shortCode2", fetchValues[2].toString())
-        i.putExtra("firstCountryName", fetchValues[1].toString())
-        i.putExtra("secondCountryName", fetchValues.last().toString())
+        i.putExtra("shortCode1", fetchValues.first())
+        i.putExtra("shortCode2", fetchValues[2])
+        i.putExtra("firstCountryName", fetchValues[1])
+        i.putExtra("secondCountryName", fetchValues.last())
         startActivity(i)
     }
 
