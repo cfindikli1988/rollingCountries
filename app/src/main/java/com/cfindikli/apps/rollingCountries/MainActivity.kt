@@ -14,17 +14,13 @@ import android.view.Gravity
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
-import com.cfindikli.apps.rollingCountries.R.id.imageView
-import com.cfindikli.apps.rollingCountries.R.id.imageView5
 import com.sdsmdg.tastytoast.TastyToast
 import com.squareup.picasso.Callback
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import com.squareup.seismic.ShakeDetector
-import nl.dionsegijn.konfetti.KonfettiView
+import kotlinx.android.synthetic.main.animation_activty.*
 import java.io.IOException
 import java.util.*
 
@@ -32,10 +28,6 @@ import java.util.*
 class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
     private val song = arrayOf(R.raw.dicerolleffect, R.raw.queenwearethechampions, R.raw.whawha)
-    internal lateinit var firstCountryResult: TextView
-    internal lateinit var secondCountryResult: TextView
-    internal lateinit var firstCountry: TextView
-    internal lateinit var secondCountry: TextView
     internal lateinit var firstCountryName: String
     internal lateinit var secondCountryName: String
     private lateinit var reselected: Array<String>
@@ -50,15 +42,6 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     private var sum2 = 0
     private var aggregateFirstCountry: Int = 0
     private var aggregateSecondCountry = 0
-    private var rollDiceButton: Button? = null
-    private var volumeIcon: ImageView? = null
-    private var remainingRoll: TextView? = null
-    private var aggregate: TextView? = null
-    private var konfettiView1: KonfettiView? = null
-    private var singleRollDiceResultFirstCountry: ImageView? = null
-    private var singleRollDiceResultSecondCountry: ImageView? = null
-    private var firstCountryFlag: ImageView? = null
-    private var secondCountryFlag: ImageView? = null
     private var mp: MediaPlayer? = null
     private var uri1: Uri? = null
     private var uri2: Uri? = null
@@ -77,7 +60,6 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.animation_activty)
-        findViewById()
         adjustUIComponent()
         initializeMediaPlayer()
         getIntentExtras(intent)
@@ -118,22 +100,6 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         shakeDetector = ShakeDetector(this)
         shakeDetector!!.start(sensorManager)
-    }
-
-    private fun findViewById() {
-        rollDiceButton = findViewById(R.id.rollDices)
-        firstCountry = findViewById(R.id.textView10)
-        secondCountry = findViewById(R.id.textView11)
-        firstCountryResult = findViewById(R.id.textView2)
-        secondCountryResult = findViewById(R.id.textView4)
-        remainingRoll = findViewById(R.id.textView3)
-        aggregate = findViewById(R.id.textView5)
-        singleRollDiceResultFirstCountry = findViewById(R.id.imageView1)
-        singleRollDiceResultSecondCountry = findViewById(R.id.imageView2)
-        firstCountryFlag = findViewById(imageView)
-        secondCountryFlag = findViewById(imageView5)
-        volumeIcon = findViewById(R.id.volumeIconView)
-        konfettiView1 = findViewById(R.id.konfettiView)
     }
 
     private fun setListeners() {
@@ -386,9 +352,8 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
             } else ++aggregateFirstCountry
             TastyToast.makeText(applicationContext, "YOU WIN!", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
             afterMatch(secondCountryFlag)
-            Utils.throwKonfetti(konfettiView1!!)
+            Utils.throwKonfetti(konfettiView!!)
             changeTrack(1)
-
             Handler().postDelayed({ endGame(secondCountryFlag) }, 8000)
 
         } else if (sum2 > sum1) {
@@ -400,8 +365,6 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
             afterMatch(firstCountryFlag)
             Utils.setBW(firstCountryFlag!!, 0f)
             changeTrack(2)
-
-
             Handler().postDelayed({ endGame(firstCountryFlag) }, 4000)
 
         } else {
@@ -409,16 +372,14 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                 aggregateFirstCountry++
                 TastyToast.makeText(applicationContext, "YOU WIN!\nBonus Points: ($bonusPoints1)-($bonusPoints2)", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
                 afterMatch(secondCountryFlag)
-                Utils.throwKonfetti(konfettiView1!!)
+                Utils.throwKonfetti(konfettiView!!)
                 changeTrack(1)
-
                 Handler().postDelayed({ endGame(secondCountryFlag) }, 8000)
             } else if (bonusPoints2 > bonusPoints1) {
                 aggregateSecondCountry++
                 TastyToast.makeText(this@MainActivity, "YOU LOSE!\nBonus Points: ($bonusPoints1)-($bonusPoints2)", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
                 afterMatch(firstCountryFlag)
                 changeTrack(2)
-
                 Handler().postDelayed({ endGame(firstCountryFlag) }, 4000)
             } else {
                 tieBreakRoll[0] = Utils.randomDiceValue()[0]
@@ -427,19 +388,15 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                     aggregateFirstCountry++
                     TastyToast.makeText(this@MainActivity, "YOU WIN!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Roll: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
                     afterMatch(secondCountryFlag)
-                    Utils.throwKonfetti(konfettiView1!!)
+                    Utils.throwKonfetti(konfettiView!!)
                     changeTrack(1)
-
                     Handler().postDelayed({ endGame(secondCountryFlag) }, 8000)
                 } else {
                     aggregateSecondCountry++
                     TastyToast.makeText(this@MainActivity, "YOU LOSE!\n" + "Bonus Points: " + "(" + bonusPoints1 + ")" + "-" + "(" + bonusPoints2 + ")" + " TieBreak Roll: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
                     afterMatch(firstCountryFlag)
                     changeTrack(2)
-
                     Handler().postDelayed({ endGame(firstCountryFlag) }, 4000)
-
-
                 }
 
             }
@@ -463,8 +420,8 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
         override fun onClick(view: View) {
             when (view.id) {
-                R.id.rollDices -> rollDice()
-                R.id.volumeIconView -> volumeOnOff()
+                R.id.rollDiceButton -> rollDice()
+                R.id.volumeIcon -> volumeOnOff()
             }
         }
     }
