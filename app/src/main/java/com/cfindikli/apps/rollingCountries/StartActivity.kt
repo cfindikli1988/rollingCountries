@@ -1,11 +1,12 @@
 package com.cfindikli.apps.rollingCountries
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import com.cfindikli.apps.rollingCountries.Utils.Companion.firstCountryObj
+import com.cfindikli.apps.rollingCountries.Utils.Companion.secondCountryObj
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_start.*
 
@@ -14,8 +15,6 @@ class StartActivity : AppCompatActivity() {
 
 
     private var pStatus = 0
-    private var uri1: Uri? = null
-    private var uri2: Uri? = null
 
     private lateinit var fetchValues: List<String>
     private val handler = Handler()
@@ -32,10 +31,17 @@ class StartActivity : AppCompatActivity() {
 
         fetchValues = Utils().FetchJson().execute(Utils.url).get()!!
 
-        uri1 = Utils.getFlag(fetchValues[0])
-        uri2 = Utils.getFlag(fetchValues[2])
+        firstCountryObj.shortCode = fetchValues[0].toLowerCase()
+        secondCountryObj.shortCode = fetchValues[2].toLowerCase()
+        firstCountryObj.imageUrl = Utils.getFlag(firstCountryObj.shortCode)
+        secondCountryObj.imageUrl = Utils.getFlag(secondCountryObj.shortCode)
 
-        setUIComponents(uri1!!, uri2!!, fetchValues[1], fetchValues[3])
+
+        firstCountryObj.countryName = fetchValues[1]
+        secondCountryObj.countryName = fetchValues[3]
+
+
+        setUIComponents()
 
 
         Thread(Runnable {
@@ -65,26 +71,20 @@ class StartActivity : AppCompatActivity() {
 
     private fun switchToMainActivity() {
         val i = Intent(this, MainActivity::class.java)
-        i.putExtra("uri1", uri1.toString())
-        i.putExtra("uri2", uri2.toString())
-        i.putExtra("shortCode1", fetchValues.first())
-        i.putExtra("shortCode2", fetchValues[2])
-        i.putExtra("firstCountryName", fetchValues[1])
-        i.putExtra("secondCountryName", fetchValues.last())
         startActivity(i)
     }
 
 
-    private fun setUIComponents(uri1: Uri, uri2: Uri, firstCountryName: String, secondCountryName: String) {
+    private fun setUIComponents() {
 
-        firstCountryText.text = firstCountryName
-        Picasso.with(this@StartActivity).load(uri1)
+        firstCountryText.text = firstCountryObj.countryName
+        Picasso.with(this@StartActivity).load(firstCountryObj.imageUrl)
                 .resize(400, 267).error(R.drawable.rollingdices)
                 .into(firstCountryFlag)
 
-        secondCountryText.text = secondCountryName
+        secondCountryText.text = secondCountryObj.countryName
 
-        Picasso.with(this@StartActivity).load(uri2)
+        Picasso.with(this@StartActivity).load(secondCountryObj.imageUrl)
                 .resize(400, 267)
                 .error(R.drawable.rollingdices).into(secondCountryFlag)
     }

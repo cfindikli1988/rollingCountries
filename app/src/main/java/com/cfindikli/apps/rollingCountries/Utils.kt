@@ -33,6 +33,8 @@ class Utils {
 
     companion object {
 
+        var firstCountryObj = Country()
+        var secondCountryObj = Country()
 
         var response: List<Any>? = null
 
