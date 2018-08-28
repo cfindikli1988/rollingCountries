@@ -4,9 +4,13 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
+import android.hardware.SensorManager
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.AsyncTask
+import android.view.animation.Animation
 import android.widget.ImageView
+import com.squareup.seismic.ShakeDetector
 import nl.dionsegijn.konfetti.KonfettiView
 import nl.dionsegijn.konfetti.models.Shape
 import nl.dionsegijn.konfetti.models.Size
@@ -33,8 +37,20 @@ class Utils {
 
     companion object {
 
+
+        val song = arrayOf(R.raw.dicerolleffect, R.raw.queenwearethechampions, R.raw.whawha)
+        var isMute = false
+        var mp: MediaPlayer? = null
+        var isChangeMyTeamSelected = false
+        var shakeDetector: ShakeDetector? = null
+        var sensorManager: SensorManager? = null
+        var anim1: Animation? = null
+        var anim2: Animation? = null
+
+
         var firstCountryObj = Country()
         var secondCountryObj = Country()
+
 
         var response: List<Any>? = null
 
@@ -54,6 +70,11 @@ class Utils {
 
         fun randomDiceValue(): List<Int> {
             return Random().ints(2, 1, 7).toArray().toList()
+        }
+
+        fun reselect(country: Country): Array<String> {
+            country.reselected = Objects.requireNonNull(Objects.requireNonNull<List<Any>>(Utils.response)[Utils.randomCountry()[Random().nextInt(2)]]).toString().split("=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            return firstCountryObj.reselected
         }
 
         fun throwKonfetti(konfettiView: KonfettiView) {

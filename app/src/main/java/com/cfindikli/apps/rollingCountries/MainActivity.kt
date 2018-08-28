@@ -24,24 +24,9 @@ import com.squareup.picasso.Picasso
 import com.squareup.seismic.ShakeDetector
 import kotlinx.android.synthetic.main.animation_activty.*
 import java.io.IOException
-import java.util.*
 
 
 class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
-
-    private val song = arrayOf(R.raw.dicerolleffect, R.raw.queenwearethechampions, R.raw.whawha)
-    private lateinit var reselected: Array<String>
-    private var numberOfRoll = 5
-    private val tieBreakRoll = IntArray(2)
-    private var isMute = false
-    private var mp: MediaPlayer? = null
-    private var isChangeMyTeamSelected = false
-    private var firstFlag: Int? = null
-    private var shakeDetector: ShakeDetector? = null
-    private var sensorManager: SensorManager? = null
-    private var anim1: Animation? = null
-    private var anim2: Animation? = null
-
 
 
     @SuppressLint("SetTextI18n")
@@ -57,25 +42,23 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
 
     private fun initializeMediaPlayer() {
-        mp = MediaPlayer.create(this, R.raw.dicerolleffect)
+        Utils.mp = MediaPlayer.create(this, R.raw.dicerolleffect)
     }
 
 
     @SuppressLint("SetTextI18n")
     internal fun adjustUIComponent() {
         aggregate!!.visibility = View.INVISIBLE
-        remainingRoll!!.text = resources.getString(R.string.text_remaining_roll) + numberOfRoll
+        remainingRoll!!.text = resources.getString(R.string.text_remaining_roll) + firstCountryObj.numberOfRoll
         singleRollDiceResultFirstCountry!!.visibility = View.INVISIBLE
         singleRollDiceResultSecondCountry!!.visibility = View.INVISIBLE
     }
 
 
-
-
     private fun initializeShakeDetector() {
-        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        shakeDetector = ShakeDetector(this)
-        shakeDetector!!.start(sensorManager)
+        Utils.sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        Utils.shakeDetector = ShakeDetector(this)
+        Utils.shakeDetector!!.start(Utils.sensorManager)
     }
 
     private fun setListeners() {
@@ -85,15 +68,15 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
 
     internal fun volumeOnOff() {
-        isMute = !isMute
+        Utils.isMute = !Utils.isMute
 
-        if (isMute) {
+        if (Utils.isMute) {
             volumeIcon!!.setImageResource(R.drawable.mute)
-            mp!!.setVolume(0f, 0f)
+            Utils.mp!!.setVolume(0f, 0f)
         } else {
-            isMute = false
+            Utils.isMute = false
             volumeIcon!!.setImageResource(R.drawable.volume)
-            mp!!.setVolume(1f, 1f)
+            Utils.mp!!.setVolume(1f, 1f)
         }
 
     }
@@ -101,8 +84,8 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     internal fun rollDice() {
 
 
-        anim1 = AnimationUtils.loadAnimation(this@MainActivity, R.anim.shake)
-        anim2 = AnimationUtils.loadAnimation(this@MainActivity, R.anim.shake)
+        Utils.anim1 = AnimationUtils.loadAnimation(this@MainActivity, R.anim.shake)
+        Utils.anim2 = AnimationUtils.loadAnimation(this@MainActivity, R.anim.shake)
         val animationListener = object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation) {
 
@@ -121,8 +104,8 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                 val firstDice = resources.getIdentifier("dice_${firstCountryObj.currentDiceRoll}", "drawable", packageName)
                 val secondDice = resources.getIdentifier("dice_${secondCountryObj.currentDiceRoll}", "drawable", packageName)
 
-                if (animation === anim1) {
-                    if (numberOfRoll != 0) {
+                if (animation === Utils.anim1) {
+                    if (firstCountryObj.numberOfRoll != 0) {
                         singleRollDiceResultFirstCountry!!.setImageResource(firstDice)
                         firstCountryObj.sum += firstCountryObj.currentDiceRoll
                         firstCountryResult.text = firstCountryObj.sum.toString()
@@ -134,8 +117,8 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                         }
                     }
 
-                } else if (animation === anim2) {
-                    if (numberOfRoll != 0) {
+                } else if (animation === Utils.anim2) {
+                    if (firstCountryObj.numberOfRoll != 0) {
                         singleRollDiceResultSecondCountry!!.setImageResource(secondDice)
                         secondCountryObj.sum += secondCountryObj.currentDiceRoll
                         secondCountryResult.text = secondCountryObj.sum.toString()
@@ -145,22 +128,22 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                         if (secondCountryObj.currentDiceRoll == 1) {
                             secondCountryObj.bonusPoint--
                         }
-                        numberOfRoll--
+                        firstCountryObj.numberOfRoll--
                     }
 
-                    if (numberOfRoll == 0) {
+                    if (firstCountryObj.numberOfRoll == 0) {
                         assessResult()
                         rollDiceButton!!.visibility = View.INVISIBLE
-                    } else if (numberOfRoll == 1 && (firstCountryObj.sum - secondCountryObj.sum >= 6 || secondCountryObj.sum - firstCountryObj.sum >= 6)) {
+                    } else if (firstCountryObj.numberOfRoll == 1 && (firstCountryObj.sum - secondCountryObj.sum >= 6 || secondCountryObj.sum - firstCountryObj.sum >= 6)) {
                         assessResult()
-                    } else if (numberOfRoll == 2 && (firstCountryObj.sum - secondCountryObj.sum >= 11 || secondCountryObj.sum - firstCountryObj.sum >= 11)) {
+                    } else if (firstCountryObj.numberOfRoll == 2 && (firstCountryObj.sum - secondCountryObj.sum >= 11 || secondCountryObj.sum - firstCountryObj.sum >= 11)) {
                         assessResult()
                     } else
                         rollDiceButton!!.visibility = View.VISIBLE
 
                 }
 
-                remainingRoll!!.text = resources.getString(R.string.text_remaining_roll) + numberOfRoll.toString()
+                remainingRoll!!.text = resources.getString(R.string.text_remaining_roll) + firstCountryObj.numberOfRoll.toString()
             }
 
             override fun onAnimationRepeat(animation: Animation) {
@@ -168,11 +151,11 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
             }
         }
 
-        anim1!!.setAnimationListener(animationListener)
-        anim2!!.setAnimationListener(animationListener)
+        Utils.anim1!!.setAnimationListener(animationListener)
+        Utils.anim2!!.setAnimationListener(animationListener)
 
-        singleRollDiceResultFirstCountry!!.startAnimation(anim1)
-        singleRollDiceResultSecondCountry!!.startAnimation(anim2)
+        singleRollDiceResultFirstCountry!!.startAnimation(Utils.anim1)
+        singleRollDiceResultSecondCountry!!.startAnimation(Utils.anim2)
 
     }
 
@@ -187,8 +170,8 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                     override fun onError() {
 
                         firstCountry.text = firstCountryObj.countryName
-                        firstFlag = resources.getIdentifier("flag_" + firstCountryObj.shortCode, "drawable", packageName)
-                        firstCountryFlag!!.setImageResource(firstFlag!!)
+                        firstCountryObj.flag = resources.getIdentifier("flag_" + firstCountryObj.shortCode, "drawable", packageName)
+                        firstCountryFlag!!.setImageResource(firstCountryObj.flag!!)
 
 
                     }
@@ -204,8 +187,8 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                     override fun onError() {
 
                         secondCountry.text = secondCountryObj.countryName
-                        val secondFlag = resources.getIdentifier("flag_" + secondCountryObj.shortCode, "drawable", packageName)
-                        secondCountryFlag!!.setImageResource(secondFlag)
+                        secondCountryObj.flag = resources.getIdentifier("flag_" + secondCountryObj.shortCode, "drawable", packageName)
+                        secondCountryFlag!!.setImageResource(secondCountryObj.flag!!)
 
 
                     }
@@ -214,27 +197,27 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
 
     private fun changeTrack(position: Int) {
-        mp!!.stop()
-        mp!!.reset()
+        Utils.mp!!.stop()
+        Utils.mp!!.reset()
         try {
-            mp!!.setDataSource(applicationContext, Uri.parse("android.resource://" + packageName + "/" + song[position]))
+            Utils.mp!!.setDataSource(applicationContext, Uri.parse("android.resource://" + packageName + "/" + Utils.song[position]))
         } catch (e: IOException) {
             e.printStackTrace()
         }
 
         try {
-            mp!!.prepare()
+            Utils.mp!!.prepare()
         } catch (e: IOException) {
             e.printStackTrace()
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
 
-        mp!!.start()
+        Utils.mp!!.start()
     }
 
     private fun endGame(imageView: ImageView?) {
-        mp!!.stop()
+        Utils.mp!!.stop()
         Utils.setBW(imageView!!, 1f)
         val builder1 = AlertDialog.Builder(this@MainActivity)
         builder1.setMessage("What would you like to do next?")
@@ -254,7 +237,7 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
             dialog.cancel()
         }
         builder1.setNeutralButton("Change My Team Only") { dialog, _ ->
-            isChangeMyTeamSelected = true
+            Utils.isChangeMyTeamSelected = true
             rematch()
             dialog.cancel()
 
@@ -273,35 +256,30 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     }
 
 
-    private fun reselect() {
-        reselected = Objects.requireNonNull(Objects.requireNonNull<List<Any>>(Utils.response)[Utils.randomCountry()[Random().nextInt(2)]]).toString().split("=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-    }
-
-
     @SuppressLint("ResourceType", "SetTextI18n")
     private fun rematch() {
-        if (isChangeMyTeamSelected) {
+        if (Utils.isChangeMyTeamSelected) {
 
             do {
-                reselect()
-            } while (reselected[1] == firstCountryObj.countryName || reselected[1] == secondCountryObj.countryName)
+                Utils.reselect(firstCountryObj)
+            } while (firstCountryObj.reselected[1] == firstCountryObj.countryName || firstCountryObj.reselected[1] == secondCountryObj.countryName)
 
-            firstCountryObj.countryName = reselected[1]
-            firstCountryObj.shortCode = reselected[0].toLowerCase()
+            firstCountryObj.countryName = firstCountryObj.reselected[1]
+            firstCountryObj.shortCode = firstCountryObj.reselected[0].toLowerCase()
             firstCountryObj.imageUrl = Utils.getFlag(firstCountryObj.shortCode)
             setUI()
             firstCountryObj.aggregate = 0
             secondCountryObj.aggregate = 0
             aggregate!!.visibility = View.INVISIBLE
-            isChangeMyTeamSelected = false
+            Utils.isChangeMyTeamSelected = false
 
 
         }
 
         rollDiceButton!!.visibility = View.VISIBLE
         remainingRoll!!.visibility = View.VISIBLE
-        numberOfRoll = 5
-        remainingRoll!!.text = resources.getString(R.string.text_remaining_roll) + numberOfRoll.toString()
+        firstCountryObj.numberOfRoll = 5
+        remainingRoll!!.text = resources.getString(R.string.text_remaining_roll) + firstCountryObj.numberOfRoll.toString()
         singleRollDiceResultFirstCountry!!.visibility = View.VISIBLE
         singleRollDiceResultSecondCountry!!.visibility = View.VISIBLE
         firstCountryObj.sum = 0
@@ -314,12 +292,12 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
         singleRollDiceResultSecondCountry!!.setImageResource(R.drawable.dice_6)
         singleRollDiceResultFirstCountry!!.visibility = View.INVISIBLE
         singleRollDiceResultSecondCountry!!.visibility = View.INVISIBLE
-        shakeDetector!!.start(sensorManager)
+        Utils.shakeDetector!!.start(Utils.sensorManager)
     }
 
     private fun assessResult() {
 
-        shakeDetector!!.stop()
+        Utils.shakeDetector!!.stop()
 
         if (firstCountryObj.sum > secondCountryObj.sum) {
 
@@ -358,18 +336,18 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                 changeTrack(2)
                 Handler().postDelayed({ endGame(firstCountryFlag) }, 4000)
             } else {
-                tieBreakRoll[0] = Utils.randomDiceValue()[0]
-                tieBreakRoll[1] = Utils.randomDiceValue()[1]
-                if (tieBreakRoll[0] == tieBreakRoll[1]) {
+                firstCountryObj.tieBreakRoll[0] = Utils.randomDiceValue()[0]
+                firstCountryObj.tieBreakRoll[1] = Utils.randomDiceValue()[1]
+                if (firstCountryObj.tieBreakRoll[0] == firstCountryObj.tieBreakRoll[1]) {
                     firstCountryObj.aggregate++
-                    TastyToast.makeText(this@MainActivity, "YOU WIN!\n" + "Bonus Points: " + "(" + firstCountryObj.bonusPoint + ")" + "-" + "(" + secondCountryObj.bonusPoint + ")" + " TieBreak Roll: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
+                    TastyToast.makeText(this@MainActivity, "YOU WIN!\n" + "Bonus Points: " + "(" + firstCountryObj.bonusPoint + ")" + "-" + "(" + secondCountryObj.bonusPoint + ")" + " TieBreak Roll: " + firstCountryObj.tieBreakRoll[0] + "-" + firstCountryObj.tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
                     afterMatch(secondCountryFlag)
                     Utils.throwKonfetti(konfettiView!!)
                     changeTrack(1)
                     Handler().postDelayed({ endGame(secondCountryFlag) }, 8000)
                 } else {
                     secondCountryObj.aggregate++
-                    TastyToast.makeText(this@MainActivity, "YOU LOSE!\n" + "Bonus Points: " + "(" + firstCountryObj.bonusPoint + ")" + "-" + "(" + secondCountryObj.bonusPoint + ")" + " TieBreak Roll: " + tieBreakRoll[0] + "-" + tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
+                    TastyToast.makeText(this@MainActivity, "YOU LOSE!\n" + "Bonus Points: " + "(" + firstCountryObj.bonusPoint + ")" + "-" + "(" + secondCountryObj.bonusPoint + ")" + " TieBreak Roll: " + firstCountryObj.tieBreakRoll[0] + "-" + firstCountryObj.tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
                     afterMatch(firstCountryFlag)
                     changeTrack(2)
                     Handler().postDelayed({ endGame(firstCountryFlag) }, 4000)
@@ -379,7 +357,6 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
         }
     }
-
 
     override fun onBackPressed() {
         val intent = Intent(this, StartActivity::class.java)
