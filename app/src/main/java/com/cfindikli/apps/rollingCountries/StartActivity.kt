@@ -16,7 +16,6 @@ class StartActivity : AppCompatActivity() {
 
 
     private var pStatus = 0
-
     private val handler = Handler()
 
 
@@ -26,8 +25,7 @@ class StartActivity : AppCompatActivity() {
 
         firstCountryFlag.visibility = View.INVISIBLE
         secondCountryFlag.visibility = View.INVISIBLE
-        firstCountryText.visibility = View.INVISIBLE
-        secondCountryText.visibility = View.INVISIBLE
+
 
         fetchValues = Utils().FetchJson().execute(Utils.url).get()!!
 
@@ -76,12 +74,9 @@ class StartActivity : AppCompatActivity() {
 
     private fun setUIComponents() {
 
-        firstCountryText.text = firstCountryObj.countryName
         Picasso.with(this@StartActivity).load(firstCountryObj.imageUrl)
                 .resize(400, 267).error(R.drawable.rollingdices)
                 .into(firstCountryFlag)
-
-        secondCountryText.text = secondCountryObj.countryName
 
         Picasso.with(this@StartActivity).load(secondCountryObj.imageUrl)
                 .resize(400, 267)
