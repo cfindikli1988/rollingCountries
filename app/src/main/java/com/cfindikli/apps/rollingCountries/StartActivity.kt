@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import com.cfindikli.apps.rollingCountries.Utils.Companion.fetchValues
 import com.cfindikli.apps.rollingCountries.Utils.Companion.firstCountryObj
 import com.cfindikli.apps.rollingCountries.Utils.Companion.secondCountryObj
 import com.squareup.picasso.Picasso
@@ -16,7 +17,6 @@ class StartActivity : AppCompatActivity() {
 
     private var pStatus = 0
 
-    private lateinit var fetchValues: List<String>
     private val handler = Handler()
 
 
@@ -35,7 +35,6 @@ class StartActivity : AppCompatActivity() {
         secondCountryObj.shortCode = fetchValues[2].toLowerCase()
         firstCountryObj.imageUrl = Utils.getFlag(firstCountryObj.shortCode)
         secondCountryObj.imageUrl = Utils.getFlag(secondCountryObj.shortCode)
-
 
         firstCountryObj.countryName = fetchValues[1]
         secondCountryObj.countryName = fetchValues[3]

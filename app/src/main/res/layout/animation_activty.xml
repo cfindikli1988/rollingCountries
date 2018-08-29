@@ -50,7 +50,7 @@
         android:layout_alignTop="@+id/linearLayout"
         android:layout_toStartOf="@+id/rollDiceButton"
         android:src="@drawable/dice_6"
-        android:contentDescription="TODO" />
+        android:contentDescription="@string/todo" />
 
     <ImageView
         android:id="@+id/singleRollDiceResultSecondCountry"
@@ -185,6 +185,16 @@
         android:layout_marginTop="17dp"
         android:src="@drawable/volume"
         android:contentDescription="TODO" />
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="247dp"
+        android:layout_marginStart="63dp"
+        android:text="" />
 
 
 </RelativeLayout>

@@ -10,11 +10,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
+import android.text.Html
 import android.view.Gravity
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.TextView
 import com.cfindikli.apps.rollingCountries.Utils.Companion.firstCountryObj
 import com.cfindikli.apps.rollingCountries.Utils.Companion.secondCountryObj
 import com.sdsmdg.tastytoast.TastyToast
@@ -26,6 +28,7 @@ import kotlinx.android.synthetic.main.animation_activty.*
 import java.io.IOException
 
 
+@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
 
@@ -219,32 +222,31 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     private fun endGame(imageView: ImageView?) {
         Utils.mp!!.stop()
         Utils.setBW(imageView!!, 1f)
-        val builder1 = AlertDialog.Builder(this@MainActivity)
-        builder1.setMessage("What would you like to do next?")
-        builder1.setCancelable(false)
+        val alertDialog = AlertDialog.Builder(this@MainActivity)
+        alertDialog.setMessage("What would you like to do next?")
+        alertDialog.setCancelable(false)
+        alertDialog.setIcon(R.drawable.success_toast)
 
-        builder1.setPositiveButton(
-                "Change Both Teams"
-        ) { dialog, _ ->
+        alertDialog.setPositiveButton(Html.fromHtml("<font color='#3342FF'>Change Both Teams</font>")) { dialog, _ ->
             onBackPressed()
             dialog.cancel()
         }
 
-        builder1.setNegativeButton(
-                "Keep Both Teams"
-        ) { dialog, _ ->
+        alertDialog.setNegativeButton(Html.fromHtml("<font color='#3342FF'>Rematch With Same Teams</font>")) { dialog, _ ->
             rematch()
             dialog.cancel()
         }
-        builder1.setNeutralButton("Change My Team Only") { dialog, _ ->
+        alertDialog.setNeutralButton(Html.fromHtml("<font color='#3342FF'>Change My Team Only</font>")) { dialog, _ ->
             Utils.isChangeMyTeamSelected = true
             rematch()
             dialog.cancel()
-
         }
-
-        val alert11 = builder1.create()
+        val alert11 = alertDialog.create()
         alert11.show()
+
+        val mw = alert11.findViewById<TextView>(android.R.id.message)
+        mw.gravity = Gravity.CENTER
+
     }
 
     @SuppressLint("SetTextI18n")

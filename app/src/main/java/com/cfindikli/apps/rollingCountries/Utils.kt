@@ -46,7 +46,7 @@ class Utils {
         var sensorManager: SensorManager? = null
         var anim1: Animation? = null
         var anim2: Animation? = null
-
+        lateinit var fetchValues: List<String>
 
         var firstCountryObj = Country()
         var secondCountryObj = Country()
