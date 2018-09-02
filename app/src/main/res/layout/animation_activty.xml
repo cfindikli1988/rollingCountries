@@ -154,6 +154,17 @@
         android:contentDescription="TODO" />
 
     <TextView
+        android:id="@+id/levelName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/rollDiceButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"
+        android:text=""
+        android:textStyle="bold"
+        android:textSize="14sp"/>
+
+    <TextView
         android:id="@+id/remainingRoll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -165,13 +176,13 @@
         android:textSize="14sp"/>
 
     <TextView
-        android:id="@+id/aggregate"
+        android:id="@+id/bonusPoints"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/rollDiceButton"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
-        android:text="@string/text_aggregate"
+        android:text="@string/text_bonusPoints"
         android:textStyle="bold"
         android:textSize="14sp" />
 

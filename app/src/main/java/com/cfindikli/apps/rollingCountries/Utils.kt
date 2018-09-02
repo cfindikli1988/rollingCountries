@@ -41,7 +41,6 @@ class Utils {
         val song = arrayOf(R.raw.dicerolleffect, R.raw.queenwearethechampions, R.raw.whawha)
         var isMute = false
         var mp: MediaPlayer? = null
-        var isChangeMyTeamSelected = false
         var shakeDetector: ShakeDetector? = null
         var sensorManager: SensorManager? = null
         var anim1: Animation? = null
@@ -72,9 +71,9 @@ class Utils {
             return Random().ints(2, 1, 7).toArray().toList()
         }
 
-        fun reselect(country: Country): Array<String> {
+        fun reselect(country: Country): Array<String>? {
             country.reselected = Objects.requireNonNull(Objects.requireNonNull<List<Any>>(Utils.response)[Utils.randomCountry()[Random().nextInt(2)]]).toString().split("=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            return firstCountryObj.reselected
+            return secondCountryObj.reselected
         }
 
         fun throwKonfetti(konfettiView: KonfettiView) {
