@@ -8,6 +8,7 @@ import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.AsyncTask
+import android.support.v7.app.AppCompatActivity
 import android.view.animation.Animation
 import android.widget.ImageView
 import com.squareup.seismic.ShakeDetector
@@ -22,15 +23,21 @@ class Utils {
 
 
     @SuppressLint("StaticFieldLeak")
-    inner class FetchJson : AsyncTask<String, Void, List<String>>() {
+    inner class FetchJson : AsyncTask<String, Void, List<Country>>() {
 
 
-        override fun doInBackground(vararg params: String): List<String> {
+        override fun doInBackground(vararg params: String): List<Country> {
             val restTemplate = RestTemplate()
             response = restTemplate.getForObject(params[0], Map::class.java).entries.stream().toArray().toList()
             val firstCountry = response!![randomCountry().first()].toString().split("=")
             val secondCountry = response!![randomCountry().last()].toString().split("=")
-            return listOf((firstCountry.first().toString().toLowerCase()), firstCountry.last().toString(), secondCountry.first().toString().toLowerCase(), secondCountry.last().toString())
+            firstCountryObj.shortCode = firstCountry.first().toLowerCase()
+            firstCountryObj.countryName = firstCountry.last()
+            secondCountryObj.shortCode = secondCountry.first().toLowerCase()
+            secondCountryObj.countryName = secondCountry.last()
+            firstCountryObj.imageUrl = Utils.getFlag(firstCountryObj.shortCode)
+            secondCountryObj.imageUrl = Utils.getFlag(secondCountryObj.shortCode)
+            return listOf(firstCountryObj, secondCountryObj)
         }
 
     }
@@ -45,7 +52,6 @@ class Utils {
         var sensorManager: SensorManager? = null
         var anim1: Animation? = null
         var anim2: Animation? = null
-        lateinit var fetchValues: List<String>
 
         var firstCountryObj = Country()
         var secondCountryObj = Country()
@@ -98,7 +104,6 @@ class Utils {
             val filter = ColorMatrixColorFilter(matrix)
             iv.colorFilter = filter
         }
-
 
     }
 

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import com.cfindikli.apps.rollingCountries.Utils.Companion.fetchValues
 import com.cfindikli.apps.rollingCountries.Utils.Companion.firstCountryObj
 import com.cfindikli.apps.rollingCountries.Utils.Companion.secondCountryObj
 import com.squareup.picasso.Picasso
@@ -27,15 +26,8 @@ class StartActivity : AppCompatActivity() {
         secondCountryFlag.visibility = View.INVISIBLE
 
 
-        fetchValues = Utils().FetchJson().execute(Utils.url).get()!!
+        Utils().FetchJson().execute(Utils.url).get()!!
 
-        firstCountryObj.shortCode = fetchValues[0].toLowerCase()
-        secondCountryObj.shortCode = fetchValues[2].toLowerCase()
-        firstCountryObj.imageUrl = Utils.getFlag(firstCountryObj.shortCode)
-        secondCountryObj.imageUrl = Utils.getFlag(secondCountryObj.shortCode)
-
-        firstCountryObj.countryName = fetchValues[1]
-        secondCountryObj.countryName = fetchValues[3]
 
 
         setUIComponents()
