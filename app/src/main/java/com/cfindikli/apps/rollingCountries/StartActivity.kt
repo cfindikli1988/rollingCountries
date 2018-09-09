@@ -28,10 +28,7 @@ class StartActivity : AppCompatActivity() {
 
         Utils().FetchJson().execute(Utils.url).get()!!
 
-
-
         setUIComponents()
-
 
         Thread(Runnable {
 

@@ -8,7 +8,6 @@ import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.AsyncTask
-import android.support.v7.app.AppCompatActivity
 import android.view.animation.Animation
 import android.widget.ImageView
 import com.squareup.seismic.ShakeDetector
@@ -38,8 +37,9 @@ class Utils {
             firstCountryObj.imageUrl = Utils.getFlag(firstCountryObj.shortCode)
             secondCountryObj.imageUrl = Utils.getFlag(secondCountryObj.shortCode)
             return listOf(firstCountryObj, secondCountryObj)
-        }
 
+
+        }
     }
 
     companion object {
@@ -55,8 +55,6 @@ class Utils {
 
         var firstCountryObj = Country()
         var secondCountryObj = Country()
-
-
         var response: List<Any>? = null
 
         const val url = "http://country.io/names.json"
@@ -97,6 +95,7 @@ class Utils {
 
 
         }
+
 
         fun setBW(iv: ImageView, isUnfiltered: Float?) {
             val matrix = ColorMatrix()

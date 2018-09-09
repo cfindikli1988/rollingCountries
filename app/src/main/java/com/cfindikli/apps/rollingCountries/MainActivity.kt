@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
 
     private fun initializeMediaPlayer() {
-        Utils.mp = MediaPlayer.create(this, R.raw.dicerolleffect)
+        Utils.mp = MediaPlayer.create(applicationContext, R.raw.dicerolleffect)
     }
 
 
@@ -85,8 +85,6 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     }
 
     internal fun rollDice() {
-
-
         Utils.anim1 = AnimationUtils.loadAnimation(this@MainActivity, R.anim.shake)
         Utils.anim2 = AnimationUtils.loadAnimation(this@MainActivity, R.anim.shake)
         val animationListener = object : Animation.AnimationListener {
@@ -223,13 +221,7 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     private fun endGame(imageView: ImageView?) {
         Utils.mp!!.stop()
         Utils.setBW(imageView!!, 1f)
-        if (firstCountryObj.level < 8) {
-            showAlertDialog()
-        } else {
-
-
-        }
-
+        showAlertDialog()
     }
 
     @SuppressLint("SetTextI18n")
@@ -298,7 +290,6 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
             afterMatch(firstCountryFlag)
             Utils.setBW(firstCountryFlag!!, 0f)
             changeTrack(2)
-
             Handler().postDelayed({ endGame(firstCountryFlag) }, 4000)
 
         } else {
@@ -369,8 +360,8 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
         Utils.mp!!.stop()
         Utils.setBW(imageView!!, 1f)
         if (firstCountryObj.level < firstCountryObj.levelName.size) {
-            firstCountryObj.reselectType=2
-            rematch(firstCountryObj.level,firstCountryObj.reselectType)
+            firstCountryObj.reselectType = 2
+            rematch(firstCountryObj.level, firstCountryObj.reselectType)
         } else {
             showAlertDialog()
         }
@@ -388,7 +379,7 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
         remainingRoll!!.text = resources.getString(R.string.text_remaining_roll) + firstCountryObj.numberOfRoll.toString()
     }
 
-    private fun showAlertDialog(){
+    private fun showAlertDialog() {
 
         val alertDialog = AlertDialog.Builder(this@MainActivity)
         alertDialog.setMessage("What would you like to do next?")
