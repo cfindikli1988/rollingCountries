@@ -234,7 +234,7 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     @SuppressLint("ResourceType", "SetTextI18n")
     private fun rematch(level: Int, reselectType: Int) {
         resetValues()
-        if (level < 8) {
+        if (level < firstCountryObj.levelName.size) {
 
             if (reselectType == 1) {
                 do {
@@ -375,8 +375,8 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
         secondCountryObj.bonusPoint = 0
         firstCountryObj.sum = 0
         secondCountryObj.sum = 0
-        bonusPoints.text = resources.getString(R.string.text_bonusPoints) + "(" + (firstCountryObj.bonusPoint.toString()) + ")" + "-" + "(" + (secondCountryObj.bonusPoint.toString() + ")")
-        remainingRoll!!.text = resources.getString(R.string.text_remaining_roll) + firstCountryObj.numberOfRoll.toString()
+        bonusPoints.text = resources.getString(R.string.text_bonusPoints).plus("(").plus(firstCountryObj.bonusPoint.toString()).plus(")").plus("-").plus("(").plus(secondCountryObj.bonusPoint.toString() + ")")
+        remainingRoll!!.text = resources.getString(R.string.text_remaining_roll).plus(firstCountryObj.numberOfRoll.toString())
     }
 
     private fun showAlertDialog() {
