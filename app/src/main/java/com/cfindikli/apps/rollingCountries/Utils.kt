@@ -15,6 +15,7 @@ import nl.dionsegijn.konfetti.KonfettiView
 import nl.dionsegijn.konfetti.models.Shape
 import nl.dionsegijn.konfetti.models.Size
 import org.springframework.web.client.RestTemplate
+import java.security.SecureRandom
 import java.util.*
 
 
@@ -60,8 +61,9 @@ class Utils {
         const val url = "http://country.io/names.json"
 
         fun randomCountry(): List<Int> {
-            return Random().ints(2, 0, 250).distinct().toArray().toList()
+            return SecureRandom().ints(2, 0, 250).distinct().toArray().toList()
         }
+
 
 
         fun getFlag(shortCode: String?): android.net.Uri {
@@ -72,7 +74,7 @@ class Utils {
         }
 
         fun randomDiceValue(): List<Int> {
-            return Random().ints(2, 1, 7).toArray().toList()
+            return SecureRandom().ints(2, 1, 7).toArray().toList()
         }
 
         fun reselect(country: Country): Array<String>? {
