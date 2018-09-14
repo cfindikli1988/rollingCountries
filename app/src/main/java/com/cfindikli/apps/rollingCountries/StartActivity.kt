@@ -63,11 +63,11 @@ class StartActivity : AppCompatActivity() {
 
     private fun setUIComponents() {
 
-        Picasso.with(this@StartActivity).load(firstCountryObj.imageUrl)
+        Picasso.with(applicationContext).load(firstCountryObj.imageUrl)
                 .resize(400, 267).error(R.drawable.rollingdices)
                 .into(firstCountryFlag)
 
-        Picasso.with(this@StartActivity).load(secondCountryObj.imageUrl)
+        Picasso.with(applicationContext).load(secondCountryObj.imageUrl)
                 .resize(400, 267)
                 .error(R.drawable.rollingdices).into(secondCountryFlag)
     }
