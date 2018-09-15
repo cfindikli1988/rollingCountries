@@ -85,8 +85,8 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     }
 
     internal fun rollDice() {
-        Utils.anim1 = AnimationUtils.loadAnimation(applicationContext, R.anim.shake)
-        Utils.anim2 = AnimationUtils.loadAnimation(applicationContext, R.anim.shake)
+        Utils.anim1 = AnimationUtils.loadAnimation(this@MainActivity, R.anim.shake)
+        Utils.anim2 = AnimationUtils.loadAnimation(this@MainActivity, R.anim.shake)
         val animationListener = object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation) {
 
@@ -381,7 +381,7 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
     private fun showAlertDialog() {
 
-        val alertDialog = AlertDialog.Builder(applicationContext)
+        val alertDialog = AlertDialog.Builder(this@MainActivity)
         alertDialog.setMessage("What would you like to do next?")
         alertDialog.setCancelable(false)
 
