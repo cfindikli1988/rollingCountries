@@ -38,13 +38,10 @@ class Utils {
             firstCountryObj.imageUrl = Utils.getFlag(firstCountryObj.shortCode)
             secondCountryObj.imageUrl = Utils.getFlag(secondCountryObj.shortCode)
             return listOf(firstCountryObj, secondCountryObj)
-
-
         }
     }
 
     companion object {
-
 
         val song = arrayOf(R.raw.dicerolleffect, R.raw.queenwearethechampions, R.raw.whawha)
         var isMute = false
@@ -53,18 +50,14 @@ class Utils {
         var sensorManager: SensorManager? = null
         var anim1: Animation? = null
         var anim2: Animation? = null
-
         var firstCountryObj = Country()
         var secondCountryObj = Country()
         var response: List<Any>? = null
-
         const val url = "http://country.io/names.json"
 
         fun randomCountry(): List<Int> {
             return SecureRandom().ints(2, 0, 250).distinct().toArray().toList()
         }
-
-
 
         fun getFlag(shortCode: String?): android.net.Uri {
 
@@ -94,8 +87,6 @@ class Utils {
                     .addSizes(Size(12))
                     .setPosition(-50f, konfettiView.width + 50f, -50f, -50f)
                     .streamFor(500, 5000L)
-
-
         }
 
 
