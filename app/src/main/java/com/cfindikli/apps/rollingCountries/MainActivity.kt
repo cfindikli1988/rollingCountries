@@ -104,43 +104,28 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
                 val firstDice = resources.getIdentifier("dice_${firstCountryObj.currentDiceRoll}", "drawable", packageName)
                 val secondDice = resources.getIdentifier("dice_${secondCountryObj.currentDiceRoll}", "drawable", packageName)
-
-                if (animation === Utils.anim1) {
-                    if (firstCountryObj.numberOfRoll != 0) {
+                if (firstCountryObj.numberOfRoll != 0) {
+                    if (animation === Utils.anim1) {
                         singleRollDiceResultFirstCountry!!.setImageResource(firstDice)
                         firstCountryObj.sum += firstCountryObj.currentDiceRoll
                         firstCountryResult.text = firstCountryObj.sum.toString()
-                        if (firstCountryObj.currentDiceRoll == 6) {
-                            firstCountryObj.bonusPoint++
-                        }
-                        if (firstCountryObj.currentDiceRoll == 1) {
-                            firstCountryObj.bonusPoint--
-                        }
-                    }
-
-                } else if (animation === Utils.anim2) {
-                    if (firstCountryObj.numberOfRoll != 0) {
+                        assessBonusPoints(firstCountryObj)
                         singleRollDiceResultSecondCountry!!.setImageResource(secondDice)
                         secondCountryObj.sum += secondCountryObj.currentDiceRoll
                         secondCountryResult.text = secondCountryObj.sum.toString()
-                        if (secondCountryObj.currentDiceRoll == 6) {
-                            secondCountryObj.bonusPoint++
-                        }
-                        if (secondCountryObj.currentDiceRoll == 1) {
-                            secondCountryObj.bonusPoint--
-                        }
+                        assessBonusPoints(secondCountryObj)
                         firstCountryObj.numberOfRoll--
-                    }
 
-                    if (firstCountryObj.numberOfRoll == 0) {
-                        assessResult()
-                        rollDiceButton!!.visibility = View.INVISIBLE
-                    } else if (firstCountryObj.numberOfRoll == 1 && (firstCountryObj.sum - secondCountryObj.sum >= 6 || secondCountryObj.sum - firstCountryObj.sum >= 6)) {
-                        assessResult()
-                    } else if (firstCountryObj.numberOfRoll == 2 && (firstCountryObj.sum - secondCountryObj.sum >= 11 || secondCountryObj.sum - firstCountryObj.sum >= 11)) {
-                        assessResult()
-                    } else
-                        rollDiceButton!!.visibility = View.VISIBLE
+                        if (firstCountryObj.numberOfRoll == 0) {
+                            assessResult()
+                            rollDiceButton!!.visibility = View.INVISIBLE
+                        } else if (firstCountryObj.numberOfRoll == 1 && (firstCountryObj.sum - secondCountryObj.sum >= 6 || secondCountryObj.sum - firstCountryObj.sum >= 6)) {
+                            assessResult()
+                        } else if (firstCountryObj.numberOfRoll == 2 && (firstCountryObj.sum - secondCountryObj.sum >= 11 || secondCountryObj.sum - firstCountryObj.sum >= 11)) {
+                            assessResult()
+                        } else
+                            rollDiceButton!!.visibility = View.VISIBLE
+                    }
 
                 }
 
@@ -230,32 +215,41 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
         Utils.setBW(imageView!!, 0f)
     }
 
+    private fun assessBonusPoints(countryObject: Country) {
+        when (countryObject.currentDiceRoll) {
+            1 -> countryObject.bonusPoint--
+            6 -> countryObject.bonusPoint++
+        }
+
+    }
 
     @SuppressLint("ResourceType", "SetTextI18n")
     private fun rematch(level: Int, reselectType: Int) {
         resetValues()
         if (level < firstCountryObj.levelName.size) {
 
-            if (reselectType == 1) {
-                do {
-                    Utils.reselect(firstCountryObj)
-                } while (firstCountryObj.reselected!![1] == secondCountryObj.countryName || firstCountryObj.reselected!![1] == firstCountryObj.countryName)
+           when (reselectType){
+               1 -> {
+                   do {
+                       Utils.reselect(firstCountryObj)
+                   } while (firstCountryObj.reselected!![1] == secondCountryObj.countryName || firstCountryObj.reselected!![1] == firstCountryObj.countryName)
+                   firstCountryObj.countryName = firstCountryObj.reselected!![1]
+                   firstCountryObj.shortCode = firstCountryObj.reselected!![0].toLowerCase()
+                   firstCountryObj.imageUrl = Utils.getFlag(firstCountryObj.shortCode)
+                   setUI()
+               }
+               2-> {
+                   do {
+                       Utils.reselect(secondCountryObj)
+                   } while (secondCountryObj.reselected!![1] == firstCountryObj.countryName || secondCountryObj.reselected!![1] == secondCountryObj.countryName)
 
-                firstCountryObj.countryName = firstCountryObj.reselected!![1]
-                firstCountryObj.shortCode = firstCountryObj.reselected!![0].toLowerCase()
-                firstCountryObj.imageUrl = Utils.getFlag(firstCountryObj.shortCode)
-                setUI()
+                   secondCountryObj.countryName = secondCountryObj.reselected!![1]
+                   secondCountryObj.shortCode = secondCountryObj.reselected!![0].toLowerCase()
+                   secondCountryObj.imageUrl = Utils.getFlag(secondCountryObj.shortCode)
+                   setUI()
+               }
+           }
 
-            } else if (reselectType == 2) {
-                do {
-                    Utils.reselect(secondCountryObj)
-                } while (secondCountryObj.reselected!![1] == firstCountryObj.countryName || secondCountryObj.reselected!![1] == secondCountryObj.countryName)
-
-                secondCountryObj.countryName = secondCountryObj.reselected!![1]
-                secondCountryObj.shortCode = secondCountryObj.reselected!![0].toLowerCase()
-                secondCountryObj.imageUrl = Utils.getFlag(secondCountryObj.shortCode)
-                setUI()
-            }
         }
 
         levelName.text = firstCountryObj.levelName[firstCountryObj.level]
@@ -292,7 +286,9 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
             changeTrack(2)
             Handler().postDelayed({ endGame(firstCountryFlag) }, 4000)
 
-        } else {
+        }
+
+        else {
             if (firstCountryObj.bonusPoint > secondCountryObj.bonusPoint) {
                 ++firstCountryObj.level
                 firstCountryObj.winType = 2

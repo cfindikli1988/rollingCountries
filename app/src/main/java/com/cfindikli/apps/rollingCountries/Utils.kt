@@ -60,9 +60,7 @@ class Utils {
         }
 
         fun getFlag(shortCode: String?): android.net.Uri {
-
             val uri = "http://flagpedia.net/data/flags/normal/$shortCode.png"
-
             return Uri.parse(uri)
         }
 
