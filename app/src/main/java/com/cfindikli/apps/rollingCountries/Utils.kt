@@ -69,9 +69,15 @@ class Utils {
         }
 
         fun reselect(country: Country): Array<String>? {
-            country.reselected = Objects.requireNonNull(Objects.requireNonNull<List<Any>>(Utils.response)[Utils.randomCountry()[Random().nextInt(2)]]).toString().split("=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            return secondCountryObj.reselected
+            do {
+                country.reselected = Objects.requireNonNull(Objects.requireNonNull<List<Any>>(Utils.response)[Utils.randomCountry()[Random().nextInt(2)]]).toString().split("=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            } while (country.reselected!![1] == secondCountryObj.countryName || country.reselected!![1] == firstCountryObj.countryName)
+            country.countryName = country.reselected!![1]
+            country.shortCode = country.reselected!![0].toLowerCase()
+            country.imageUrl = Utils.getFlag(country.shortCode)
+            return country.reselected
         }
+
 
         fun throwKonfetti(konfettiView: KonfettiView) {
 

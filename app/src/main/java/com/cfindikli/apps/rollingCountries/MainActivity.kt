@@ -109,28 +109,20 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                         singleRollDiceResultFirstCountry!!.setImageResource(firstDice)
                         firstCountryObj.sum += firstCountryObj.currentDiceRoll
                         firstCountryResult.text = firstCountryObj.sum.toString()
-                        assessBonusPoints(firstCountryObj)
                         singleRollDiceResultSecondCountry!!.setImageResource(secondDice)
                         secondCountryObj.sum += secondCountryObj.currentDiceRoll
                         secondCountryResult.text = secondCountryObj.sum.toString()
-                        assessBonusPoints(secondCountryObj)
                         firstCountryObj.numberOfRoll--
 
-                        if (firstCountryObj.numberOfRoll == 0) {
-                            assessResult()
-                            rollDiceButton!!.visibility = View.INVISIBLE
-                        } else if (firstCountryObj.numberOfRoll == 1 && (firstCountryObj.sum - secondCountryObj.sum >= 6 || secondCountryObj.sum - firstCountryObj.sum >= 6)) {
-                            assessResult()
-                        } else if (firstCountryObj.numberOfRoll == 2 && (firstCountryObj.sum - secondCountryObj.sum >= 11 || secondCountryObj.sum - firstCountryObj.sum >= 11)) {
-                            assessResult()
-                        } else
-                            rollDiceButton!!.visibility = View.VISIBLE
+                        assesEarlyWinning()
                     }
 
                 }
-
+                else{
+                assessResult()
                 remainingRoll!!.text = resources.getString(R.string.text_remaining_roll) + firstCountryObj.numberOfRoll.toString()
-                bonusPoints.text = resources.getString(R.string.text_bonusPoints) + "(" + (firstCountryObj.bonusPoint.toString()) + ")" + "-" + "(" + (secondCountryObj.bonusPoint.toString() + ")")
+
+            }
             }
 
             override fun onAnimationRepeat(animation: Animation) {
@@ -206,65 +198,41 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     private fun endGame(imageView: ImageView?) {
         Utils.mp!!.stop()
         Utils.setBW(imageView!!, 1f)
-        showAlertDialog()
+        showAfterMatchDialog()
     }
 
     @SuppressLint("SetTextI18n")
     private fun afterMatch(imageView: ImageView?) {
+        rollDiceButton!!.visibility = View.INVISIBLE
         remainingRoll!!.visibility = View.INVISIBLE
         Utils.setBW(imageView!!, 0f)
     }
 
-    private fun assessBonusPoints(countryObject: Country) {
-        when (countryObject.currentDiceRoll) {
-            1 -> countryObject.bonusPoint--
-            6 -> countryObject.bonusPoint++
-        }
-
-    }
 
     @SuppressLint("ResourceType", "SetTextI18n")
     private fun rematch(level: Int, reselectType: Int) {
-        resetValues()
+
         if (level < firstCountryObj.levelName.size) {
 
            when (reselectType){
                1 -> {
-                   do {
-                       Utils.reselect(firstCountryObj)
-                   } while (firstCountryObj.reselected!![1] == secondCountryObj.countryName || firstCountryObj.reselected!![1] == firstCountryObj.countryName)
-                   firstCountryObj.countryName = firstCountryObj.reselected!![1]
-                   firstCountryObj.shortCode = firstCountryObj.reselected!![0].toLowerCase()
-                   firstCountryObj.imageUrl = Utils.getFlag(firstCountryObj.shortCode)
+                   Utils.reselect(firstCountryObj)
                    setUI()
                }
                2-> {
-                   do {
-                       Utils.reselect(secondCountryObj)
-                   } while (secondCountryObj.reselected!![1] == firstCountryObj.countryName || secondCountryObj.reselected!![1] == secondCountryObj.countryName)
-
-                   secondCountryObj.countryName = secondCountryObj.reselected!![1]
-                   secondCountryObj.shortCode = secondCountryObj.reselected!![0].toLowerCase()
-                   secondCountryObj.imageUrl = Utils.getFlag(secondCountryObj.shortCode)
+                   Utils.reselect(secondCountryObj)
+                   setUI()
+               }
+               3-> {
+                   Utils.reselect(firstCountryObj)
+                   Utils.reselect(secondCountryObj)
                    setUI()
                }
            }
 
         }
 
-        levelName.text = firstCountryObj.levelName[firstCountryObj.level]
-        rollDiceButton!!.visibility = View.VISIBLE
-        remainingRoll!!.visibility = View.VISIBLE
-        firstCountryObj.numberOfRoll = 5
-        remainingRoll!!.text = resources.getString(R.string.text_remaining_roll) + firstCountryObj.numberOfRoll.toString()
-        singleRollDiceResultFirstCountry!!.visibility = View.VISIBLE
-        singleRollDiceResultSecondCountry!!.visibility = View.VISIBLE
-        firstCountryResult.text = firstCountryObj.sum.toString()
-        secondCountryResult.text = secondCountryObj.sum.toString()
-        singleRollDiceResultFirstCountry!!.setImageResource(R.drawable.dice_6)
-        singleRollDiceResultSecondCountry!!.setImageResource(R.drawable.dice_6)
-        singleRollDiceResultFirstCountry!!.visibility = View.INVISIBLE
-        singleRollDiceResultSecondCountry!!.visibility = View.INVISIBLE
+        resetValues()
         Utils.shakeDetector!!.start(Utils.sensorManager)
 
     }
@@ -273,82 +241,52 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
         Utils.shakeDetector!!.stop()
 
-        if (firstCountryObj.sum > secondCountryObj.sum) {
-            ++firstCountryObj.level
-            firstCountryObj.winType = 1
-            afterMatch(secondCountryFlag)
-            winningCeremony(firstCountryObj.level, firstCountryObj.winType)
-        } else if (secondCountryObj.sum > firstCountryObj.sum) {
-            firstCountryObj.level = 0
-            TastyToast.makeText(applicationContext, "YOU LOSE!", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
-            afterMatch(firstCountryFlag)
-            Utils.setBW(firstCountryFlag!!, 0f)
-            changeTrack(2)
-            Handler().postDelayed({ endGame(firstCountryFlag) }, 4000)
-
-        }
-
-        else {
-            if (firstCountryObj.bonusPoint > secondCountryObj.bonusPoint) {
+        when {
+            firstCountryObj.sum > secondCountryObj.sum -> {
                 ++firstCountryObj.level
-                firstCountryObj.winType = 2
                 afterMatch(secondCountryFlag)
-                winningCeremony(firstCountryObj.level, firstCountryObj.winType)
-                Handler().postDelayed({ endGame(secondCountryFlag) }, 4000)
-            } else if (secondCountryObj.bonusPoint > firstCountryObj.bonusPoint) {
+                winningCeremony(firstCountryObj.level)
+            }
+            secondCountryObj.sum > firstCountryObj.sum -> {
                 firstCountryObj.level = 0
-                TastyToast.makeText(applicationContext, "YOU LOSE!\nBonus Points: (${firstCountryObj.bonusPoint})-(${secondCountryObj.bonusPoint})", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
+                TastyToast.makeText(applicationContext, "YOU LOSE!", TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
                 afterMatch(firstCountryFlag)
+                Utils.setBW(firstCountryFlag!!, 0f)
                 changeTrack(2)
                 Handler().postDelayed({ endGame(firstCountryFlag) }, 4000)
-            } else {
-                firstCountryObj.tieBreakRoll[0] = Utils.randomDiceValue()[0]
-                firstCountryObj.tieBreakRoll[1] = Utils.randomDiceValue()[1]
-                if (firstCountryObj.tieBreakRoll[0] == firstCountryObj.tieBreakRoll[1]) {
-                    ++firstCountryObj.level
-                    firstCountryObj.winType = 3
-                    afterMatch(secondCountryFlag)
-                    winningCeremony(firstCountryObj.level, firstCountryObj.winType)
-                    Handler().postDelayed({ endGame(secondCountryFlag) }, 4000)
-                } else {
-                    firstCountryObj.level = 0
-                    TastyToast.makeText(applicationContext, "YOU LOSE!\n" + "Bonus Points: " + "(" + firstCountryObj.bonusPoint + ")" + "-" + "(" + secondCountryObj.bonusPoint + ")" + " TieBreak Roll: " + firstCountryObj.tieBreakRoll[0] + "-" + firstCountryObj.tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.ERROR).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
-                    afterMatch(firstCountryFlag)
-                    changeTrack(2)
-                    Handler().postDelayed({ endGame(firstCountryFlag) }, 4000)
-                }
 
             }
-
+            else -> {
+                ++firstCountryObj.numberOfRoll
+                rollDiceButton.text=resources.getString(R.string.text_tie_break)
+            }
         }
+
     }
 
-    private fun winningCeremony(level: Int, winType: Int) {
+    private fun assesEarlyWinning(){
+
+        if (firstCountryObj.numberOfRoll == 1 && (firstCountryObj.sum - secondCountryObj.sum >= 6 || secondCountryObj.sum - firstCountryObj.sum >= 6)) {
+            assessResult()
+        } else if (firstCountryObj.numberOfRoll == 2 && (firstCountryObj.sum - secondCountryObj.sum >= 11 || secondCountryObj.sum - firstCountryObj.sum >= 11)) {
+            assessResult()
+        } else
+            rollDiceButton!!.visibility = View.VISIBLE
+
+    }
+
+    private fun winningCeremony(level: Int) {
         if (level == firstCountryObj.levelName.size) {
             Utils.throwKonfetti(konfettiView!!)
             changeTrack(1)
             TastyToast.makeText(applicationContext, "THE WORLD CHAMPIONS\n" + firstCountryObj.countryName!!.toUpperCase(), TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
             Handler().postDelayed({ endWinningCeremony(secondCountryFlag) }, 37000)
-        } else {
-            when (winType) {
-                1 -> {
+        }
+        else {
                     TastyToast.makeText(applicationContext, "YOU WIN!", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
                     Handler().postDelayed({ endWinningCeremony(secondCountryFlag) }, 4000)
-                }
-                2 -> {
-                    TastyToast.makeText(applicationContext, "YOU WIN!\nBonus Points: (${firstCountryObj.bonusPoint})-(${secondCountryObj.bonusPoint})", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
-                    Handler().postDelayed({ endWinningCeremony(secondCountryFlag) }, 4000)
-                }
-                3 -> {
-                    TastyToast.makeText(applicationContext, "YOU WIN!\n" + "Bonus Points: " + "(" + firstCountryObj.bonusPoint + ")" + "-" + "(" + secondCountryObj.bonusPoint + ")" + " TieBreak Roll: " + firstCountryObj.tieBreakRoll[0] + "-" + firstCountryObj.tieBreakRoll[1], TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
-                    Handler().postDelayed({ endWinningCeremony(secondCountryFlag) }, 4000)
-                }
-
-
             }
         }
-
-    }
 
 
     private fun endWinningCeremony(imageView: ImageView?) {
@@ -359,31 +297,41 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
             firstCountryObj.reselectType = 2
             rematch(firstCountryObj.level, firstCountryObj.reselectType)
         } else {
-            showAlertDialog()
+            showAfterMatchDialog()
         }
 
     }
 
     private fun resetValues() {
 
-        firstCountryObj.numberOfRoll = 5
-        firstCountryObj.bonusPoint = 0
-        secondCountryObj.bonusPoint = 0
+        firstCountryObj.numberOfRoll = 1
         firstCountryObj.sum = 0
         secondCountryObj.sum = 0
-        bonusPoints.text = resources.getString(R.string.text_bonusPoints).plus("(").plus(firstCountryObj.bonusPoint.toString()).plus(")").plus("-").plus("(").plus(secondCountryObj.bonusPoint.toString() + ")")
         remainingRoll!!.text = resources.getString(R.string.text_remaining_roll).plus(firstCountryObj.numberOfRoll.toString())
+        levelName.text = firstCountryObj.levelName[firstCountryObj.level]
+        rollDiceButton!!.visibility = View.VISIBLE
+        rollDiceButton!!.text =resources.getString(R.string.text_roll_dice)
+        remainingRoll!!.visibility = View.VISIBLE
+        remainingRoll!!.text = resources.getString(R.string.text_remaining_roll) + firstCountryObj.numberOfRoll.toString()
+        singleRollDiceResultFirstCountry!!.visibility = View.VISIBLE
+        singleRollDiceResultSecondCountry!!.visibility = View.VISIBLE
+        firstCountryResult.text = firstCountryObj.sum.toString()
+        secondCountryResult.text = secondCountryObj.sum.toString()
+        singleRollDiceResultFirstCountry!!.setImageResource(R.drawable.dice_6)
+        singleRollDiceResultSecondCountry!!.setImageResource(R.drawable.dice_6)
+        singleRollDiceResultFirstCountry!!.visibility = View.INVISIBLE
+        singleRollDiceResultSecondCountry!!.visibility = View.INVISIBLE
     }
 
-    private fun showAlertDialog() {
+    private fun showAfterMatchDialog() {
 
         val alertDialog = AlertDialog.Builder(this@MainActivity)
         alertDialog.setMessage("What would you like to do next?")
         alertDialog.setCancelable(false)
 
         alertDialog.setPositiveButton(Html.fromHtml("<font color='#3342FF'>Change Both Teams</font>")) { dialog, _ ->
-            onBackPressed()
-            dialog.cancel()
+            firstCountryObj.reselectType = 3
+            rematch(firstCountryObj.level, firstCountryObj.reselectType)
         }
 
         alertDialog.setNegativeButton(Html.fromHtml("<font color='#3342FF'>Restart With My Team</font>")) { dialog, _ ->
@@ -396,19 +344,39 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
             rematch(firstCountryObj.level, firstCountryObj.reselectType)
             dialog.cancel()
         }
-        val alert11 = alertDialog.create()
-        alert11.show()
+        val alert = alertDialog.create()
+        alert.show()
 
-        val mw = alert11.findViewById<TextView>(android.R.id.message)
+        val mw = alert.findViewById<TextView>(android.R.id.message)
         mw.gravity = Gravity.CENTER
 
     }
 
+    private fun showQuitDialog() {
+
+        val alertDialog1 = AlertDialog.Builder(this@MainActivity)
+        alertDialog1.setMessage("Are you sure you want to quit?")
+        alertDialog1.setCancelable(false)
+
+        alertDialog1.setPositiveButton(Html.fromHtml("<font color='#3342FF'>Yes</font>")) { dialog, _ ->
+            finishAffinity()
+            System.exit(0)
+            dialog.cancel()
+        }
+
+        alertDialog1.setNegativeButton(Html.fromHtml("<font color='#3342FF'>No</font>")) { dialog, _ ->
+            dialog.cancel()
+        }
+
+        val alert = alertDialog1.create()
+        alert.show()
+
+        val mw = alert.findViewById<TextView>(android.R.id.message)
+        mw.gravity = Gravity.CENTER
+
+    }
     override fun onBackPressed() {
-        val intent = Intent(this, StartActivity::class.java)
-        startActivity(intent)
-        finish()
-        super.onBackPressed()
+        showQuitDialog()
     }
 
     override fun hearShake() {

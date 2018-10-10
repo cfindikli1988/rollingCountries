@@ -6,6 +6,7 @@
     <string name="text_remaining_roll">Remaining Roll:</string>
     <string name="text_bonusPoints">Bonus Points:</string>
     <string name="text_roll_dice">ROLL DICE</string>
+    <string name="text_tie_break">TIE BREAK</string>
     <string name="todo">TODO</string>
     <string name="levelName">Round 1</string>
 
