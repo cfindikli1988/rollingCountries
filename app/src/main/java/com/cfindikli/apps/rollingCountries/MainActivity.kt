@@ -88,7 +88,6 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
         Utils.anim2 = AnimationUtils.loadAnimation(this@MainActivity, R.anim.shake)
         val animationListener = object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation) {
-
                 rollDiceButton!!.visibility = View.INVISIBLE
                 changeTrack(0)
                 singleRollDiceResultFirstCountry!!.visibility = View.VISIBLE
