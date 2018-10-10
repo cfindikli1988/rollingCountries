@@ -3,7 +3,6 @@ package com.cfindikli.apps.rollingCountries
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
 import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.net.Uri
@@ -117,12 +116,11 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                         assesEarlyWinning()
                     }
 
-                }
-                else{
-                assessResult()
-                remainingRoll!!.text = resources.getString(R.string.text_remaining_roll) + firstCountryObj.numberOfRoll.toString()
+                } else {
+                    assessResult()
+                    remainingRoll!!.text = resources.getString(R.string.text_remaining_roll) + firstCountryObj.numberOfRoll.toString()
 
-            }
+                }
             }
 
             override fun onAnimationRepeat(animation: Animation) {
@@ -214,21 +212,21 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
         if (level < firstCountryObj.levelName.size) {
 
-           when (reselectType){
-               1 -> {
-                   Utils.reselect(firstCountryObj)
-                   setUI()
-               }
-               2-> {
-                   Utils.reselect(secondCountryObj)
-                   setUI()
-               }
-               3-> {
-                   Utils.reselect(firstCountryObj)
-                   Utils.reselect(secondCountryObj)
-                   setUI()
-               }
-           }
+            when (reselectType) {
+                1 -> {
+                    Utils.reselect(firstCountryObj)
+                    setUI()
+                }
+                2 -> {
+                    Utils.reselect(secondCountryObj)
+                    setUI()
+                }
+                3 -> {
+                    Utils.reselect(firstCountryObj)
+                    Utils.reselect(secondCountryObj)
+                    setUI()
+                }
+            }
 
         }
 
@@ -258,13 +256,13 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
             }
             else -> {
                 ++firstCountryObj.numberOfRoll
-                rollDiceButton.text=resources.getString(R.string.text_tie_break)
+                rollDiceButton.text = resources.getString(R.string.text_tie_break)
             }
         }
 
     }
 
-    private fun assesEarlyWinning(){
+    private fun assesEarlyWinning() {
 
         if (firstCountryObj.numberOfRoll == 1 && (firstCountryObj.sum - secondCountryObj.sum >= 6 || secondCountryObj.sum - firstCountryObj.sum >= 6)) {
             assessResult()
@@ -281,12 +279,11 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
             changeTrack(1)
             TastyToast.makeText(applicationContext, "THE WORLD CHAMPIONS\n" + firstCountryObj.countryName!!.toUpperCase(), TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
             Handler().postDelayed({ endWinningCeremony(secondCountryFlag) }, 37000)
+        } else {
+            TastyToast.makeText(applicationContext, "YOU WIN!", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
+            Handler().postDelayed({ endWinningCeremony(secondCountryFlag) }, 4000)
         }
-        else {
-                    TastyToast.makeText(applicationContext, "YOU WIN!", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
-                    Handler().postDelayed({ endWinningCeremony(secondCountryFlag) }, 4000)
-            }
-        }
+    }
 
 
     private fun endWinningCeremony(imageView: ImageView?) {
@@ -303,16 +300,14 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     }
 
     private fun resetValues() {
-
-        firstCountryObj.numberOfRoll = 1
+        firstCountryObj.numberOfRoll = 5
         firstCountryObj.sum = 0
         secondCountryObj.sum = 0
-        remainingRoll!!.text = resources.getString(R.string.text_remaining_roll).plus(firstCountryObj.numberOfRoll.toString())
         levelName.text = firstCountryObj.levelName[firstCountryObj.level]
         rollDiceButton!!.visibility = View.VISIBLE
-        rollDiceButton!!.text =resources.getString(R.string.text_roll_dice)
+        rollDiceButton!!.text = resources.getString(R.string.text_roll_dice)
         remainingRoll!!.visibility = View.VISIBLE
-        remainingRoll!!.text = resources.getString(R.string.text_remaining_roll) + firstCountryObj.numberOfRoll.toString()
+        remainingRoll!!.text = resources.getString(R.string.text_remaining_roll).plus(firstCountryObj.numberOfRoll.toString())
         singleRollDiceResultFirstCountry!!.visibility = View.VISIBLE
         singleRollDiceResultSecondCountry!!.visibility = View.VISIBLE
         firstCountryResult.text = firstCountryObj.sum.toString()
@@ -329,7 +324,7 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
         alertDialog.setMessage("What would you like to do next?")
         alertDialog.setCancelable(false)
 
-        alertDialog.setPositiveButton(Html.fromHtml("<font color='#3342FF'>Change Both Teams</font>")) { dialog, _ ->
+        alertDialog.setPositiveButton(Html.fromHtml("<font color='#3342FF'>Change Both Teams</font>")) { _, _ ->
             firstCountryObj.reselectType = 3
             rematch(firstCountryObj.level, firstCountryObj.reselectType)
         }
@@ -354,27 +349,28 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
     private fun showQuitDialog() {
 
-        val alertDialog1 = AlertDialog.Builder(this@MainActivity)
-        alertDialog1.setMessage("Are you sure you want to quit?")
-        alertDialog1.setCancelable(false)
+        val alertDialog = AlertDialog.Builder(this@MainActivity)
+        alertDialog.setMessage("Are you sure you want to quit?")
+        alertDialog.setCancelable(false)
 
-        alertDialog1.setPositiveButton(Html.fromHtml("<font color='#3342FF'>Yes</font>")) { dialog, _ ->
+        alertDialog.setPositiveButton(Html.fromHtml("<font color='#3342FF'>Yes</font>")) { dialog, _ ->
             finishAffinity()
             System.exit(0)
             dialog.cancel()
         }
 
-        alertDialog1.setNegativeButton(Html.fromHtml("<font color='#3342FF'>No</font>")) { dialog, _ ->
+        alertDialog.setNegativeButton(Html.fromHtml("<font color='#3342FF'>No</font>")) { dialog, _ ->
             dialog.cancel()
         }
 
-        val alert = alertDialog1.create()
+        val alert = alertDialog.create()
         alert.show()
 
         val mw = alert.findViewById<TextView>(android.R.id.message)
         mw.gravity = Gravity.CENTER
 
     }
+
     override fun onBackPressed() {
         showQuitDialog()
     }
