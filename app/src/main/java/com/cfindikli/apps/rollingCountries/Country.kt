@@ -7,7 +7,7 @@ data class Country(var countryName: String? = null, var imageUrl: Uri? = null, v
     var levelName = listOf("Round 1", "Round 2", "Round 3", "Round 4", "Round 5", "QuarterFinal", "SemiFinal", "Final")
     var sum: Int = 0
     var currentDiceRoll: Int = 0
-    var numberOfRoll = 1
+    var numberOfRoll = 5
     var reselected: Array<String>? = null
     var reselectType: Int = 0
 }

@@ -112,13 +112,13 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                         secondCountryObj.sum += secondCountryObj.currentDiceRoll
                         secondCountryResult.text = secondCountryObj.sum.toString()
                         firstCountryObj.numberOfRoll--
-
+                        remainingRoll!!.text = resources.getString(R.string.text_remaining_roll) + firstCountryObj.numberOfRoll.toString()
                         assesEarlyWinning()
                     }
 
                 } else {
                     assessResult()
-                    remainingRoll!!.text = resources.getString(R.string.text_remaining_roll) + firstCountryObj.numberOfRoll.toString()
+
 
                 }
             }
@@ -257,6 +257,7 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
             else -> {
                 ++firstCountryObj.numberOfRoll
                 rollDiceButton.text = resources.getString(R.string.text_tie_break)
+                remainingRoll!!.visibility = View.INVISIBLE
             }
         }
 
