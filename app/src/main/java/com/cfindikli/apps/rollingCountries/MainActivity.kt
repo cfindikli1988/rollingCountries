@@ -96,10 +96,8 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
             @SuppressLint("SetTextI18n")
             override fun onAnimationEnd(animation: Animation) {
-
                 firstCountryObj.currentDiceRoll = Utils.randomDiceValue()[0]
                 secondCountryObj.currentDiceRoll = Utils.randomDiceValue()[1]
-
                 val firstDice = resources.getIdentifier("dice_${firstCountryObj.currentDiceRoll}", "drawable", packageName)
                 val secondDice = resources.getIdentifier("dice_${secondCountryObj.currentDiceRoll}", "drawable", packageName)
                 if (firstCountryObj.numberOfRoll != 0) {
@@ -329,7 +327,7 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
             rematch(firstCountryObj.level, firstCountryObj.reselectType)
         }
 
-        alertDialog.setNegativeButton(Html.fromHtml("<font color='#3342FF'>Restart With My Team</font>")) { dialog, _ ->
+        alertDialog.setNegativeButton(Html.fromHtml("<font color='#3342FF'>Change Opponent</font>")) { dialog, _ ->
             firstCountryObj.reselectType = 2
             rematch(firstCountryObj.level, firstCountryObj.reselectType)
             dialog.cancel()
