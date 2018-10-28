@@ -71,16 +71,19 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
     internal fun volumeOnOff() {
         Utils.isMute = !Utils.isMute
+        when {
+            Utils.isMute -> {
+                volumeIcon!!.setImageResource(R.drawable.mute)
+                Utils.mp!!.setVolume(0f, 0f)
 
-        if (Utils.isMute) {
-            volumeIcon!!.setImageResource(R.drawable.mute)
-            Utils.mp!!.setVolume(0f, 0f)
-        } else {
-            Utils.isMute = false
-            volumeIcon!!.setImageResource(R.drawable.volume)
-            Utils.mp!!.setVolume(1f, 1f)
+            }
+            else -> {
+                Utils.isMute = false
+                volumeIcon!!.setImageResource(R.drawable.volume)
+                Utils.mp!!.setVolume(1f, 1f)
+            }
+
         }
-
     }
 
     internal fun rollDice() {
@@ -100,24 +103,31 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                 secondCountryObj.currentDiceRoll = Utils.randomDiceValue()[1]
                 val firstDice = resources.getIdentifier("dice_${firstCountryObj.currentDiceRoll}", "drawable", packageName)
                 val secondDice = resources.getIdentifier("dice_${secondCountryObj.currentDiceRoll}", "drawable", packageName)
-                if (firstCountryObj.numberOfRoll != 0) {
-                    if (animation === Utils.anim1) {
-                        singleRollDiceResultFirstCountry!!.setImageResource(firstDice)
-                        firstCountryObj.sum += firstCountryObj.currentDiceRoll
-                        firstCountryResult.text = firstCountryObj.sum.toString()
-                        singleRollDiceResultSecondCountry!!.setImageResource(secondDice)
-                        secondCountryObj.sum += secondCountryObj.currentDiceRoll
-                        secondCountryResult.text = secondCountryObj.sum.toString()
-                        firstCountryObj.numberOfRoll--
-                        remainingRoll!!.text = resources.getString(R.string.text_remaining_roll) + firstCountryObj.numberOfRoll.toString()
-                        assesEarlyWinning()
+
+
+                when {
+                    firstCountryObj.numberOfRoll != 0-> {
+
+                        when (animation) {
+                            Utils.anim1 -> {
+                                singleRollDiceResultFirstCountry!!.setImageResource(firstDice)
+                                firstCountryObj.sum += firstCountryObj.currentDiceRoll
+                                firstCountryResult.text = firstCountryObj.sum.toString()
+                                singleRollDiceResultSecondCountry!!.setImageResource(secondDice)
+                                secondCountryObj.sum += secondCountryObj.currentDiceRoll
+                                secondCountryResult.text = secondCountryObj.sum.toString()
+                                firstCountryObj.numberOfRoll--
+                                remainingRoll!!.text = resources.getString(R.string.text_remaining_roll) + firstCountryObj.numberOfRoll.toString()
+                                assesEarlyWinning()
+                            }
+
+                        }
                     }
-
-                } else {
-                    assessResult()
-
-
+                    else ->{
+                        assessResult()
+                    }
                 }
+
             }
 
             override fun onAnimationRepeat(animation: Animation) {
@@ -155,7 +165,6 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                 .into(secondCountryFlag!!, object : Callback {
                     override fun onSuccess() {
                         secondCountry.text = secondCountryObj.countryName
-
                     }
 
                     override fun onError() {
@@ -163,7 +172,6 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                         secondCountry.text = secondCountryObj.countryName
                         secondCountryObj.flag = resources.getIdentifier("flag_" + secondCountryObj.shortCode, "drawable", packageName)
                         secondCountryFlag!!.setImageResource(secondCountryObj.flag!!)
-
 
                     }
                 })
@@ -207,24 +215,27 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     @SuppressLint("ResourceType", "SetTextI18n")
     private fun rematch(level: Int, reselectType: Int) {
 
-        if (level < firstCountryObj.levelName.size) {
 
-            when (reselectType) {
-                1 -> {
-                    Utils.reselect(firstCountryObj)
-                    setUI()
-                }
-                2 -> {
-                    Utils.reselect(secondCountryObj)
-                    setUI()
-                }
-                3 -> {
-                    Utils.reselect(firstCountryObj)
-                    Utils.reselect(secondCountryObj)
-                    setUI()
+        when {
+
+            level < firstCountryObj.levelName.size -> {
+
+                when (reselectType) {
+                    1 -> {
+                        Utils.reselect(firstCountryObj)
+                        setUI()
+                    }
+                    2 -> {
+                        Utils.reselect(secondCountryObj)
+                        setUI()
+                    }
+                    3 -> {
+                        Utils.reselect(firstCountryObj)
+                        Utils.reselect(secondCountryObj)
+                        setUI()
+                    }
                 }
             }
-
         }
 
         resetValues()
@@ -262,24 +273,31 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
     private fun assesEarlyWinning() {
 
-        if (firstCountryObj.numberOfRoll == 1 && (firstCountryObj.sum - secondCountryObj.sum >= 6 || secondCountryObj.sum - firstCountryObj.sum >= 6)) {
-            assessResult()
-        } else if (firstCountryObj.numberOfRoll == 2 && (firstCountryObj.sum - secondCountryObj.sum >= 11 || secondCountryObj.sum - firstCountryObj.sum >= 11)) {
-            assessResult()
-        } else
-            rollDiceButton!!.visibility = View.VISIBLE
-
+        when{
+            (firstCountryObj.numberOfRoll == 1 && (firstCountryObj.sum - secondCountryObj.sum >= 6 || secondCountryObj.sum - firstCountryObj.sum >= 6)) ->{
+                assessResult()
+            }
+            (firstCountryObj.numberOfRoll == 2 && (firstCountryObj.sum - secondCountryObj.sum >= 11 || secondCountryObj.sum - firstCountryObj.sum >= 11)) ->{
+                assessResult()
+            }
+            else -> {
+                rollDiceButton!!.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun winningCeremony(level: Int) {
-        if (level == firstCountryObj.levelName.size) {
-            Utils.throwKonfetti(konfettiView!!)
-            changeTrack(1)
-            TastyToast.makeText(applicationContext, "THE WORLD CHAMPIONS\n" + firstCountryObj.countryName!!.toUpperCase(), TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
-            Handler().postDelayed({ endWinningCeremony(secondCountryFlag) }, 37000)
-        } else {
-            TastyToast.makeText(applicationContext, "YOU WIN!", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
-            Handler().postDelayed({ endWinningCeremony(secondCountryFlag) }, 4000)
+        when (level) {
+            firstCountryObj.levelName.size -> {
+                Utils.throwKonfetti(konfettiView!!)
+                changeTrack(1)
+                TastyToast.makeText(applicationContext, "THE WORLD CHAMPIONS\n" + firstCountryObj.countryName!!.toUpperCase(), TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
+                Handler().postDelayed({ endWinningCeremony(secondCountryFlag) }, 37000)
+            }
+            else -> {
+                TastyToast.makeText(applicationContext, "YOU WIN!", TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
+                Handler().postDelayed({ endWinningCeremony(secondCountryFlag) }, 4000)
+            }
         }
     }
 
@@ -288,11 +306,15 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
         Utils.mp!!.stop()
         Utils.setBW(imageView!!, 1f)
-        if (firstCountryObj.level < firstCountryObj.levelName.size) {
-            firstCountryObj.reselectType = 2
-            rematch(firstCountryObj.level, firstCountryObj.reselectType)
-        } else {
-            showAfterMatchDialog()
+
+        when {
+            firstCountryObj.level < firstCountryObj.levelName.size ->{
+                firstCountryObj.reselectType = 2
+                rematch(firstCountryObj.level, firstCountryObj.reselectType)
+            }
+            else ->{
+                showAfterMatchDialog()
+            }
         }
 
     }
