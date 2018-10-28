@@ -152,12 +152,9 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                     }
 
                     override fun onError() {
-
                         firstCountry.text = firstCountryObj.countryName
                         firstCountryObj.flag = resources.getIdentifier("flag_" + firstCountryObj.shortCode, "drawable", packageName)
                         firstCountryFlag!!.setImageResource(firstCountryObj.flag!!)
-
-
                     }
                 })
 
@@ -168,7 +165,6 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                     }
 
                     override fun onError() {
-
                         secondCountry.text = secondCountryObj.countryName
                         secondCountryObj.flag = resources.getIdentifier("flag_" + secondCountryObj.shortCode, "drawable", packageName)
                         secondCountryFlag!!.setImageResource(secondCountryObj.flag!!)
@@ -215,7 +211,6 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     @SuppressLint("ResourceType", "SetTextI18n")
     private fun rematch(level: Int, reselectType: Int) {
 
-
         when {
 
             level < firstCountryObj.levelName.size -> {
@@ -223,18 +218,16 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                 when (reselectType) {
                     1 -> {
                         Utils.reselect(firstCountryObj)
-                        setUI()
                     }
                     2 -> {
                         Utils.reselect(secondCountryObj)
-                        setUI()
                     }
                     3 -> {
                         Utils.reselect(firstCountryObj)
                         Utils.reselect(secondCountryObj)
-                        setUI()
                     }
                 }
+                setUI()
             }
         }
 
@@ -260,7 +253,6 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                 Utils.setBW(firstCountryFlag!!, 0f)
                 changeTrack(2)
                 Handler().postDelayed({ endGame(firstCountryFlag) }, 4000)
-
             }
             else -> {
                 ++firstCountryObj.numberOfRoll
