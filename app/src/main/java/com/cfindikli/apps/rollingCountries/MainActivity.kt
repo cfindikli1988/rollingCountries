@@ -75,14 +75,12 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
             Utils.isMute -> {
                 volumeIcon!!.setImageResource(R.drawable.mute)
                 Utils.mp!!.setVolume(0f, 0f)
-
             }
             else -> {
                 Utils.isMute = false
                 volumeIcon!!.setImageResource(R.drawable.volume)
                 Utils.mp!!.setVolume(1f, 1f)
             }
-
         }
     }
 
@@ -144,7 +142,6 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     }
 
     private fun setUI() {
-
         Picasso.with(applicationContext).load(firstCountryObj.imageUrl).resize(400, 267)
                 .into(firstCountryFlag!!, object : Callback {
                     override fun onSuccess() {
@@ -168,7 +165,6 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                         secondCountry.text = secondCountryObj.countryName
                         secondCountryObj.flag = resources.getIdentifier("flag_" + secondCountryObj.shortCode, "drawable", packageName)
                         secondCountryFlag!!.setImageResource(secondCountryObj.flag!!)
-
                     }
                 })
     }
@@ -210,7 +206,6 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
     @SuppressLint("ResourceType", "SetTextI18n")
     private fun rematch(level: Int, reselectType: Int) {
-
         when {
 
             level < firstCountryObj.levelName.size -> {
@@ -230,16 +225,12 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                 setUI()
             }
         }
-
         resetValues()
         Utils.shakeDetector!!.start(Utils.sensorManager)
-
     }
 
     private fun assessResult() {
-
         Utils.shakeDetector!!.stop()
-
         when {
             firstCountryObj.sum > secondCountryObj.sum -> {
                 ++firstCountryObj.level
@@ -392,7 +383,6 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     }
 
     internal inner class ClickListener : View.OnClickListener {
-
         override fun onClick(view: View) {
             when (view.id) {
                 R.id.rollDiceButton -> rollDice()
