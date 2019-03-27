@@ -41,7 +41,6 @@ class StartActivity : AppCompatActivity() {
 
                 }
                 try {
-
                     Thread.sleep(100)
                 } catch (e: InterruptedException) {
                     e.printStackTrace()
@@ -63,11 +62,11 @@ class StartActivity : AppCompatActivity() {
 
     private fun setUIComponents() {
 
-        Picasso.with(applicationContext).load(firstCountryObj.imageUrl)
+        Picasso.get().load(firstCountryObj.imageUrl)
                 .resize(400, 267).error(R.drawable.rollingdices)
                 .into(firstCountryFlag)
 
-        Picasso.with(applicationContext).load(secondCountryObj.imageUrl)
+        Picasso.get().load(secondCountryObj.imageUrl)
                 .resize(400, 267)
                 .error(R.drawable.rollingdices).into(secondCountryFlag)
     }

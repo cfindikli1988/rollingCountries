@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
 
                 when {
-                    firstCountryObj.numberOfRoll != 0-> {
+                    firstCountryObj.numberOfRoll != 0 -> {
 
                         when (animation) {
                             Utils.anim1 -> {
@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
                         }
                     }
-                    else ->{
+                    else -> {
                         assessResult()
                     }
                 }
@@ -142,26 +142,26 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     }
 
     private fun setUI() {
-        Picasso.with(applicationContext).load(firstCountryObj.imageUrl).resize(400, 267)
+        Picasso.get().load(firstCountryObj.imageUrl).resize(400, 267)
                 .into(firstCountryFlag!!, object : Callback {
                     override fun onSuccess() {
                         firstCountry.text = firstCountryObj.countryName
                     }
 
-                    override fun onError() {
+                    override fun onError(e: Exception?) {
                         firstCountry.text = firstCountryObj.countryName
                         firstCountryObj.flag = resources.getIdentifier("flag_" + firstCountryObj.shortCode, "drawable", packageName)
                         firstCountryFlag!!.setImageResource(firstCountryObj.flag!!)
                     }
                 })
 
-        Picasso.with(applicationContext).load(secondCountryObj.imageUrl).resize(400, 267)
+        Picasso.get().load(secondCountryObj.imageUrl).resize(400, 267)
                 .into(secondCountryFlag!!, object : Callback {
                     override fun onSuccess() {
                         secondCountry.text = secondCountryObj.countryName
                     }
 
-                    override fun onError() {
+                    override fun onError(e: Exception?) {
                         secondCountry.text = secondCountryObj.countryName
                         secondCountryObj.flag = resources.getIdentifier("flag_" + secondCountryObj.shortCode, "drawable", packageName)
                         secondCountryFlag!!.setImageResource(secondCountryObj.flag!!)
@@ -256,11 +256,11 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
 
     private fun assesEarlyWinning() {
 
-        when{
-            (firstCountryObj.numberOfRoll == 1 && (firstCountryObj.sum - secondCountryObj.sum >= 6 || secondCountryObj.sum - firstCountryObj.sum >= 6)) ->{
+        when {
+            (firstCountryObj.numberOfRoll == 1 && (firstCountryObj.sum - secondCountryObj.sum >= 6 || secondCountryObj.sum - firstCountryObj.sum >= 6)) -> {
                 assessResult()
             }
-            (firstCountryObj.numberOfRoll == 2 && (firstCountryObj.sum - secondCountryObj.sum >= 11 || secondCountryObj.sum - firstCountryObj.sum >= 11)) ->{
+            (firstCountryObj.numberOfRoll == 2 && (firstCountryObj.sum - secondCountryObj.sum >= 11 || secondCountryObj.sum - firstCountryObj.sum >= 11)) -> {
                 assessResult()
             }
             else -> {
@@ -291,11 +291,11 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
         Utils.setBW(imageView!!, 1f)
 
         when {
-            firstCountryObj.level < firstCountryObj.levelName.size ->{
+            firstCountryObj.level < firstCountryObj.levelName.size -> {
                 firstCountryObj.reselectType = 2
                 rematch(firstCountryObj.level, firstCountryObj.reselectType)
             }
-            else ->{
+            else -> {
                 showAfterMatchDialog()
             }
         }
