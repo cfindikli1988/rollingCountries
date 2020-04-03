@@ -31,12 +31,12 @@ class Utils {
             response = restTemplate.getForObject(params[0], Map::class.java).entries.stream().toArray().toList()
             val firstCountry = response!![randomCountry().first()].toString().split("=")
             val secondCountry = response!![randomCountry().last()].toString().split("=")
-            firstCountryObj.shortCode = firstCountry.first().toLowerCase()
+            firstCountryObj.shortCode = firstCountry.first().toLowerCase(Locale.ENGLISH)
             firstCountryObj.countryName = firstCountry.last()
-            secondCountryObj.shortCode = secondCountry.first().toLowerCase()
+            secondCountryObj.shortCode = secondCountry.first().toLowerCase(Locale.ENGLISH)
             secondCountryObj.countryName = secondCountry.last()
-            firstCountryObj.imageUrl = Utils.getFlag(firstCountryObj.shortCode)
-            secondCountryObj.imageUrl = Utils.getFlag(secondCountryObj.shortCode)
+            firstCountryObj.imageUrl = getFlag(firstCountryObj.shortCode)
+            secondCountryObj.imageUrl = getFlag(secondCountryObj.shortCode)
             return listOf(firstCountryObj, secondCountryObj)
         }
     }
@@ -59,7 +59,7 @@ class Utils {
             return SecureRandom().ints(2, 0, 250).distinct().toArray().toList()
         }
 
-        fun getFlag(shortCode: String?): android.net.Uri {
+        fun getFlag(shortCode: String?): Uri {
             val uri = "http://flagpedia.net/data/flags/normal/$shortCode.png"
             return Uri.parse(uri)
         }
@@ -70,11 +70,11 @@ class Utils {
 
         fun reselect(country: Country): Array<String>? {
             do {
-                country.reselected = Objects.requireNonNull(Objects.requireNonNull<List<Any>>(Utils.response)[Utils.randomCountry()[Random().nextInt(2)]]).toString().split("=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                country.reselected = Objects.requireNonNull(Objects.requireNonNull<List<Any>>(response)[randomCountry()[Random().nextInt(2)]]).toString().split("=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             } while (country.reselected!![1] == secondCountryObj.countryName || country.reselected!![1] == firstCountryObj.countryName)
             country.countryName = country.reselected!![1]
-            country.shortCode = country.reselected!![0].toLowerCase()
-            country.imageUrl = Utils.getFlag(country.shortCode)
+            country.shortCode = country.reselected!![0].toLowerCase(Locale.ENGLISH)
+            country.imageUrl = getFlag(country.shortCode)
             return country.reselected
         }
 

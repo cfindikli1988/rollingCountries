@@ -24,6 +24,8 @@ import com.squareup.picasso.Picasso
 import com.squareup.seismic.ShakeDetector
 import kotlinx.android.synthetic.main.animation_activty.*
 import java.io.IOException
+import java.util.*
+import kotlin.system.exitProcess
 
 
 @Suppress("DEPRECATION")
@@ -274,7 +276,7 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
             firstCountryObj.levelName.size -> {
                 Utils.throwKonfetti(konfettiView!!)
                 changeTrack(1)
-                TastyToast.makeText(applicationContext, "THE WORLD CHAMPIONS\n" + firstCountryObj.countryName!!.toUpperCase(), TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
+                TastyToast.makeText(applicationContext, "THE WORLD CHAMPIONS\n" + firstCountryObj.countryName!!.toUpperCase(Locale.getDefault()), TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
                 Handler().postDelayed({ endWinningCeremony(secondCountryFlag) }, 37000)
             }
             else -> {
@@ -356,10 +358,9 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
         alertDialog.setMessage("Are you sure you want to quit?")
         alertDialog.setCancelable(false)
 
-        alertDialog.setPositiveButton(Html.fromHtml("<font color='#3342FF'>Yes</font>")) { dialog, _ ->
+        alertDialog.setPositiveButton(Html.fromHtml("<font color='#3342FF'>Yes</font>")) { _, _ ->
             finishAffinity()
-            System.exit(0)
-            dialog.cancel()
+            exitProcess(0)
         }
 
         alertDialog.setNegativeButton(Html.fromHtml("<font color='#3342FF'>No</font>")) { dialog, _ ->
