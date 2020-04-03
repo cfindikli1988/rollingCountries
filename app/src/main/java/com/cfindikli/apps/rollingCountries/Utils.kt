@@ -79,7 +79,7 @@ class Utils {
         }
 
 
-        fun throwKonfetti(konfettiView: KonfettiView) {
+        fun throwConfetti(konfettiView: KonfettiView) {
 
             konfettiView.build()
                     .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA, Color.BLUE)

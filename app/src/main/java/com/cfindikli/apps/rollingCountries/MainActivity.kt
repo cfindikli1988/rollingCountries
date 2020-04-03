@@ -274,7 +274,7 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     private fun winningCeremony(level: Int) {
         when (level) {
             firstCountryObj.levelName.size -> {
-                Utils.throwKonfetti(konfettiView!!)
+                Utils.throwConfetti(konfettiView!!)
                 changeTrack(1)
                 TastyToast.makeText(applicationContext, "THE WORLD CHAMPIONS\n" + firstCountryObj.countryName!!.toUpperCase(Locale.getDefault()), TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
                 Handler().postDelayed({ endWinningCeremony(secondCountryFlag) }, 37000)
