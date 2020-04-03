@@ -3,8 +3,8 @@ package com.cfindikli.apps.rollingCountries
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.app.AppCompatActivity
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.cfindikli.apps.rollingCountries.Utils.Companion.firstCountryObj
 import com.cfindikli.apps.rollingCountries.Utils.Companion.secondCountryObj
 import com.squareup.picasso.Picasso
