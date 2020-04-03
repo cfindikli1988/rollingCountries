@@ -25,6 +25,29 @@ class StartActivity : AppCompatActivity() {
         secondCountryFlag.visibility = View.INVISIBLE
         Utils().FetchJson().execute(Utils.url).get()!!
         setUIComponents()
+    }
+
+
+    private fun switchToMainActivity() {
+        val i = Intent(this, MainActivity::class.java)
+        startActivity(i)
+    }
+
+
+    private fun setUIComponents() {
+
+        startRollingDiceAnimation()
+        Picasso.get().load(firstCountryObj.imageUrl)
+                .resize(400, 267).error(R.drawable.rollingdices)
+                .into(firstCountryFlag)
+
+        Picasso.get().load(secondCountryObj.imageUrl)
+                .resize(400, 267)
+                .error(R.drawable.rollingdices).into(secondCountryFlag)
+    }
+
+
+    private fun startRollingDiceAnimation() {
 
         Thread(Runnable {
 
@@ -45,27 +68,6 @@ class StartActivity : AppCompatActivity() {
             }
             switchToMainActivity()
         }).start()
-
-
     }
-
-
-    private fun switchToMainActivity() {
-        val i = Intent(this, MainActivity::class.java)
-        startActivity(i)
-    }
-
-
-    private fun setUIComponents() {
-
-        Picasso.get().load(firstCountryObj.imageUrl)
-                .resize(400, 267).error(R.drawable.rollingdices)
-                .into(firstCountryFlag)
-
-        Picasso.get().load(secondCountryObj.imageUrl)
-                .resize(400, 267)
-                .error(R.drawable.rollingdices).into(secondCountryFlag)
-    }
-
 
 }
