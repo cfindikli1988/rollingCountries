@@ -25,15 +25,14 @@ class Utils {
     @SuppressLint("StaticFieldLeak")
     inner class FetchJson : AsyncTask<String, Void, List<Country>>() {
 
-
         override fun doInBackground(vararg params: String): List<Country> {
             val restTemplate = RestTemplate()
-            response = restTemplate.getForObject(params[0], Map::class.java).entries.stream().toArray().toList()
+            response = restTemplate.getForObject(params[0], Map::class.java).entries.toList()
             val firstCountry = response!![randomCountry().first()].toString().split("=")
             val secondCountry = response!![randomCountry().last()].toString().split("=")
-            firstCountryObj.shortCode = firstCountry.first().toLowerCase(Locale.ENGLISH)
+            firstCountryObj.shortCode = firstCountry.first()
             firstCountryObj.countryName = firstCountry.last()
-            secondCountryObj.shortCode = secondCountry.first().toLowerCase(Locale.ENGLISH)
+            secondCountryObj.shortCode = secondCountry.first()
             secondCountryObj.countryName = secondCountry.last()
             firstCountryObj.imageUrl = getFlag(firstCountryObj.shortCode)
             secondCountryObj.imageUrl = getFlag(secondCountryObj.shortCode)
@@ -60,7 +59,7 @@ class Utils {
         }
 
         fun getFlag(shortCode: String?): Uri {
-            val uri = "http://flagpedia.net/data/flags/normal/$shortCode.png"
+            val uri = "http://flagpedia.net/data/flags/normal/${shortCode!!.toLowerCase(Locale.ENGLISH)}.png"
             return Uri.parse(uri)
         }
 
@@ -68,16 +67,16 @@ class Utils {
             return SecureRandom().ints(2, 1, 7).toArray().toList()
         }
 
-        fun reselect(country: Country): Array<String>? {
+        fun reselect(country: Country): List<String>? {
             do {
-                country.reselected = Objects.requireNonNull(Objects.requireNonNull<List<Any>>(response)[randomCountry()[Random().nextInt(2)]]).toString().split("=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                country.reselected = response!![randomCountry()[Random().nextInt(2)]].toString().split("=")
+
             } while (country.reselected!![1] == secondCountryObj.countryName || country.reselected!![1] == firstCountryObj.countryName)
             country.countryName = country.reselected!![1]
             country.shortCode = country.reselected!![0].toLowerCase(Locale.ENGLISH)
             country.imageUrl = getFlag(country.shortCode)
             return country.reselected
         }
-
 
         fun throwConfetti(konfettiView: KonfettiView) {
 

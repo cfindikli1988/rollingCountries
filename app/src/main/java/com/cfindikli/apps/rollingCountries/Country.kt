@@ -8,6 +8,6 @@ data class Country(var countryName: String? = null, var imageUrl: Uri? = null, v
     var sum: Int = 0
     var currentDiceRoll: Int = 0
     var numberOfRoll = 5
-    var reselected: Array<String>? = null
+    var reselected: List<String>? = null
     var reselectType: Int = 0
 }
