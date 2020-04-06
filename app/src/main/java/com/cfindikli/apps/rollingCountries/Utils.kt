@@ -28,12 +28,12 @@ class Utils {
 
         override fun doInBackground(vararg params: String): List<Country> {
             val restTemplate = RestTemplate()
-            response = restTemplate.getForObject(params[0], Map::class.java).entries.stream().toArray().toList()
+            response = restTemplate.getForObject(params[0], Map::class.java).entries.toList()
             val firstCountry = response!![randomCountry().first()].toString().split("=")
             val secondCountry = response!![randomCountry().last()].toString().split("=")
-            firstCountryObj.shortCode = firstCountry.first().toLowerCase(Locale.ENGLISH)
+            firstCountryObj.shortCode = firstCountry.first()
             firstCountryObj.countryName = firstCountry.last()
-            secondCountryObj.shortCode = secondCountry.first().toLowerCase(Locale.ENGLISH)
+            secondCountryObj.shortCode = secondCountry.first()
             secondCountryObj.countryName = secondCountry.last()
             firstCountryObj.imageUrl = getFlag(firstCountryObj.shortCode)
             secondCountryObj.imageUrl = getFlag(secondCountryObj.shortCode)
@@ -60,7 +60,7 @@ class Utils {
         }
 
         fun getFlag(shortCode: String?): Uri {
-            val uri = "http://flagpedia.net/data/flags/normal/$shortCode.png"
+            val uri = "http://flagpedia.net/data/flags/normal/${shortCode!!.toLowerCase(Locale.ENGLISH)}.png"
             return Uri.parse(uri)
         }
 
