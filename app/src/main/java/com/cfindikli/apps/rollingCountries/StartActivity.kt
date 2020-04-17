@@ -21,9 +21,8 @@ class StartActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
-        firstCountryFlag.visibility = View.INVISIBLE
-        secondCountryFlag.visibility = View.INVISIBLE
-        Utils().FetchJson().execute(Utils.url).get()!!
+
+        Utils().FetchJson().execute(Utils.url)
         setUIComponents()
     }
 
@@ -35,7 +34,8 @@ class StartActivity : AppCompatActivity() {
 
 
     private fun setUIComponents() {
-
+        firstCountryFlag.visibility = View.INVISIBLE
+        secondCountryFlag.visibility = View.INVISIBLE
         startRollingDiceAnimation()
         Picasso.get().load(firstCountryObj.imageUrl)
                 .resize(400, 267).error(R.drawable.rollingdices)

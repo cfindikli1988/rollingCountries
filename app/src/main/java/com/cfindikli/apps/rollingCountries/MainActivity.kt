@@ -147,12 +147,12 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
         Picasso.get().load(firstCountryObj.imageUrl).resize(400, 267)
                 .into(firstCountryFlag!!, object : Callback {
                     override fun onSuccess() {
-                        firstCountry.text = firstCountryObj.countryName
+                        firstCountry.text = firstCountryObj.name
                     }
 
                     override fun onError(e: Exception?) {
-                        firstCountry.text = firstCountryObj.countryName
-                        firstCountryObj.flag = resources.getIdentifier("flag_" + firstCountryObj.shortCode, "drawable", packageName)
+                        firstCountry.text = firstCountryObj.name
+                        firstCountryObj.flag = resources.getIdentifier("flag_" + firstCountryObj.alpha2Code, "drawable", packageName)
                         firstCountryFlag!!.setImageResource(firstCountryObj.flag!!)
                     }
                 })
@@ -160,12 +160,12 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
         Picasso.get().load(secondCountryObj.imageUrl).resize(400, 267)
                 .into(secondCountryFlag!!, object : Callback {
                     override fun onSuccess() {
-                        secondCountry.text = secondCountryObj.countryName
+                        secondCountry.text = secondCountryObj.name
                     }
 
                     override fun onError(e: Exception?) {
-                        secondCountry.text = secondCountryObj.countryName
-                        secondCountryObj.flag = resources.getIdentifier("flag_" + secondCountryObj.shortCode, "drawable", packageName)
+                        secondCountry.text = secondCountryObj.name
+                        secondCountryObj.flag = resources.getIdentifier("flag_" + secondCountryObj.alpha2Code, "drawable", packageName)
                         secondCountryFlag!!.setImageResource(secondCountryObj.flag!!)
                     }
                 })
@@ -276,7 +276,7 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
             firstCountryObj.levelName.size -> {
                 Utils.throwConfetti(konfettiView!!)
                 changeTrack(1)
-                TastyToast.makeText(applicationContext, "THE WORLD CHAMPIONS\n" + firstCountryObj.countryName!!.toUpperCase(Locale.getDefault()), TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
+                TastyToast.makeText(applicationContext, "THE WORLD CHAMPIONS\n" + firstCountryObj.name!!.toUpperCase(Locale.getDefault()), TastyToast.LENGTH_LONG, TastyToast.SUCCESS).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
                 Handler().postDelayed({ endWinningCeremony(secondCountryFlag) }, 37000)
             }
             else -> {
@@ -305,7 +305,7 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     }
 
     private fun resetValues() {
-        firstCountryObj.numberOfRoll = 5
+        firstCountryObj.numberOfRoll = Country().numberOfRoll
         firstCountryObj.sum = 0
         secondCountryObj.sum = 0
         levelName.text = firstCountryObj.levelName[firstCountryObj.level]
