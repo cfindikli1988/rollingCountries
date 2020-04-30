@@ -16,6 +16,7 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.cfindikli.apps.rollingCountries.Model.CountryModel
 import com.cfindikli.apps.rollingCountries.Utils.Companion.firstCountryObj
 import com.cfindikli.apps.rollingCountries.Utils.Companion.secondCountryObj
 import com.sdsmdg.tastytoast.TastyToast
@@ -305,7 +306,7 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     }
 
     private fun resetValues() {
-        firstCountryObj.numberOfRoll = Country().numberOfRoll
+        firstCountryObj.numberOfRoll = CountryModel().numberOfRoll
         firstCountryObj.sum = 0
         secondCountryObj.sum = 0
         levelName.text = firstCountryObj.levelName[firstCountryObj.level]
