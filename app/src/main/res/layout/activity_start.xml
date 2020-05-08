@@ -1,38 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:gpb="http://schemas.android.com/apk/res-auto"
-    tools:context="com.cfindikli.apps.rollingCountries.StartActivity">
+    tools:context="com.cfindikli.apps.rollingCountries.View.StartActivity">
 
-
-    <com.jpardogo.android.googleprogressbar.library.GoogleProgressBar
-        android:id="@+id/google_progress"
-        android:layout_width="173dp"
-        android:layout_height="170dp"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center"
-        gpb:type="google_music_dices" />
-
-    <ImageView
-        android:id="@+id/secondCountryFlag"
-        android:layout_width="128dp"
-        android:layout_height="104dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/firstCountryFlag"
-        android:src="@drawable/rollingdices"
-        android:contentDescription="TODO" />
-
-    <ImageView
-        android:id="@+id/firstCountryFlag"
-        android:layout_width="128dp"
-        android:layout_height="104dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="78dp"
-        android:src="@drawable/rollingdices"
-        android:contentDescription="TODO" />
-
-
-</RelativeLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

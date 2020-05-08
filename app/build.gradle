@@ -67,6 +67,7 @@ dependencies {
     implementation 'com.github.dakatso:livebutton:1.0.0'
     implementation 'com.jpardogo.googleprogressbar:library:1.2.0'
     implementation 'com.squareup:seismic:1.0.2'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
     testImplementation 'junit:junit:4.12'
 
 
