@@ -60,6 +60,11 @@ class Utils {
             countryModel.imageUrl = getFlag(countryModel.alpha2Code)
         }
 
+        fun autoSelectOpponent() {
+            secondCountryObj = countryModelList!![randomCountry().last()]
+            secondCountryObj.imageUrl = getFlag(secondCountryObj.alpha2Code)
+        }
+
         fun throwConfetti(konfettiView: KonfettiView) {
 
             konfettiView.build()

@@ -1,14 +1,14 @@
 <resources>
     <string name="app_name">Rolling Countries</string>
-    <string name="text_goodluck">0</string>
-    <string name="text_you">1P</string>
+    <string name="text_good_luck">0</string>
+    <string name="text_you">YOU</string>
     <string name="text_opponent">COM</string>
     <string name="text_remaining_roll">Remaining Roll:</string>
     <string name="text_bonusPoints">Bonus Points:</string>
     <string name="text_roll_dice">ROLL DICE</string>
     <string name="text_tie_break">TIE BREAK</string>
     <string name="todo">TODO</string>
+    <string name="after_match_text">"What would you like to do next?"</string>
+    <string name="exit_game_text">"Are you sure you want to quit?"</string>
     <string name="levelName">Round 1</string>
-
-
 </resources>

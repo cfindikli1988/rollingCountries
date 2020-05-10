@@ -23,7 +23,8 @@ android {
         minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0"
+        versionName "1.1"
+        setProperty("archivesBaseName", "RollingCountries$versionName")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
@@ -59,13 +60,11 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
-
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
     implementation "io.reactivex.rxjava2:rxandroid:$rxJavaVersion"
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.sdsmdg.tastytoast:tastytoast:0.1.1'
     implementation 'com.github.dakatso:livebutton:1.0.0'
-    implementation 'com.jpardogo.googleprogressbar:library:1.2.0'
     implementation 'com.squareup:seismic:1.0.2'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     testImplementation 'junit:junit:4.12'

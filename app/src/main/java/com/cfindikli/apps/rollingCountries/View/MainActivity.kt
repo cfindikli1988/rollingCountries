@@ -3,6 +3,7 @@ package com.cfindikli.apps.rollingCountries
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.net.Uri
@@ -19,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.cfindikli.apps.rollingCountries.Model.CountryModel
 import com.cfindikli.apps.rollingCountries.Utils.Companion.firstCountryObj
 import com.cfindikli.apps.rollingCountries.Utils.Companion.secondCountryObj
+import com.cfindikli.apps.rollingCountries.View.StartActivity
 import com.sdsmdg.tastytoast.TastyToast
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
@@ -26,7 +28,6 @@ import com.squareup.seismic.ShakeDetector
 import kotlinx.android.synthetic.main.animation_activty.*
 import java.io.IOException
 import java.util.*
-import kotlin.system.exitProcess
 
 
 @Suppress("DEPRECATION")
@@ -216,9 +217,11 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
                 when (reselectType) {
                     1 -> {
                         Utils.reselect(firstCountryObj)
+                        goBackPreviousActivity()
                     }
                     2 -> {
                         Utils.reselect(secondCountryObj)
+                        TastyToast.makeText(applicationContext, "Your Next Opponent: ${secondCountryObj.name}", TastyToast.LENGTH_SHORT, TastyToast.DEFAULT).setGravity(Gravity.CENTER_VERTICAL or Gravity.CENTER_HORIZONTAL, 0, 0)
                     }
                     3 -> {
                         Utils.reselect(firstCountryObj)
@@ -327,24 +330,27 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     private fun showAfterMatchDialog() {
 
         val alertDialog = AlertDialog.Builder(this@MainActivity)
-        alertDialog.setMessage("What would you like to do next?")
+        alertDialog.setMessage(R.string.after_match_text)
         alertDialog.setCancelable(false)
 
-        alertDialog.setPositiveButton(Html.fromHtml("<font color='#3342FF'>Change Both Teams</font>")) { _, _ ->
+        alertDialog.setNeutralButton(Html.fromHtml("<font color='#3342FF'>Change Both Teams (Automatically)</font>")) { _, _ ->
             firstCountryObj.reselectType = 3
             rematch(firstCountryObj.level, firstCountryObj.reselectType)
         }
 
-        alertDialog.setNegativeButton(Html.fromHtml("<font color='#3342FF'>Change Opponent</font>")) { dialog, _ ->
+        alertDialog.setNegativeButton(Html.fromHtml("<font color='#3342FF'>Change Opponent (Automatically)</font>")) { dialog, _ ->
             firstCountryObj.reselectType = 2
             rematch(firstCountryObj.level, firstCountryObj.reselectType)
             dialog.cancel()
         }
-        alertDialog.setNeutralButton(Html.fromHtml("<font color='#3342FF'>Change My Team Only</font>")) { dialog, _ ->
+
+        alertDialog.setPositiveButton(Html.fromHtml("<font color='#3342FF'>Just Change My Team (Manually)</font>")) { dialog, _ ->
             firstCountryObj.reselectType = 1
             rematch(firstCountryObj.level, firstCountryObj.reselectType)
             dialog.cancel()
         }
+
+
         val alert = alertDialog.create()
         alert.show()
 
@@ -356,12 +362,12 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     private fun showQuitDialog() {
 
         val alertDialog = AlertDialog.Builder(this@MainActivity)
-        alertDialog.setMessage("Are you sure you want to quit?")
+        alertDialog.setMessage(R.string.exit_game_text)
         alertDialog.setCancelable(false)
 
         alertDialog.setPositiveButton(Html.fromHtml("<font color='#3342FF'>Yes</font>")) { _, _ ->
             finishAffinity()
-            exitProcess(0)
+
         }
 
         alertDialog.setNegativeButton(Html.fromHtml("<font color='#3342FF'>No</font>")) { dialog, _ ->
@@ -374,6 +380,11 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
         val mw = alert.findViewById<TextView>(android.R.id.message)
         mw.gravity = Gravity.CENTER
 
+    }
+
+    private fun goBackPreviousActivity() {
+        val i = Intent(this, StartActivity::class.java)
+        startActivity(i)
     }
 
     override fun onBackPressed() {

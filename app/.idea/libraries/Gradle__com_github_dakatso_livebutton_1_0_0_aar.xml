@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.dakatso:livebutton:1.0.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bd78dfface92b37e79b4f8f5f009d19c/jetified-livebutton-1.0.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bd78dfface92b37e79b4f8f5f009d19c/jetified-livebutton-1.0.0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2ae79ea9ce79c4fa5890da7860f4aeaa/jetified-livebutton-1.0.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2ae79ea9ce79c4fa5890da7860f4aeaa/jetified-livebutton-1.0.0/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.dakatso/livebutton/1.0.0/683d911487cd13ddbe8cb3ac5e856d9e0c0a07b0/livebutton-1.0.0-javadoc.jar!/" />
