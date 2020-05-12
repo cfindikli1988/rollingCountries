@@ -1,10 +1,8 @@
-package com.cfindikli.apps.rollingCountries.Service
+package com.cfindikli.apps.rollingCountries.service
 
-import com.cfindikli.apps.rollingCountries.Model.CountryModel
+import com.cfindikli.apps.rollingCountries.model.CountryModel
 import io.reactivex.Observable
-import retrofit2.Call
 import retrofit2.http.GET
-import java.util.*
 
 interface CountryAPI {
 

@@ -14,14 +14,14 @@
         android:theme="@style/AppTheme"
         android:fullBackupContent="@xml/backup_descriptor"
         android:usesCleartextTraffic="true">
-        <activity android:name=".View.StartActivity">
+        <activity android:name=".view.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
+        <activity android:name=".view.MainActivity" />
 
         <!--
      Set custom default icon. This is used when no icon is set for incoming notification messages.

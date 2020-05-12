@@ -1,12 +1,12 @@
-package com.cfindikli.apps.rollingCountries.Adapter
+package com.cfindikli.apps.rollingCountries.adapter
 
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.cfindikli.apps.rollingCountries.Model.CountryModel
 import com.cfindikli.apps.rollingCountries.R
+import com.cfindikli.apps.rollingCountries.model.CountryModel
 import kotlinx.android.synthetic.main.row_layout.view.*
 
 class RecyclerViewAdapter(private val countryList: ArrayList<CountryModel>, private val listener: Listener) : RecyclerView.Adapter<RecyclerViewAdapter.RowHolder>() {
@@ -14,8 +14,8 @@ class RecyclerViewAdapter(private val countryList: ArrayList<CountryModel>, priv
     interface Listener {
         fun onItemClick(countryModel: CountryModel)
     }
-
-    private val colors: Array<String> = arrayOf("#13bd27", "#29c1e1", "#b129e1", "#d3df13", "#f6bd0c", "#a1fb93", "#0d9de3", "#ffe48f")
+    
+    private val colors: Array<String> = arrayOf("#cca6ac", "#f691b2", "#f83a22", "#d06b64", "#fa573c", "#ff7537", "#ffad46", "#fad165", "#fbe983", "#b3dc6c", "#7bd148", "#92e1c0", "#16a765", "#42d692", "#9fc6e7", "#4986e7", "#9a9cff", "#b99aff", "#a47ae2", "#cd74e6", "#ac725e", "#c2c2c2", "#cabdbf")
 
     class RowHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -24,7 +24,7 @@ class RecyclerViewAdapter(private val countryList: ArrayList<CountryModel>, priv
             itemView.setOnClickListener {
                 listener.onItemClick(countryModel)
             }
-            itemView.setBackgroundColor(Color.parseColor(colors[position % 8]))
+            itemView.setBackgroundColor(Color.parseColor(colors[position % 23]))
             itemView.text_name.text = countryModel.name
         }
 
