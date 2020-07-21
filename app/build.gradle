@@ -42,12 +42,12 @@ android {
     }
 }
 
-def retrofitVersion = '2.8.1'
+def retrofitVersion = '2.9.0'
 def rxJavaVersion = '2.1.1'
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.2.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
@@ -60,14 +60,14 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
-    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+    implementation "io.reactivex.rxjava2:rxjava:${rxJavaVersion}"
     implementation "io.reactivex.rxjava2:rxandroid:$rxJavaVersion"
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.sdsmdg.tastytoast:tastytoast:0.1.1'
     implementation 'com.github.dakatso:livebutton:1.0.0'
     implementation 'com.squareup:seismic:1.0.2'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
 
 
 
