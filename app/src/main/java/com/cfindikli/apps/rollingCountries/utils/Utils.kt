@@ -16,6 +16,7 @@ import nl.dionsegijn.konfetti.models.Shape
 import nl.dionsegijn.konfetti.models.Size
 import java.security.SecureRandom
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class Utils {
@@ -33,7 +34,7 @@ class Utils {
 		var firstCountryObj = CountryModel()
 		var secondCountryObj = CountryModel()
 		private var reselect = CountryModel()
-		var countryModelList: List<CountryModel>? = null
+		var countryModelList: ArrayList<CountryModel>? = null
 		const val BASE_URL = "https://restcountries.eu/rest/v2/"
 		
 		
