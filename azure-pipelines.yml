@@ -10,7 +10,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 schedules:
-- cron: "0  * * *"
+- cron: "0 * * * *"
   displayName: Daily build
   branches:
     include:
