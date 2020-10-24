@@ -16,5 +16,9 @@ public class ExampleUnitTest {
         assertNotEquals(5, 2 + 2);
     }
 
+    @Test
+    public void exponentIsCorrect() {
+        assertEquals(4, Math.pow(2, 2), 0);
+    }
 
 }
