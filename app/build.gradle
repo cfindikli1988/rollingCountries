@@ -51,8 +51,8 @@ dependencies {
     })
 
     //noinspection GradleCompatible
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72'
     implementation 'nl.dionsegijn:konfetti:1.1.2'
     implementation 'com.squareup.picasso:picasso:2.71828'
@@ -63,11 +63,21 @@ dependencies {
     implementation 'com.github.dakatso:livebutton:1.0.0'
     implementation 'com.squareup:seismic:1.0.2'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.6'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.6'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9'
     testImplementation 'junit:junit:4.13'
 
 
+    def androidx_test = "1.1.0"
+    androidTestImplementation "androidx.test:runner:$androidx_test"
+    androidTestImplementation "androidx.test:core:$androidx_test"
+    androidTestImplementation "androidx.test.ext:junit-ktx:$androidx_test"
+
+
+    def androidx_test_espresso = "3.3.0"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$androidx_test_espresso"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$androidx_test_espresso"
+    implementation "androidx.test.espresso:espresso-idling-resource:$androidx_test_espresso"
 
 }
 
