@@ -16,8 +16,4 @@ public class ExampleUnitTest {
         assertNotEquals(5, 2 + 2);
     }
 
-    @Test
-    public void addition_iscorrect() {
-        assertEquals(8, Math.pow(2, 3), 0);
-    }
 }
