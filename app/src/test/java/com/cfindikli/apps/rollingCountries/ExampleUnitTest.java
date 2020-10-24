@@ -20,4 +20,5 @@ public class ExampleUnitTest {
     public void exponentIsCorrect() {
         assertEquals(4, Math.pow(2, 2), 0);
     }
+
 }
