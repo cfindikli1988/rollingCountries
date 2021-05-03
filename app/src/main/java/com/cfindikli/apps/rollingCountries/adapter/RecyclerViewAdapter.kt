@@ -24,7 +24,7 @@ class RecyclerViewAdapter(private val countryList: ArrayList<CountryModel>, priv
             itemView.setOnClickListener {
                 listener.onItemClick(countryModel)
             }
-            itemView.setBackgroundColor(Color.parseColor(colors[position % 23]))
+            itemView.setBackgroundColor(Color.parseColor(colors[position % colors.size]))
             itemView.text_name.text = countryModel.name
         }
 
