@@ -35,7 +35,7 @@ class Utils {
 		var secondCountryObj = CountryModel()
 		private var reselect = CountryModel()
 		var countryModelList: ArrayList<CountryModel>? = null
-		const val BASE_URL = "https://restcountries.eu/rest/v2/"
+		const val BASE_URL = "https://restcountries.com/v2/"
 		
 		
 		private fun randomCountry(): IntArray {
