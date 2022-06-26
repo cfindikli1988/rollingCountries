@@ -14,7 +14,8 @@
         android:theme="@style/AppTheme"
         android:fullBackupContent="@xml/backup_descriptor"
         android:usesCleartextTraffic="true">
-        <activity android:name=".view.StartActivity">
+        <activity android:name=".view.StartActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

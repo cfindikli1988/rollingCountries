@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.hardware.SensorManager
+import android.hardware.SensorManager.SENSOR_DELAY_GAME
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -63,7 +64,7 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
     private fun initializeShakeDetector() {
         Utils.sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         Utils.shakeDetector = ShakeDetector(this)
-        Utils.shakeDetector!!.start(Utils.sensorManager)
+        Utils.shakeDetector!!.start(Utils.sensorManager,SENSOR_DELAY_GAME)
     }
 
     private fun setListeners() {
@@ -231,7 +232,7 @@ class MainActivity : AppCompatActivity(), ShakeDetector.Listener {
             }
         }
         resetValues()
-        Utils.shakeDetector!!.start(Utils.sensorManager)
+        Utils.shakeDetector!!.start(Utils.sensorManager, SENSOR_DELAY_GAME)
     }
 
     private fun assessResult() {
